@@ -1,9 +1,14 @@
-# Wannier2022
-This is a repository to develop tutorial at he Wannier2022 summer school in Trieste.
+# WannierBerri tutorials
 
-I started `basic` in a jupiter notebook, what do oyu think
+These tutorials were originally presented at he Wannier2022 summer school in Trieste.
 
-Note for contributors: before commiting to the tutorial, clear the outputs of the notebooks :
+Beginners are advised to start with the basic tutorial. 
+
+Advanced users who are already familiar with the WannierBerri code may try the advanced tutorials.
+There are several advanced topics, one per each folder in the advanced/ directory.
+You may try to follow the guides in the notebook. If you have completed the tutorial, you
+may compare your code and results with those in the solution/ folder.
+
 
 
 ```
@@ -18,8 +23,4 @@ to your folder, go to that folder and execute the following line
 jupyter notebook
 ```
 
-Advanced users who are already familiar with the WannierBerri code may try the advanced tutorials.
-There are several advanced topics, one per each folder in the advanced/ directory.
-You may try to follow the guides in the notebook. If you have completed the tutorial, you
-may compare your code and results with those in the solution/ folder.
-
+Note for contributors: before commiting to the tutorial, clear the outputs of the notebooks :
