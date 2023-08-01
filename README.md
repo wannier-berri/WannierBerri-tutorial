@@ -3,19 +3,18 @@ This is a repository to develop tutorial at he Wannier2022 summer school in Trie
 
 I started `basic` in a jupiter notebook, what do oyu think
 
-Note: before commiting, clear the outputs of the notebooks :
+Note for contributors: before commiting to the tutorial, clear the outputs of the notebooks :
 
 
 ```
 jupyter nbconvert --clear-output --inplace tutorial-wb-basic.ipynb 
-
 ```
 
 ## Guidlines for tutorials
 Each tutorial is written as a Jupyter notebook. To run the jupyter notebook, copy the tutorial directory
-to your folder, go to that folder, and run the following codes:
-```python3
-workon base
+to your folder, go to that folder and execute the following line
+
+```
 jupyter notebook
 ```
 
