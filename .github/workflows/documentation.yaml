@@ -11,6 +11,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install sphinx sphinx_rtd_theme sphinx-pyreverse sphinx_sitemap
+          pip install wannierberri
       - name: Sphinx build
         run: |
           sphinx-build doc  _build
