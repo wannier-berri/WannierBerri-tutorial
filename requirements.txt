@@ -1,2 +1,6 @@
 wannierberri
 pythtb
+sphinx
+sphinx_rtd_theme
+sphinx-pyreverse
+sphinx_sitemap
