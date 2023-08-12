@@ -116,10 +116,11 @@ html_use_opensearch = 'https://wannier-berri.org'
 
 html_theme = 'sphinx_rtd_theme'
 html_favicon = 'imag/logo-WB/WB-logo.ico'
-html_logo = 'imag/logo-WB/WANNIERBERRI-redblack.png'
+html_logo = 'imag/logo-WB/tutorial.png'
 html_show_sourcelink = False
 
 nbsphinx_allow_errors = True
+nbsphinx_execute = 'never'
 
 # True Basque colors
 bred='#D62618' 
