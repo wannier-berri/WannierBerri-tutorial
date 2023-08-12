@@ -8,7 +8,7 @@ This page shows the tutorialsfor demonstration purposes. To run the tutorials yo
 .. toctree::
    :maxdepth: 4
 
-   tutorials/tutorial-wb-basic-solution.ipynb
+   tutorials/1_basic/tutorial-wb-basic-solution.ipynb
    tutorials/2_fermi_sea_vs_fermi_surface/solution/tutorial_sea_vs_surface_solution.ipynb
    tutorials/3_spin_hall/solution/tutorial_spin_hall.ipynb
    tutorials/4_DIY/tutorial-wb-DIY-solution.ipynb
