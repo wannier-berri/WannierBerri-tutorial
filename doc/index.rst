@@ -13,6 +13,6 @@ This page shows the tutorialsfor demonstration purposes. To run the tutorials yo
    tutorials/3_spin_hall/solution/tutorial_spin_hall.ipynb
    tutorials/4_DIY/tutorial-wb-DIY-solution.ipynb
    tutorials/5_symmetrization/tutorial_symmetrization-solution.ipynb
-   tutorials/6_wannier90/wannierize.ipynb
+   tutorials/6_wannierisation/wannierise.ipynb
 
 
