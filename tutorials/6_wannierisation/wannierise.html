@@ -1,0 +1,1740 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wannier functions of bcc Fe &mdash; Wannier Berri 0.17.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/style.css?v=88c5e859" />
+      <link rel="stylesheet" type="text/css" href="../../_static/nbsphinx-code-cells.css?v=2aa19091" />
+
+  
+    <link rel="shortcut icon" href="../../_static/WB-logo.ico"/>
+    <link rel="canonical" href="https://wannier-berri.org/tutorials/6_wannierisation/wannierise.html" />
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=0c3dd48d"></script>
+      <script src="../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within Wannier Berri 0.17.0 documentation"
+          href="../../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="prev" title="Symmetrization of Wannier Hamiltonian and matrices" href="../5_symmetrization/tutorial_symmetrization-solution.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #009C46" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/tutorial.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../1_basic/tutorial-wb-basic-solution.html">Basic tutorial: Interpolating bands, Berry curvatures, and integrating them</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2_fermi_sea_vs_fermi_surface/solution/tutorial_sea_vs_surface_solution.html">WannierBerri advanced tutorial - Fermi surface and Fermi sea calculation of the Berry curvature dipole</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3_spin_hall/solution/tutorial_spin_hall.html">Spin Hall conductivity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../4_DIY/tutorial-wb-DIY-solution.html">DIY tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../5_symmetrization/tutorial_symmetrization-solution.html">Symmetrization of Wannier Hamiltonian and matrices</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Wannier functions of bcc Fe</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#1.-Setup">1. Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#2.-Wannierise">2. Wannierise</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#3.-Create-System_w90-objects">3. Create System_w90 objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#4.-Bands-along-path">4. Bands along path</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#4.1-calculate-bands">4.1 calculate bands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#4.2-plot-bands">4.2 plot bands</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#5.-AHC-and-Ohmic-conductivity">5. AHC and Ohmic conductivity</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#5.1-calculate">5.1 calculate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#5.2-Plot">5.2 Plot</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#6.-Creating-the-dmn-files">6. Creating the dmn files</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#6.1-read-the-bandstructure-using-irrep">6.1 read the bandstructure using irrep</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Set-projections">Set projections</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #009C46" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Wannier Berri</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Wannier functions of bcc Fe</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="Wannier-functions-of-bcc-Fe">
+<h1>Wannier functions of bcc Fe<a class="headerlink" href="#Wannier-functions-of-bcc-Fe" title="Link to this heading"></a></h1>
+<section id="1.-Setup">
+<h2>1. Setup<a class="headerlink" href="#1.-Setup" title="Link to this heading"></a></h2>
+<p>First import modules and set up the parallel environment</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span>import os
+from matplotlib import pyplot as plt
+import ray
+import scipy
+import wannierberri as wberri
+import numpy as np
+from termcolor import cprint
+
+
+from wannierberri.parallel import Parallel
+
+from pathlib import Path
+path_data = Path(&quot;./wannier-berri/tests/data/Fe-444-sitesym/&quot;)  # adjust path if needed to point to the data in the tests fo wannier-berri repository
+assert os.path.exists(path_data), f&quot;Path {path_data} does not exist&quot;
+
+results_path = {}
+results_grid = {}
+
+# We do all calculations for three cases:
+#   1. With all magnetic symmetries
+#   2. With only the spacegroup symmetries that preserve the magnetic order
+#   3. Without any symmetries
+
+include_TR_list = [ True, False, None]  # None means no symmetry
+
+try:
+    ray.shutdown()
+except:
+    pass
+parallel = Parallel(ray_init={&quot;num_gpus&quot;: 0}) # use of gpus is not tested
+
+# if needed
+# os.chdir(&quot;path to here&quot;)
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+2024-10-23 01:45:46,010 INFO util.py:154 -- Missing packages: [&#39;ipywidgets&#39;]. Run `pip install -U ipywidgets`, then restart the notebook server for rich notebook output.
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+initializing ray with  {&#39;num_gpus&#39;: 0, &#39;num_cpus&#39;: None}
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+2024-10-23 01:45:48,349 INFO worker.py:1777 -- Started a local Ray instance. View the dashboard at <span class="ansi-green-intense-fg ansi-bold">http://127.0.0.1:8265 </span>
+</pre></div></div>
+</div>
+</section>
+<section id="2.-Wannierise">
+<h2>2. Wannierise<a class="headerlink" href="#2.-Wannierise" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span>w90_data_list = {}
+
+for includeTR in include_TR_list:
+    cprint (f&quot;include_TR = {includeTR}&quot;, &quot;green&quot;, attrs=[&quot;bold&quot;])
+    w90data=wberri.w90files.Wannier90data(seedname=str(path_data/&quot;Fe&quot;))
+    # check the symmetries of the amn and eig files
+    cprint (f&quot;creating dmn&quot;, &quot;blue&quot;, attrs=[&quot;bold&quot;])
+    if includeTR is not None:
+        sitesym = True
+        dmn = wberri.w90files.DMN(seedname=str(path_data/f&quot;Fe_TR={includeTR}&quot;), read_npz=True)
+        w90data.set_file(&quot;dmn&quot;,dmn)
+        print (f&quot;eig is symmetric within the accuracy of : {dmn.check_eig(w90data.eig)}&quot;)
+        print (f&quot;amn is symmetric within the accuracy of : {dmn.check_amn(w90data.amn, warning_precision=1e-4)}&quot;)
+    else:
+        sitesym = False
+
+    cprint (f&quot;wannierising&quot;, &quot;blue&quot;, attrs=[&quot;bold&quot;])
+    #aidata.apply_outer_window(win_min=-8,win_max= 100 )
+    froz_max=30
+    w90data.wannierise( init = &quot;amn&quot;,
+                    froz_min=-8,
+                    froz_max=froz_max,
+                    print_progress_every=10,
+                    num_iter=21,
+                    conv_tol=1e-6,
+                    mix_ratio_z=1.0,
+                    localise=True,
+                    sitesym=sitesym,
+                    )
+
+    w90_data_list[includeTR] = w90data
+<br/><br/><br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-intense-fg ansi-bold">include_TR = True</span>
+kwargs for win are {}
+kwargs for eig are {&#39;read_npz&#39;: True, &#39;write_npz&#39;: True, &#39;selected_bands&#39;: None}
+calling w90 file with wannier-berri/tests/data/Fe-444-sitesym/Fe, eig, tags=[&#39;data&#39;], read_npz=True, write_npz=True, kwargs={}
+kwargs for mmn are {&#39;read_npz&#39;: True, &#39;write_npz&#39;: True, &#39;selected_bands&#39;: None}
+calling w90 file with wannier-berri/tests/data/Fe-444-sitesym/Fe, mmn, tags=[&#39;data&#39;, &#39;neighbours&#39;, &#39;G&#39;], read_npz=True, write_npz=True, kwargs={&#39;npar&#39;: 32}
+kwargs for amn are {&#39;read_npz&#39;: True, &#39;write_npz&#39;: True, &#39;selected_bands&#39;: None}
+calling w90 file with wannier-berri/tests/data/Fe-444-sitesym/Fe, amn, tags=[&#39;data&#39;], read_npz=True, write_npz=True, kwargs={&#39;npar&#39;: 32}
+apply_window amn, selected_bands=None
+creating CheckPoint_bare
+kwargs for chk are {&#39;selected_bands&#39;: None}
+<span class="ansi-blue-intense-fg ansi-bold">creating dmn</span>
+calling w90 file with wannier-berri/tests/data/Fe-444-sitesym/Fe_TR=True, dmn, tags=[&#39;D_wann_block_indices&#39;, &#39;_NB&#39;, &#39;kpt2kptirr&#39;, &#39;kptirr&#39;, &#39;kptirr2kpt&#39;, &#39;kpt2kptirr_sym&#39;, &#39;_NK&#39;, &#39;num_wann&#39;, &#39;comment&#39;, &#39;NKirr&#39;, &#39;Nsym&#39;, &#39;time_reversals&#39;], read_npz=True, write_npz=True, kwargs={}
+kwargs for dmn are {&#39;read_npz&#39;: True, &#39;write_npz&#39;: True, &#39;selected_bands&#39;: None}
+eig is symmetric within the accuracy of : 3.0701497788707307e-10
+amn is symmetric within the accuracy of : 1.9175439968189927e-05
+<span class="ansi-blue-intense-fg ansi-bold">wannierising</span>
+wannier centers from spread functional:
+ [[ 6.71979229e-12 -6.51893616e-12 -3.92760222e-12]
+ [-1.27512928e-11  1.28487128e-11 -2.52994276e-11]
+ [-3.91419114e-09  1.38967756e-10 -8.18313939e-11]
+ [-3.63017504e-10 -2.38568938e-09  3.00743266e-12]
+ [-1.46710391e-11 -2.19970249e-10 -2.09126122e-09]
+ [ 2.84679824e-10  2.46750644e-09  8.59723038e-10]
+ [ 3.84141389e-09  7.37226893e-11  2.07708633e-09]
+ [ 3.47451115e-10 -1.08832960e-10 -7.70141714e-10]
+ [-4.84415875e-11  1.43338522e-12  2.61820385e-12]
+ [-1.87362811e-12 -2.12664549e-11  3.40293090e-12]
+ [ 4.23658892e-13 -7.14919793e-13 -1.23273510e-12]
+ [ 2.82673535e-12 -4.45932451e-13  1.60933841e-13]
+ [ 1.64706171e-12 -1.04924006e-12 -1.46801040e-12]
+ [ 1.14141087e-12 -9.58876568e-14  3.49805911e-13]
+ [ 4.57680348e-11  1.09647619e-12  3.35337879e-12]
+ [-4.31866474e-13  2.33710096e-11  1.11921639e-12]
+ [ 2.72877314e-12 -2.00420790e-13  3.18084097e-12]
+ [-2.35712655e-14 -2.86505012e-13  5.25167225e-13]]
+####################################################################################################
+Initial  State
+----------------------------------------------------------------------------------------------------
+wannier centers and spreads
+----------------------------------------------------------------------------------------------------
+  0.000000000000   -0.000000000000   -0.000000000000   |     1.822712918666
+ -0.000000000000    0.000000000000   -0.000000000000   |     1.775270440967
+ -0.000000000000    0.000000000000   -0.000000000000   |     1.784731791941
+ -0.000000000000   -0.000000000000    0.000000000000   |     1.748633051913
+ -0.000000000000   -0.000000000000   -0.000000000000   |     1.784745738844
+  0.000000000000    0.000000000000    0.000000000000   |     1.748631185697
+  0.000000000000    0.000000000000    0.000000000000   |     1.784745735271
+  0.000000000000   -0.000000000000   -0.000000000000   |     1.748631185824
+ -0.000000000000    0.000000000000    0.000000000000   |     0.515479519165
+ -0.000000000000   -0.000000000000    0.000000000000   |     0.486069142522
+  0.000000000000   -0.000000000000   -0.000000000000   |     0.489469186891
+  0.000000000000   -0.000000000000    0.000000000000   |     0.478489321985
+  0.000000000000   -0.000000000000   -0.000000000000   |     0.489469186888
+  0.000000000000   -0.000000000000    0.000000000000   |     0.478489321986
+  0.000000000000    0.000000000000    0.000000000000   |     0.515495586219
+ -0.000000000000    0.000000000000    0.000000000000   |     0.486068196653
+  0.000000000000   -0.000000000000    0.000000000000   |     0.489469975386
+ -0.000000000000   -0.000000000000    0.000000000000   |     0.478496224120
+----------------------------------------------------------------------------------------------------
+Omega_tot =  19.10495553 | Omega_0 =   1.82270805 | Omega_1 =   1.77526605 | Omega_2 =   1.78471858 | Omega_3 =   1.74862081 | Omega_4 =   1.78471772 | Omega_5 =   1.74860596 | Omega_6 =   1.78471772 | Omega_7 =   1.74860596 | Omega_8 =   0.51547950 | Omega_9 =   0.48606912 | Omega_10 =   0.48946909 | Omega_11 =   0.47848924 | Omega_12 =   0.48946909 | Omega_13 =   0.47848924 | Omega_14 =   0.51549554 | Omega_15 =   0.48606813 | Omega_16 =   0.48946972 | Omega_17 =   0.47849602
+####################################################################################################
+####################################################################################################
+iteration    0 Omega=   18.3390889757  delta=--, max(3)=--, slope=--
+----------------------------------------------------------------------------------------------------
+wannier centers and spreads
+----------------------------------------------------------------------------------------------------
+  0.000000000000   -0.000000000000   -0.000000000000   |     1.795845840945
+ -0.000000000000   -0.000000000000   -0.000000000000   |     1.590279451809
+ -0.000000000000    0.000000000000   -0.000000000000   |     1.838800956356
+ -0.000000000000   -0.000000000000   -0.000000000000   |     1.720329929304
+  0.000000000000   -0.000000000000   -0.000000000000   |     1.780004390502
+  0.000000000000    0.000000000000    0.000000000000   |     1.704063135313
+  0.000000000000    0.000000000000    0.000000000000   |     1.780004388718
+  0.000000000000    0.000000000000   -0.000000000000   |     1.704063135495
+ -0.000000000000   -0.000000000000    0.000000000000   |     0.476980542191
+  0.000000000000    0.000000000000    0.000000000000   |     0.441644747391
+  0.000000000000   -0.000000000000   -0.000000000000   |     0.437763536653
+ -0.000000000000    0.000000000000   -0.000000000000   |     0.425603018800
+  0.000000000000   -0.000000000000   -0.000000000000   |     0.437763536652
+  0.000000000000    0.000000000000   -0.000000000000   |     0.425603018797
+  0.000000000000   -0.000000000000    0.000000000000   |     0.477246668367
+ -0.000000000000   -0.000000000000    0.000000000000   |     0.441600527146
+ -0.000000000000   -0.000000000000   -0.000000000000   |     0.436567351732
+  0.000000000000    0.000000000000    0.000000000000   |     0.425470048636
+----------------------------------------------------------------------------------------------------
+Omega_tot =  18.33908898 | Omega_0 =   1.79584383 | Omega_1 =   1.59027883 | Omega_2 =   1.83879753 | Omega_3 =   1.72032528 | Omega_4 =   1.77995521 | Omega_5 =   1.70384524 | Omega_6 =   1.77995521 | Omega_7 =   1.70384524 | Omega_8 =   0.47698054 | Omega_9 =   0.44164474 | Omega_10 =   0.43776349 | Omega_11 =   0.42560298 | Omega_12 =   0.43776349 | Omega_13 =   0.42560298 | Omega_14 =   0.47724664 | Omega_15 =   0.44160050 | Omega_16 =   0.43656724 | Omega_17 =   0.42546998
+####################################################################################################
+####################################################################################################
+iteration   10 Omega=   17.7466374281  delta=-5.92451548e-01, max(3)=--, slope=--
+----------------------------------------------------------------------------------------------------
+wannier centers and spreads
+----------------------------------------------------------------------------------------------------
+ -0.000000000000   -0.000000000000    0.000000000000   |     1.564331556226
+  0.000000000000   -0.000000000000    0.000000000000   |     1.446105650853
+  0.000000000000   -0.000000000000   -0.000000000000   |     1.880591554852
+ -0.000000000000    0.000000000000   -0.000000000000   |     1.704357578683
+  0.000000000000    0.000000000000   -0.000000000000   |     1.784886014292
+  0.000000000000   -0.000000000000    0.000000000000   |     1.703628038392
+ -0.000000000000    0.000000000000    0.000000000000   |     1.784886013683
+  0.000000000000   -0.000000000000   -0.000000000000   |     1.703628038258
+  0.000000000000   -0.000000000000    0.000000000000   |     0.461148442677
+ -0.000000000000    0.000000000000    0.000000000000   |     0.431006239279
+  0.000000000000   -0.000000000000   -0.000000000000   |     0.406327045813
+ -0.000000000000    0.000000000000   -0.000000000000   |     0.392972158341
+  0.000000000000   -0.000000000000   -0.000000000000   |     0.406327045812
+  0.000000000000    0.000000000000   -0.000000000000   |     0.392972158340
+ -0.000000000000    0.000000000000   -0.000000000000   |     0.454555420899
+  0.000000000000   -0.000000000000    0.000000000000   |     0.430225660487
+ -0.000000000000   -0.000000000000   -0.000000000000   |     0.407185144670
+  0.000000000000    0.000000000000    0.000000000000   |     0.392537138699
+----------------------------------------------------------------------------------------------------
+Omega_tot =  17.74663743 | Omega_0 =   1.56433070 | Omega_1 =   1.44610370 | Omega_2 =   1.88057262 | Omega_3 =   1.70435312 | Omega_4 =   1.78484325 | Omega_5 =   1.70316739 | Omega_6 =   1.78484325 | Omega_7 =   1.70316739 | Omega_8 =   0.46114842 | Omega_9 =   0.43100620 | Omega_10 =   0.40632703 | Omega_11 =   0.39297213 | Omega_12 =   0.40632703 | Omega_13 =   0.39297213 | Omega_14 =   0.45455540 | Omega_15 =   0.43022548 | Omega_16 =   0.40718509 | Omega_17 =   0.39253710
+####################################################################################################
+####################################################################################################
+iteration   20 Omega=   17.7555248377  delta= 8.88740961e-03, max(3)=--, slope=--
+----------------------------------------------------------------------------------------------------
+wannier centers and spreads
+----------------------------------------------------------------------------------------------------
+ -0.000000000000   -0.000000000000    0.000000000000   |     1.565924353123
+  0.000000000000   -0.000000000000    0.000000000000   |     1.445722292964
+  0.000000000000   -0.000000000000    0.000000000000   |     1.879133201049
+ -0.000000000000    0.000000000000   -0.000000000000   |     1.704339955602
+  0.000000000000    0.000000000000   -0.000000000000   |     1.789157210581
+  0.000000000000   -0.000000000000    0.000000000000   |     1.703548501034
+ -0.000000000000    0.000000000000    0.000000000000   |     1.789157209964
+  0.000000000000   -0.000000000000   -0.000000000000   |     1.703548500900
+  0.000000000000   -0.000000000000    0.000000000000   |     0.460784434597
+ -0.000000000000    0.000000000000    0.000000000000   |     0.431013554242
+  0.000000000000   -0.000000000000   -0.000000000000   |     0.406482214887
+ -0.000000000000    0.000000000000   -0.000000000000   |     0.393142780439
+  0.000000000000   -0.000000000000   -0.000000000000   |     0.406482214887
+  0.000000000000    0.000000000000   -0.000000000000   |     0.393142780439
+ -0.000000000000    0.000000000000   -0.000000000000   |     0.454402206059
+  0.000000000000   -0.000000000000    0.000000000000   |     0.430231233914
+ -0.000000000000   -0.000000000000   -0.000000000000   |     0.407685943537
+  0.000000000000    0.000000000000    0.000000000000   |     0.392663934185
+----------------------------------------------------------------------------------------------------
+Omega_tot =  17.75552484 | Omega_0 =   1.56592350 | Omega_1 =   1.44572031 | Omega_2 =   1.87911439 | Omega_3 =   1.70433548 | Omega_4 =   1.78911407 | Omega_5 =   1.70308610 | Omega_6 =   1.78911406 | Omega_7 =   1.70308610 | Omega_8 =   0.46078442 | Omega_9 =   0.43101351 | Omega_10 =   0.40648220 | Omega_11 =   0.39314275 | Omega_12 =   0.40648220 | Omega_13 =   0.39314275 | Omega_14 =   0.45440218 | Omega_15 =   0.43023104 | Omega_16 =   0.40768589 | Omega_17 =   0.39266389
+####################################################################################################
+wannier centers from spread functional:
+ [[-8.28366296e-12 -7.60120387e-12  3.92905876e-12]
+ [ 7.64476686e-12 -1.36891259e-12  5.82483491e-12]
+ [ 3.12834329e-10 -1.85019211e-10  4.19408069e-14]
+ [-2.71854449e-10  2.99058861e-10 -1.86481660e-11]
+ [ 1.69829672e-10  5.28475523e-11 -5.47183205e-10]
+ [ 6.23704105e-12 -2.59846821e-10  1.11421279e-10]
+ [-6.39613474e-10  1.49924524e-11  5.19417971e-10]
+ [ 2.37669626e-10 -4.33269348e-12 -5.61963251e-11]
+ [ 5.77923554e-12 -3.76338281e-12  1.71641208e-12]
+ [-2.27155123e-12  5.68191110e-12  8.02106046e-13]
+ [ 8.26903978e-13 -4.30460801e-12 -3.48627689e-12]
+ [-9.61772646e-13  5.41066905e-13 -2.51519743e-12]
+ [ 4.94168886e-12 -1.11630599e-12 -3.82930076e-12]
+ [ 3.67530284e-13  1.31515244e-12 -2.16516249e-13]
+ [-2.29612479e-12  1.09735049e-11 -7.71657786e-13]
+ [ 2.62443544e-12 -5.78419623e-12  2.35944397e-12]
+ [-6.01099241e-13 -2.14869495e-12 -1.19422937e-12]
+ [ 8.24962534e-14  6.88279872e-13  9.27200966e-13]]
+####################################################################################################
+Final State
+----------------------------------------------------------------------------------------------------
+wannier centers and spreads
+----------------------------------------------------------------------------------------------------
+ -0.000000000000   -0.000000000000    0.000000000000   |     1.565924353123
+  0.000000000000   -0.000000000000    0.000000000000   |     1.445722292964
+  0.000000000000   -0.000000000000    0.000000000000   |     1.879133201049
+ -0.000000000000    0.000000000000   -0.000000000000   |     1.704339955602
+  0.000000000000    0.000000000000   -0.000000000000   |     1.789157210581
+  0.000000000000   -0.000000000000    0.000000000000   |     1.703548501034
+ -0.000000000000    0.000000000000    0.000000000000   |     1.789157209964
+  0.000000000000   -0.000000000000   -0.000000000000   |     1.703548500900
+  0.000000000000   -0.000000000000    0.000000000000   |     0.460784434597
+ -0.000000000000    0.000000000000    0.000000000000   |     0.431013554242
+  0.000000000000   -0.000000000000   -0.000000000000   |     0.406482214887
+ -0.000000000000    0.000000000000   -0.000000000000   |     0.393142780439
+  0.000000000000   -0.000000000000   -0.000000000000   |     0.406482214887
+  0.000000000000    0.000000000000   -0.000000000000   |     0.393142780439
+ -0.000000000000    0.000000000000   -0.000000000000   |     0.454402206059
+  0.000000000000   -0.000000000000    0.000000000000   |     0.430231233914
+ -0.000000000000   -0.000000000000   -0.000000000000   |     0.407685943537
+  0.000000000000    0.000000000000    0.000000000000   |     0.392663934185
+----------------------------------------------------------------------------------------------------
+Omega_tot =  17.75552484 | Omega_0 =   1.56592350 | Omega_1 =   1.44572031 | Omega_2 =   1.87911439 | Omega_3 =   1.70433548 | Omega_4 =   1.78911407 | Omega_5 =   1.70308610 | Omega_6 =   1.78911406 | Omega_7 =   1.70308610 | Omega_8 =   0.46078442 | Omega_9 =   0.43101351 | Omega_10 =   0.40648220 | Omega_11 =   0.39314275 | Omega_12 =   0.40648220 | Omega_13 =   0.39314275 | Omega_14 =   0.45440218 | Omega_15 =   0.43023104 | Omega_16 =   0.40768589 | Omega_17 =   0.39266389
+####################################################################################################
+<span class="ansi-green-intense-fg ansi-bold">include_TR = False</span>
+kwargs for win are {}
+kwargs for eig are {&#39;read_npz&#39;: True, &#39;write_npz&#39;: True, &#39;selected_bands&#39;: None}
+calling w90 file with wannier-berri/tests/data/Fe-444-sitesym/Fe, eig, tags=[&#39;data&#39;], read_npz=True, write_npz=True, kwargs={}
+kwargs for mmn are {&#39;read_npz&#39;: True, &#39;write_npz&#39;: True, &#39;selected_bands&#39;: None}
+calling w90 file with wannier-berri/tests/data/Fe-444-sitesym/Fe, mmn, tags=[&#39;data&#39;, &#39;neighbours&#39;, &#39;G&#39;], read_npz=True, write_npz=True, kwargs={&#39;npar&#39;: 32}
+kwargs for amn are {&#39;read_npz&#39;: True, &#39;write_npz&#39;: True, &#39;selected_bands&#39;: None}
+calling w90 file with wannier-berri/tests/data/Fe-444-sitesym/Fe, amn, tags=[&#39;data&#39;], read_npz=True, write_npz=True, kwargs={&#39;npar&#39;: 32}
+apply_window amn, selected_bands=None
+creating CheckPoint_bare
+kwargs for chk are {&#39;selected_bands&#39;: None}
+<span class="ansi-blue-intense-fg ansi-bold">creating dmn</span>
+calling w90 file with wannier-berri/tests/data/Fe-444-sitesym/Fe_TR=False, dmn, tags=[&#39;D_wann_block_indices&#39;, &#39;_NB&#39;, &#39;kpt2kptirr&#39;, &#39;kptirr&#39;, &#39;kptirr2kpt&#39;, &#39;kpt2kptirr_sym&#39;, &#39;_NK&#39;, &#39;num_wann&#39;, &#39;comment&#39;, &#39;NKirr&#39;, &#39;Nsym&#39;, &#39;time_reversals&#39;], read_npz=True, write_npz=True, kwargs={}
+kwargs for dmn are {&#39;read_npz&#39;: True, &#39;write_npz&#39;: True, &#39;selected_bands&#39;: None}
+eig is symmetric within the accuracy of : 3.0701497788707307e-10
+amn is symmetric within the accuracy of : 1.9175439968189927e-05
+<span class="ansi-blue-intense-fg ansi-bold">wannierising</span>
+wannier centers from spread functional:
+ [[ 6.71987382e-12 -6.51882748e-12 -3.92757194e-12]
+ [-1.27513041e-11  1.28487303e-11 -2.52994568e-11]
+ [-3.91419395e-09  1.38970763e-10 -8.18309629e-11]
+ [-3.63007009e-10 -2.38569559e-09  3.00716634e-12]
+ [-1.46707985e-11 -2.19963723e-10 -2.09126092e-09]
+ [ 2.84679060e-10  2.46749592e-09  8.59735756e-10]
+ [ 3.84142327e-09  7.37237220e-11  2.07709403e-09]
+ [ 3.47437367e-10 -1.08833571e-10 -7.70130136e-10]
+ [-4.84415591e-11  1.43338560e-12  2.61822072e-12]
+ [-1.87361004e-12 -2.12664277e-11  3.40292096e-12]
+ [ 4.23655729e-13 -7.14872558e-13 -1.23276622e-12]
+ [ 2.82671797e-12 -4.45943443e-13  1.60957862e-13]
+ [ 1.64705115e-12 -1.04923871e-12 -1.46801399e-12]
+ [ 1.14137626e-12 -9.58898558e-14  3.49814678e-13]
+ [ 4.57680224e-11  1.09650787e-12  3.35337422e-12]
+ [-4.31833707e-13  2.33709875e-11  1.11921509e-12]
+ [ 2.72877221e-12 -2.00445373e-13  3.18083088e-12]
+ [-2.35863065e-14 -2.86520743e-13  5.25174449e-13]]
+####################################################################################################
+Initial  State
+----------------------------------------------------------------------------------------------------
+wannier centers and spreads
+----------------------------------------------------------------------------------------------------
+  0.000000000000   -0.000000000000   -0.000000000000   |     1.822712918985
+ -0.000000000000    0.000000000000   -0.000000000000   |     1.775270441158
+ -0.000000000000    0.000000000000   -0.000000000000   |     1.784731794998
+ -0.000000000000   -0.000000000000    0.000000000000   |     1.748633061020
+ -0.000000000000   -0.000000000000   -0.000000000000   |     1.784745738737
+  0.000000000000    0.000000000000    0.000000000000   |     1.748631182947
+  0.000000000000    0.000000000000    0.000000000000   |     1.784745735164
+  0.000000000000   -0.000000000000   -0.000000000000   |     1.748631183074
+ -0.000000000000    0.000000000000    0.000000000000   |     0.515479519164
+ -0.000000000000   -0.000000000000    0.000000000000   |     0.486069142517
+  0.000000000000   -0.000000000000   -0.000000000000   |     0.489469186867
+  0.000000000000   -0.000000000000    0.000000000000   |     0.478489321990
+  0.000000000000   -0.000000000000   -0.000000000000   |     0.489469186865
+  0.000000000000   -0.000000000000    0.000000000000   |     0.478489321991
+  0.000000000000    0.000000000000    0.000000000000   |     0.515495586221
+ -0.000000000000    0.000000000000    0.000000000000   |     0.486068196662
+  0.000000000000   -0.000000000000    0.000000000000   |     0.489469975353
+ -0.000000000000   -0.000000000000    0.000000000000   |     0.478496224093
+----------------------------------------------------------------------------------------------------
+Omega_tot =  19.10495554 | Omega_0 =   1.82270805 | Omega_1 =   1.77526605 | Omega_2 =   1.78471858 | Omega_3 =   1.74862082 | Omega_4 =   1.78471772 | Omega_5 =   1.74860595 | Omega_6 =   1.78471772 | Omega_7 =   1.74860595 | Omega_8 =   0.51547950 | Omega_9 =   0.48606912 | Omega_10 =   0.48946909 | Omega_11 =   0.47848924 | Omega_12 =   0.48946909 | Omega_13 =   0.47848924 | Omega_14 =   0.51549554 | Omega_15 =   0.48606813 | Omega_16 =   0.48946972 | Omega_17 =   0.47849602
+####################################################################################################
+####################################################################################################
+iteration    0 Omega=   17.5173388992  delta=--, max(3)=--, slope=--
+----------------------------------------------------------------------------------------------------
+wannier centers and spreads
+----------------------------------------------------------------------------------------------------
+  0.000000000000    0.000000000000    0.000000000000   |     1.618940004644
+ -0.000000000000    0.000000000000   -0.000000000000   |     1.576706198647
+ -0.000000000000   -0.000000000000   -0.000000000000   |     1.664787248614
+ -0.000000000000   -0.000000000000   -0.000000000000   |     1.631420513725
+ -0.000000000000   -0.000000000000   -0.000000000000   |     1.664802639705
+  0.000000000000    0.000000000000    0.000000000000   |     1.631416026003
+  0.000000000000    0.000000000000    0.000000000000   |     1.664802637406
+  0.000000000000   -0.000000000000   -0.000000000000   |     1.631416025959
+ -0.000000000000   -0.000000000000    0.000000000000   |     0.476781310144
+  0.000000000000   -0.000000000000    0.000000000000   |     0.442135090082
+  0.000000000000   -0.000000000000   -0.000000000000   |     0.438666007193
+ -0.000000000000    0.000000000000   -0.000000000000   |     0.426419592263
+  0.000000000000    0.000000000000   -0.000000000000   |     0.438666007191
+  0.000000000000    0.000000000000    0.000000000000   |     0.426419592261
+  0.000000000000   -0.000000000000    0.000000000000   |     0.476800078450
+ -0.000000000000    0.000000000000    0.000000000000   |     0.442136692399
+ -0.000000000000   -0.000000000000    0.000000000000   |     0.438666540748
+  0.000000000000    0.000000000000    0.000000000000   |     0.426428120265
+----------------------------------------------------------------------------------------------------
+Omega_tot =  17.51733890 | Omega_0 =   1.61893856 | Omega_1 =   1.57670483 | Omega_2 =   1.66478407 | Omega_3 =   1.63141746 | Omega_4 =   1.66478608 | Omega_5 =   1.63140158 | Omega_6 =   1.66478608 | Omega_7 =   1.63140158 | Omega_8 =   0.47678131 | Omega_9 =   0.44213509 | Omega_10 =   0.43866597 | Omega_11 =   0.42641956 | Omega_12 =   0.43866597 | Omega_13 =   0.42641956 | Omega_14 =   0.47680005 | Omega_15 =   0.44213667 | Omega_16 =   0.43866643 | Omega_17 =   0.42642804
+####################################################################################################
+####################################################################################################
+iteration   10 Omega=   16.7791177517  delta=-7.38221147e-01, max(3)=--, slope=--
+----------------------------------------------------------------------------------------------------
+wannier centers and spreads
+----------------------------------------------------------------------------------------------------
+ -0.000000000000    0.000000000000    0.000000000000   |     1.490748600281
+  0.000000000000   -0.000000000000    0.000000000000   |     1.452912148738
+ -0.000000000000   -0.000000000000   -0.000000000000   |     1.620430662232
+ -0.000000000000   -0.000000000000   -0.000000000000   |     1.586854380351
+ -0.000000000000   -0.000000000000   -0.000000000000   |     1.620449499798
+  0.000000000000    0.000000000000    0.000000000000   |     1.586835487942
+  0.000000000000    0.000000000000    0.000000000000   |     1.620449498643
+  0.000000000000   -0.000000000000   -0.000000000000   |     1.586835487913
+ -0.000000000000   -0.000000000000    0.000000000000   |     0.468675297247
+  0.000000000000   -0.000000000000    0.000000000000   |     0.432126656006
+  0.000000000000   -0.000000000000   -0.000000000000   |     0.409065020614
+ -0.000000000000    0.000000000000   -0.000000000000   |     0.394935083536
+  0.000000000000    0.000000000000   -0.000000000000   |     0.409065020609
+  0.000000000000    0.000000000000   -0.000000000000   |     0.394935083533
+  0.000000000000   -0.000000000000    0.000000000000   |     0.468695181657
+  0.000000000000    0.000000000000    0.000000000000   |     0.432129143818
+  0.000000000000   -0.000000000000    0.000000000000   |     0.409064750364
+ -0.000000000000    0.000000000000    0.000000000000   |     0.394946059066
+----------------------------------------------------------------------------------------------------
+Omega_tot =  16.77911775 | Omega_0 =   1.49074839 | Omega_1 =   1.45291196 | Omega_2 =   1.62042991 | Omega_3 =   1.58685362 | Omega_4 =   1.62044033 | Omega_5 =   1.58682801 | Omega_6 =   1.62044033 | Omega_7 =   1.58682801 | Omega_8 =   0.46867530 | Omega_9 =   0.43212666 | Omega_10 =   0.40906502 | Omega_11 =   0.39493508 | Omega_12 =   0.40906502 | Omega_13 =   0.39493508 | Omega_14 =   0.46869515 | Omega_15 =   0.43212913 | Omega_16 =   0.40906473 | Omega_17 =   0.39494604
+####################################################################################################
+####################################################################################################
+iteration   20 Omega=   16.7791351293  delta= 1.73776479e-05, max(3)=--, slope=--
+----------------------------------------------------------------------------------------------------
+wannier centers and spreads
+----------------------------------------------------------------------------------------------------
+ -0.000000000000    0.000000000000    0.000000000000   |     1.490398467188
+  0.000000000000   -0.000000000000    0.000000000000   |     1.452608683066
+ -0.000000000000   -0.000000000000   -0.000000000000   |     1.620407788318
+ -0.000000000000   -0.000000000000   -0.000000000000   |     1.586839181156
+ -0.000000000000   -0.000000000000   -0.000000000000   |     1.620427599249
+  0.000000000000    0.000000000000    0.000000000000   |     1.586818682122
+  0.000000000000    0.000000000000    0.000000000000   |     1.620427598097
+  0.000000000000   -0.000000000000   -0.000000000000   |     1.586818682093
+ -0.000000000000   -0.000000000000    0.000000000000   |     0.468678979096
+  0.000000000000   -0.000000000000    0.000000000000   |     0.432130842599
+  0.000000000000   -0.000000000000   -0.000000000000   |     0.409207412688
+ -0.000000000000    0.000000000000   -0.000000000000   |     0.395049743419
+  0.000000000000    0.000000000000   -0.000000000000   |     0.409207412683
+  0.000000000000    0.000000000000   -0.000000000000   |     0.395049743416
+  0.000000000000   -0.000000000000    0.000000000000   |     0.468698895995
+  0.000000000000    0.000000000000    0.000000000000   |     0.432133292439
+  0.000000000000   -0.000000000000    0.000000000000   |     0.409207115756
+ -0.000000000000    0.000000000000    0.000000000000   |     0.395060760221
+----------------------------------------------------------------------------------------------------
+Omega_tot =  16.77913513 | Omega_0 =   1.49039825 | Omega_1 =   1.45260849 | Omega_2 =   1.62040704 | Omega_3 =   1.58683842 | Omega_4 =   1.62041830 | Omega_5 =   1.58681112 | Omega_6 =   1.62041830 | Omega_7 =   1.58681112 | Omega_8 =   0.46867898 | Omega_9 =   0.43213084 | Omega_10 =   0.40920741 | Omega_11 =   0.39504974 | Omega_12 =   0.40920741 | Omega_13 =   0.39504974 | Omega_14 =   0.46869886 | Omega_15 =   0.43213327 | Omega_16 =   0.40920709 | Omega_17 =   0.39506075
+####################################################################################################
+wannier centers from spread functional:
+ [[-5.14441886e-12  8.18545637e-12  7.95579453e-12]
+ [ 5.38523317e-13 -4.46653848e-12  3.24990636e-12]
+ [-1.53700735e-09 -3.11053111e-11 -9.17072098e-11]
+ [-1.19545378e-10 -9.16011783e-10 -3.00273251e-11]
+ [-1.12995948e-11 -2.18659020e-12 -7.84667352e-10]
+ [ 5.08261971e-11  9.21973295e-10  3.69829027e-10]
+ [ 1.47520183e-09  7.81122637e-12  8.40101835e-10]
+ [ 1.85544328e-10 -3.06809155e-11 -3.33546975e-10]
+ [-3.06167228e-11 -1.03217643e-12  4.40944529e-13]
+ [ 3.61882883e-13 -1.08307518e-11  2.00836085e-12]
+ [ 2.02878413e-13 -4.02646524e-12 -3.48352036e-12]
+ [-1.45669716e-12  3.51857435e-12 -3.33537935e-12]
+ [ 7.19832791e-12  1.06328927e-12 -4.44324102e-12]
+ [ 3.53489351e-13  2.35732690e-12 -5.12466344e-13]
+ [ 3.06613679e-11 -1.37999916e-12  9.09721774e-13]
+ [ 1.62683601e-13  1.21888891e-11  2.30091402e-12]
+ [ 1.26770225e-12 -3.78797379e-12  1.38474100e-12]
+ [-3.73314336e-13  2.06171181e-13  7.09540799e-13]]
+####################################################################################################
+Final State
+----------------------------------------------------------------------------------------------------
+wannier centers and spreads
+----------------------------------------------------------------------------------------------------
+ -0.000000000000    0.000000000000    0.000000000000   |     1.490398467188
+  0.000000000000   -0.000000000000    0.000000000000   |     1.452608683066
+ -0.000000000000   -0.000000000000   -0.000000000000   |     1.620407788318
+ -0.000000000000   -0.000000000000   -0.000000000000   |     1.586839181156
+ -0.000000000000   -0.000000000000   -0.000000000000   |     1.620427599249
+  0.000000000000    0.000000000000    0.000000000000   |     1.586818682122
+  0.000000000000    0.000000000000    0.000000000000   |     1.620427598097
+  0.000000000000   -0.000000000000   -0.000000000000   |     1.586818682093
+ -0.000000000000   -0.000000000000    0.000000000000   |     0.468678979096
+  0.000000000000   -0.000000000000    0.000000000000   |     0.432130842599
+  0.000000000000   -0.000000000000   -0.000000000000   |     0.409207412688
+ -0.000000000000    0.000000000000   -0.000000000000   |     0.395049743419
+  0.000000000000    0.000000000000   -0.000000000000   |     0.409207412683
+  0.000000000000    0.000000000000   -0.000000000000   |     0.395049743416
+  0.000000000000   -0.000000000000    0.000000000000   |     0.468698895995
+  0.000000000000    0.000000000000    0.000000000000   |     0.432133292439
+  0.000000000000   -0.000000000000    0.000000000000   |     0.409207115756
+ -0.000000000000    0.000000000000    0.000000000000   |     0.395060760221
+----------------------------------------------------------------------------------------------------
+Omega_tot =  16.77913513 | Omega_0 =   1.49039825 | Omega_1 =   1.45260849 | Omega_2 =   1.62040704 | Omega_3 =   1.58683842 | Omega_4 =   1.62041830 | Omega_5 =   1.58681112 | Omega_6 =   1.62041830 | Omega_7 =   1.58681112 | Omega_8 =   0.46867898 | Omega_9 =   0.43213084 | Omega_10 =   0.40920741 | Omega_11 =   0.39504974 | Omega_12 =   0.40920741 | Omega_13 =   0.39504974 | Omega_14 =   0.46869886 | Omega_15 =   0.43213327 | Omega_16 =   0.40920709 | Omega_17 =   0.39506075
+####################################################################################################
+<span class="ansi-green-intense-fg ansi-bold">include_TR = None</span>
+kwargs for win are {}
+kwargs for eig are {&#39;read_npz&#39;: True, &#39;write_npz&#39;: True, &#39;selected_bands&#39;: None}
+calling w90 file with wannier-berri/tests/data/Fe-444-sitesym/Fe, eig, tags=[&#39;data&#39;], read_npz=True, write_npz=True, kwargs={}
+kwargs for mmn are {&#39;read_npz&#39;: True, &#39;write_npz&#39;: True, &#39;selected_bands&#39;: None}
+calling w90 file with wannier-berri/tests/data/Fe-444-sitesym/Fe, mmn, tags=[&#39;data&#39;, &#39;neighbours&#39;, &#39;G&#39;], read_npz=True, write_npz=True, kwargs={&#39;npar&#39;: 32}
+kwargs for amn are {&#39;read_npz&#39;: True, &#39;write_npz&#39;: True, &#39;selected_bands&#39;: None}
+calling w90 file with wannier-berri/tests/data/Fe-444-sitesym/Fe, amn, tags=[&#39;data&#39;], read_npz=True, write_npz=True, kwargs={&#39;npar&#39;: 32}
+apply_window amn, selected_bands=None
+creating CheckPoint_bare
+kwargs for chk are {&#39;selected_bands&#39;: None}
+<span class="ansi-blue-intense-fg ansi-bold">creating dmn</span>
+<span class="ansi-blue-intense-fg ansi-bold">wannierising</span>
+wannier centers from spread functional:
+ [[-2.55930596e-09  1.88654029e-09  9.83803996e-10]
+ [-2.70062794e-09  3.78092758e-09 -2.01906552e-09]
+ [-2.53239036e-09 -5.72558135e-10 -4.27339060e-09]
+ [-6.08781988e-10 -1.81320673e-09  8.14955713e-09]
+ [ 1.17536789e-08 -3.43202647e-10 -2.66440833e-09]
+ [ 1.13900240e-08  2.60775694e-09  1.33526521e-09]
+ [ 3.02748920e-09 -5.19660187e-09  2.23961503e-09]
+ [ 1.79789118e-10 -1.63824116e-08 -1.13769677e-09]
+ [ 6.89905597e-12 -2.88377309e-11 -4.18312961e-11]
+ [ 5.29697396e-11 -1.12643889e-10  2.11230347e-10]
+ [-1.38774739e-12  3.01304969e-11 -5.80530467e-11]
+ [-1.67749498e-11  8.65540982e-11  3.56085393e-11]
+ [-5.69460107e-11 -1.07885918e-11  2.10614883e-11]
+ [-5.12250358e-11 -1.32603421e-11 -1.67722359e-11]
+ [ 1.71410198e-10 -3.47775597e-11 -8.03428221e-12]
+ [ 1.03931688e-10 -2.30469254e-10 -4.33889822e-12]
+ [ 5.72015630e-11  4.77988950e-11  3.05221246e-11]
+ [ 1.97462667e-11  4.95785749e-12 -3.57325875e-11]]
+####################################################################################################
+Initial  State
+----------------------------------------------------------------------------------------------------
+wannier centers and spreads
+----------------------------------------------------------------------------------------------------
+ -0.000000000000    0.000000000000    0.000000000000   |     1.822712919325
+ -0.000000000000    0.000000000000   -0.000000000000   |     1.775270440985
+ -0.000000000000   -0.000000000000   -0.000000000000   |     1.784731786598
+ -0.000000000000   -0.000000000000    0.000000000000   |     1.748633067856
+  0.000000000000   -0.000000000000   -0.000000000000   |     1.784745745525
+  0.000000000000    0.000000000000    0.000000000000   |     1.748631180695
+  0.000000000000   -0.000000000000    0.000000000000   |     1.784745738457
+  0.000000000000   -0.000000000000   -0.000000000000   |     1.748631180938
+  0.000000000000   -0.000000000000   -0.000000000000   |     0.515479519278
+  0.000000000000   -0.000000000000    0.000000000000   |     0.486069142560
+ -0.000000000000    0.000000000000   -0.000000000000   |     0.489469186857
+ -0.000000000000    0.000000000000    0.000000000000   |     0.478489321990
+ -0.000000000000   -0.000000000000    0.000000000000   |     0.489469186868
+ -0.000000000000   -0.000000000000   -0.000000000000   |     0.478489321995
+  0.000000000000   -0.000000000000   -0.000000000000   |     0.515495586207
+  0.000000000000   -0.000000000000   -0.000000000000   |     0.486068196617
+  0.000000000000    0.000000000000    0.000000000000   |     0.489469975361
+  0.000000000000    0.000000000000   -0.000000000000   |     0.478496224026
+----------------------------------------------------------------------------------------------------
+Omega_tot =  19.10495554 | Omega_0 =   1.82270805 | Omega_1 =   1.77526605 | Omega_2 =   1.78471858 | Omega_3 =   1.74862082 | Omega_4 =   1.78471773 | Omega_5 =   1.74860595 | Omega_6 =   1.78471772 | Omega_7 =   1.74860595 | Omega_8 =   0.51547950 | Omega_9 =   0.48606912 | Omega_10 =   0.48946909 | Omega_11 =   0.47848924 | Omega_12 =   0.48946909 | Omega_13 =   0.47848924 | Omega_14 =   0.51549554 | Omega_15 =   0.48606813 | Omega_16 =   0.48946972 | Omega_17 =   0.47849602
+####################################################################################################
+####################################################################################################
+iteration    0 Omega=   17.5173388915  delta=--, max(3)=--, slope=--
+----------------------------------------------------------------------------------------------------
+wannier centers and spreads
+----------------------------------------------------------------------------------------------------
+ -0.000000000000    0.000000000000    0.000000000000   |     1.618940004551
+ -0.000000000000    0.000000000000   -0.000000000000   |     1.576706198553
+ -0.000000000000   -0.000000000000   -0.000000000000   |     1.664787244483
+  0.000000000000   -0.000000000000    0.000000000000   |     1.631420515607
+  0.000000000000   -0.000000000000   -0.000000000000   |     1.664802640259
+  0.000000000000    0.000000000000    0.000000000000   |     1.631416023813
+  0.000000000000   -0.000000000000    0.000000000000   |     1.664802635484
+  0.000000000000   -0.000000000000   -0.000000000000   |     1.631416024775
+ -0.000000000000    0.000000000000    0.000000000000   |     0.476781310050
+  0.000000000000   -0.000000000000    0.000000000000   |     0.442135090033
+  0.000000000000    0.000000000000   -0.000000000000   |     0.438666007177
+ -0.000000000000    0.000000000000    0.000000000000   |     0.426419592270
+ -0.000000000000   -0.000000000000    0.000000000000   |     0.438666007170
+ -0.000000000000   -0.000000000000   -0.000000000000   |     0.426419592262
+  0.000000000000   -0.000000000000   -0.000000000000   |     0.476800078457
+  0.000000000000   -0.000000000000   -0.000000000000   |     0.442136692380
+  0.000000000000    0.000000000000    0.000000000000   |     0.438666540708
+  0.000000000000    0.000000000000   -0.000000000000   |     0.426428120208
+----------------------------------------------------------------------------------------------------
+Omega_tot =  17.51733889 | Omega_0 =   1.61893856 | Omega_1 =   1.57670483 | Omega_2 =   1.66478407 | Omega_3 =   1.63141746 | Omega_4 =   1.66478608 | Omega_5 =   1.63140158 | Omega_6 =   1.66478607 | Omega_7 =   1.63140158 | Omega_8 =   0.47678131 | Omega_9 =   0.44213509 | Omega_10 =   0.43866597 | Omega_11 =   0.42641956 | Omega_12 =   0.43866597 | Omega_13 =   0.42641956 | Omega_14 =   0.47680005 | Omega_15 =   0.44213667 | Omega_16 =   0.43866643 | Omega_17 =   0.42642804
+####################################################################################################
+####################################################################################################
+iteration   10 Omega=   16.7791177510  delta=-7.38221140e-01, max(3)=--, slope=--
+----------------------------------------------------------------------------------------------------
+wannier centers and spreads
+----------------------------------------------------------------------------------------------------
+ -0.000000000000    0.000000000000    0.000000000000   |     1.490748600488
+ -0.000000000000    0.000000000000   -0.000000000000   |     1.452912148817
+ -0.000000000000   -0.000000000000   -0.000000000000   |     1.620430662278
+ -0.000000000000   -0.000000000000    0.000000000000   |     1.586854382533
+  0.000000000000   -0.000000000000   -0.000000000000   |     1.620449501004
+  0.000000000000    0.000000000000    0.000000000000   |     1.586835486127
+  0.000000000000   -0.000000000000    0.000000000000   |     1.620449496991
+  0.000000000000   -0.000000000000   -0.000000000000   |     1.586835487045
+ -0.000000000000    0.000000000000    0.000000000000   |     0.468675297271
+ -0.000000000000    0.000000000000   -0.000000000000   |     0.432126656046
+  0.000000000000   -0.000000000000    0.000000000000   |     0.409065020691
+  0.000000000000    0.000000000000   -0.000000000000   |     0.394935083566
+ -0.000000000000    0.000000000000   -0.000000000000   |     0.409065020641
+ -0.000000000000    0.000000000000    0.000000000000   |     0.394935083570
+ -0.000000000000    0.000000000000    0.000000000000   |     0.468695181623
+ -0.000000000000    0.000000000000    0.000000000000   |     0.432129143800
+ -0.000000000000    0.000000000000    0.000000000000   |     0.409064750278
+ -0.000000000000   -0.000000000000   -0.000000000000   |     0.394946059034
+----------------------------------------------------------------------------------------------------
+Omega_tot =  16.77911775 | Omega_0 =   1.49074839 | Omega_1 =   1.45291196 | Omega_2 =   1.62042991 | Omega_3 =   1.58685362 | Omega_4 =   1.62044033 | Omega_5 =   1.58682801 | Omega_6 =   1.62044033 | Omega_7 =   1.58682801 | Omega_8 =   0.46867530 | Omega_9 =   0.43212666 | Omega_10 =   0.40906502 | Omega_11 =   0.39493508 | Omega_12 =   0.40906502 | Omega_13 =   0.39493508 | Omega_14 =   0.46869515 | Omega_15 =   0.43212913 | Omega_16 =   0.40906473 | Omega_17 =   0.39494604
+####################################################################################################
+####################################################################################################
+iteration   20 Omega=   16.7791351287  delta= 1.73776531e-05, max(3)=--, slope=--
+----------------------------------------------------------------------------------------------------
+wannier centers and spreads
+----------------------------------------------------------------------------------------------------
+ -0.000001000000    0.000000000000    0.000000000000   |     1.490398467394
+ -0.000001000000    0.000001000000   -0.000000000000   |     1.452608683144
+ -0.000000000000    0.000000000000   -0.000000000000   |     1.620407788388
+ -0.000000000000    0.000000000000    0.000000000000   |     1.586839183315
+  0.000001000000    0.000000000000    0.000000000000   |     1.620427600472
+  0.000001000000    0.000000000000   -0.000000000000   |     1.586818680329
+ -0.000000000000   -0.000000000000    0.000000000000   |     1.620427596398
+ -0.000000000000   -0.000001000000   -0.000000000000   |     1.586818681235
+ -0.000000000000    0.000000000000    0.000000000000   |     0.468678979121
+ -0.000000000000    0.000000000000   -0.000000000000   |     0.432130842639
+  0.000000000000    0.000000000000    0.000000000000   |     0.409207412764
+  0.000000000000    0.000000000000   -0.000000000000   |     0.395049743448
+ -0.000000000000    0.000000000000   -0.000000000000   |     0.409207412716
+ -0.000000000000    0.000000000000    0.000000000000   |     0.395049743452
+ -0.000000000000    0.000000000000    0.000000000000   |     0.468698895960
+ -0.000000000000    0.000000000000   -0.000000000000   |     0.432133292420
+ -0.000000000000    0.000000000000    0.000000000000   |     0.409207115671
+ -0.000000000000   -0.000000000000   -0.000000000000   |     0.395060760191
+----------------------------------------------------------------------------------------------------
+Omega_tot =  16.77913513 | Omega_0 =   1.49039825 | Omega_1 =   1.45260849 | Omega_2 =   1.62040704 | Omega_3 =   1.58683843 | Omega_4 =   1.62041830 | Omega_5 =   1.58681112 | Omega_6 =   1.62041829 | Omega_7 =   1.58681112 | Omega_8 =   0.46867898 | Omega_9 =   0.43213084 | Omega_10 =   0.40920741 | Omega_11 =   0.39504974 | Omega_12 =   0.40920741 | Omega_13 =   0.39504974 | Omega_14 =   0.46869886 | Omega_15 =   0.43213327 | Omega_16 =   0.40920709 | Omega_17 =   0.39506075
+####################################################################################################
+wannier centers from spread functional:
+ [[-6.92566396e-07  2.78540036e-07  2.51009590e-07]
+ [-5.92587254e-07  8.20056853e-07 -3.89037910e-07]
+ [-8.15090334e-09  1.95785802e-10 -3.26237188e-07]
+ [-3.88265469e-09  1.55827941e-09  4.97915639e-07]
+ [ 8.97115792e-07  1.26843098e-10  3.92215692e-10]
+ [ 7.57751341e-07  6.22422072e-09 -5.26041814e-10]
+ [-1.23682361e-09 -3.56899522e-07  4.27800511e-09]
+ [-2.08533456e-09 -1.04840747e-06 -2.60640363e-09]
+ [-2.29840211e-08  9.06608013e-09  3.61468426e-08]
+ [-1.80090553e-08  2.48385226e-08 -5.07262665e-08]
+ [ 9.70220612e-10  3.58404623e-11  8.20402213e-11]
+ [ 2.35121099e-10  1.75509131e-10 -6.61930192e-11]
+ [-1.83735373e-10  1.28749018e-10 -5.41091127e-10]
+ [-1.22650370e-10  2.71815118e-10  2.19587552e-10]
+ [-7.26623106e-08  2.86361227e-08  2.40714767e-11]
+ [-5.68485762e-08  7.85484487e-08 -1.84875240e-11]
+ [-3.15353628e-10  2.37107453e-10  7.42292867e-11]
+ [-5.64129154e-11 -5.66286161e-10 -7.60538541e-11]]
+####################################################################################################
+Final State
+----------------------------------------------------------------------------------------------------
+wannier centers and spreads
+----------------------------------------------------------------------------------------------------
+ -0.000001000000    0.000000000000    0.000000000000   |     1.490398467394
+ -0.000001000000    0.000001000000   -0.000000000000   |     1.452608683144
+ -0.000000000000    0.000000000000   -0.000000000000   |     1.620407788388
+ -0.000000000000    0.000000000000    0.000000000000   |     1.586839183315
+  0.000001000000    0.000000000000    0.000000000000   |     1.620427600472
+  0.000001000000    0.000000000000   -0.000000000000   |     1.586818680329
+ -0.000000000000   -0.000000000000    0.000000000000   |     1.620427596398
+ -0.000000000000   -0.000001000000   -0.000000000000   |     1.586818681235
+ -0.000000000000    0.000000000000    0.000000000000   |     0.468678979121
+ -0.000000000000    0.000000000000   -0.000000000000   |     0.432130842639
+  0.000000000000    0.000000000000    0.000000000000   |     0.409207412764
+  0.000000000000    0.000000000000   -0.000000000000   |     0.395049743448
+ -0.000000000000    0.000000000000   -0.000000000000   |     0.409207412716
+ -0.000000000000    0.000000000000    0.000000000000   |     0.395049743452
+ -0.000000000000    0.000000000000    0.000000000000   |     0.468698895960
+ -0.000000000000    0.000000000000   -0.000000000000   |     0.432133292420
+ -0.000000000000    0.000000000000    0.000000000000   |     0.409207115671
+ -0.000000000000   -0.000000000000   -0.000000000000   |     0.395060760191
+----------------------------------------------------------------------------------------------------
+Omega_tot =  16.77913513 | Omega_0 =   1.49039825 | Omega_1 =   1.45260849 | Omega_2 =   1.62040704 | Omega_3 =   1.58683843 | Omega_4 =   1.62041830 | Omega_5 =   1.58681112 | Omega_6 =   1.62041829 | Omega_7 =   1.58681112 | Omega_8 =   0.46867898 | Omega_9 =   0.43213084 | Omega_10 =   0.40920741 | Omega_11 =   0.39504974 | Omega_12 =   0.40920741 | Omega_13 =   0.39504974 | Omega_14 =   0.46869886 | Omega_15 =   0.43213327 | Omega_16 =   0.40920709 | Omega_17 =   0.39506075
+####################################################################################################
+</pre></div></div>
+</div>
+</section>
+<section id="3.-Create-System_w90-objects">
+<h2>3. Create System_w90 objects<a class="headerlink" href="#3.-Create-System_w90-objects" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span>systems = {}
+for includeTR in include_TR_list:
+    cprint (f&quot;include_TR = {includeTR}&quot;, &quot;green&quot;, attrs=[&quot;bold&quot;])
+    systems[includeTR]=wberri.system.System_w90(w90data= w90_data_list[includeTR], berry=True, transl_inv_JM=True, transl_inv_MV=False, wcc_phase_fin_diff=False)
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-intense-fg ansi-bold">include_TR = True</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/home/stepan/github/WannierBerri-tutorial/.conda/lib/python3.11/site-packages/wannierberri/system/system_w90.py:145: UserWarning: converting convention II to convention I is not recommended.Better use &#39;wcc_phase_fin_dif=True&#39; or `transl_inv_JM=True`
+  warnings.warn(&#34;converting convention II to convention I is not recommended.&#34;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+expjphase1 (18, 18, 12)
+irvec_new_all shape (89,)
+using ws_dist for Ham
+using ws_dist for AA
+Real-space lattice:
+ [[ 1.4349963  1.4349963  1.4349963]
+ [-1.4349963  1.4349963  1.4349963]
+ [-1.4349963 -1.4349963  1.4349963]]
+Number of wannier functions: 18
+Number of R points: 89
+Recommended size of FFT grid [4 4 4]
+<span class="ansi-green-intense-fg ansi-bold">include_TR = False</span>
+expjphase1 (18, 18, 12)
+irvec_new_all shape (89,)
+using ws_dist for Ham
+using ws_dist for AA
+Real-space lattice:
+ [[ 1.4349963  1.4349963  1.4349963]
+ [-1.4349963  1.4349963  1.4349963]
+ [-1.4349963 -1.4349963  1.4349963]]
+Number of wannier functions: 18
+Number of R points: 89
+Recommended size of FFT grid [4 4 4]
+<span class="ansi-green-intense-fg ansi-bold">include_TR = None</span>
+expjphase1 (18, 18, 12)
+irvec_new_all shape (89,)
+using ws_dist for Ham
+using ws_dist for AA
+Real-space lattice:
+ [[ 1.4349963  1.4349963  1.4349963]
+ [-1.4349963  1.4349963  1.4349963]
+ [-1.4349963 -1.4349963  1.4349963]]
+Number of wannier functions: 18
+Number of R points: 89
+Recommended size of FFT grid [4 4 4]
+</pre></div></div>
+</div>
+</section>
+<section id="4.-Bands-along-path">
+<h2>4. Bands along path<a class="headerlink" href="#4.-Bands-along-path" title="Link to this heading"></a></h2>
+<section id="4.1-calculate-bands">
+<h3>4.1 calculate bands<a class="headerlink" href="#4.1-calculate-bands" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>results_path = {}
+
+for includeTR in include_TR_list:
+    cprint (f&quot;include_TR = {includeTR}&quot;, &quot;green&quot;, attrs=[&quot;bold&quot;])
+    system = systems[includeTR]
+    # system.set_symmetry(spacegroup=bandstructure.spacegroup)
+    tabulators = { &quot;Energy&quot;: wberri.calculators.tabulate.Energy(),
+                }
+
+
+    tab_all_path = wberri.calculators.TabulatorAll(
+                        tabulators,
+                        ibands=np.arange(0,18),
+                        mode=&quot;path&quot;
+                            )
+
+    # all kpoints given in reduced coordinates
+    path=wberri.Path(system,
+                    k_nodes=[
+                        [0.0000, 0.0000, 0.0000 ],   #  G
+                        [0.500 ,-0.5000, -0.5000],   #  H
+                        [0.7500, 0.2500, -0.2500],   #  P
+                        [0.5000, 0.0000, -0.5000],   #  N
+                        [0.0000, 0.0000, 0.000  ]
+                            ] , #  G
+                    labels=[&quot;G&quot;,&quot;H&quot;,&quot;P&quot;,&quot;N&quot;,&quot;G&quot;],
+                    length=200 )   # length [ Ang] ~= 2*pi/dk
+
+    results_path[includeTR]=wberri.run(system,
+                    parallel=parallel,
+                    grid=path,
+                    calculators={&quot;tabulate&quot; : tab_all_path},
+                    print_Kpoints=False)
+<br/><br/></pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-intense-fg ansi-bold">include_TR = True</span>
+<span class="ansi-red-intense-fg ansi-bold">Starting run()</span>
+<span class="ansi-cyan-intense-fg ansi-bold">Using the follwing calculators :
+############################################################
+</span>
+<span class="ansi-magenta-intense-fg ansi-bold"> &#39;tabulate&#39; </span> : <span class="ansi-yellow-intense-fg ansi-bold"> &lt;wannierberri.calculators.tabulate.TabulatorAll object at 0x7f9f5bf6e290&gt; </span> :
+    TabulatorAll - a pack of all k-resolved calculators (Tabulators)
+
+ Includes the following tabulators :
+--------------------------------------------------
+ &#34;Energy&#34; : &lt;wannierberri.calculators.tabulate.Energy object at 0x7f9f5bf6c890&gt; : calculator not described
+
+--------------------------------------------------
+
+<span class="ansi-cyan-intense-fg ansi-bold">############################################################</span>
+Calculation along a path - checking calculators for compatibility
+tabulate &lt;wannierberri.calculators.tabulate.TabulatorAll object at 0x7f9f5bf6e290&gt;
+All calculators are compatible
+Symmetrization switched off for Path
+Grid is regular
+The set of k points is a Path() with 215 points and labels {0: &#39;G&#39;, 70: &#39;H&#39;, 130: &#39;P&#39;, 165: &#39;N&#39;, 214: &#39;G&#39;}
+generating K_list
+Done
+Done, sum of weights:215.0
+processing 215 K points : using  32 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/home/stepan/github/WannierBerri-tutorial/.conda/lib/python3.11/site-packages/wannierberri/grid/path.py:163: UserWarning: symmetry is not used for a tabulation along path
+  warnings.warn(&#34;symmetry is not used for a tabulation along path&#34;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+time for processing    215 K-points on  32 processes:     1.6117 ; per K-point          0.0075 ; proc-sec per K-point          0.2399
+time1 =  0.004637241363525391
+Totally processed 215 K-points
+run() finished
+<span class="ansi-green-intense-fg ansi-bold">include_TR = False</span>
+<span class="ansi-red-intense-fg ansi-bold">Starting run()</span>
+<span class="ansi-cyan-intense-fg ansi-bold">Using the follwing calculators :
+############################################################
+</span>
+<span class="ansi-magenta-intense-fg ansi-bold"> &#39;tabulate&#39; </span> : <span class="ansi-yellow-intense-fg ansi-bold"> &lt;wannierberri.calculators.tabulate.TabulatorAll object at 0x7f9f5605f090&gt; </span> :
+    TabulatorAll - a pack of all k-resolved calculators (Tabulators)
+
+ Includes the following tabulators :
+--------------------------------------------------
+ &#34;Energy&#34; : &lt;wannierberri.calculators.tabulate.Energy object at 0x7f9fb01bb490&gt; : calculator not described
+
+--------------------------------------------------
+
+<span class="ansi-cyan-intense-fg ansi-bold">############################################################</span>
+Calculation along a path - checking calculators for compatibility
+tabulate &lt;wannierberri.calculators.tabulate.TabulatorAll object at 0x7f9f5605f090&gt;
+All calculators are compatible
+Symmetrization switched off for Path
+Grid is regular
+The set of k points is a Path() with 215 points and labels {0: &#39;G&#39;, 70: &#39;H&#39;, 130: &#39;P&#39;, 165: &#39;N&#39;, 214: &#39;G&#39;}
+generating K_list
+Done
+Done, sum of weights:215.0
+processing 215 K points : using  32 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)
+time for processing    215 K-points on  32 processes:     0.1798 ; per K-point          0.0008 ; proc-sec per K-point          0.0268
+time1 =  0.0032613277435302734
+Totally processed 215 K-points
+run() finished
+<span class="ansi-green-intense-fg ansi-bold">include_TR = None</span>
+<span class="ansi-red-intense-fg ansi-bold">Starting run()</span>
+<span class="ansi-cyan-intense-fg ansi-bold">Using the follwing calculators :
+############################################################
+</span>
+<span class="ansi-magenta-intense-fg ansi-bold"> &#39;tabulate&#39; </span> : <span class="ansi-yellow-intense-fg ansi-bold"> &lt;wannierberri.calculators.tabulate.TabulatorAll object at 0x7f9f4c271590&gt; </span> :
+    TabulatorAll - a pack of all k-resolved calculators (Tabulators)
+
+ Includes the following tabulators :
+--------------------------------------------------
+ &#34;Energy&#34; : &lt;wannierberri.calculators.tabulate.Energy object at 0x7fa020e43010&gt; : calculator not described
+
+--------------------------------------------------
+
+<span class="ansi-cyan-intense-fg ansi-bold">############################################################</span>
+Calculation along a path - checking calculators for compatibility
+tabulate &lt;wannierberri.calculators.tabulate.TabulatorAll object at 0x7f9f4c271590&gt;
+All calculators are compatible
+Symmetrization switched off for Path
+Grid is regular
+The set of k points is a Path() with 215 points and labels {0: &#39;G&#39;, 70: &#39;H&#39;, 130: &#39;P&#39;, 165: &#39;N&#39;, 214: &#39;G&#39;}
+generating K_list
+Done
+Done, sum of weights:215.0
+processing 215 K points : using  32 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)
+time for processing    215 K-points on  32 processes:     0.0969 ; per K-point          0.0005 ; proc-sec per K-point          0.0144
+time1 =  0.003574848175048828
+Totally processed 215 K-points
+run() finished
+</pre></div></div>
+</div>
+</section>
+<section id="4.2-plot-bands">
+<h3>4.2 plot bands<a class="headerlink" href="#4.2-plot-bands" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span># plot the bands and compare with pw
+EF = 12.6
+
+A = np.loadtxt(path_data / &quot;Fe_bands_pw.dat&quot;)
+bohr_ang = scipy.constants.physical_constants[&#39;Bohr radius&#39;][0] / 1e-10
+alatt = 5.4235* bohr_ang
+A[:,0]*= 2*np.pi/alatt
+A[:,1] = A[:,1] - EF
+plt.scatter(A[:,0], A[:,1], c=&quot;black&quot;, s=5)
+
+colors = [&quot;blue&quot;, &quot;red&quot;,&quot;black&quot;]
+for includeTR in include_TR_list:
+    cprint (f&quot;include_TR = {includeTR}&quot;, &quot;green&quot;, attrs=[&quot;bold&quot;])
+
+    path_result = results_path[includeTR].results[&quot;tabulate&quot;]
+
+    path_result.plot_path_fat(path,
+                quantity=None,
+                # save_file=&quot;Fe_bands.pdf&quot;,
+                Eshift=EF,
+                Emin=-10, Emax=50,
+                iband=None,
+                mode=&quot;fatband&quot;,
+                fatfactor=20,
+                cut_k=False,
+                linecolor=colors.pop(),
+                close_fig=False,
+                show_fig=False,
+                label=f&quot;TR={includeTR}&quot;
+                )
+
+plt.ylim(-10, 20)
+plt.hlines(froz_max-EF, 0, A[-1,0], linestyles=&quot;dashed&quot;)
+plt.legend()
+plt.savefig(&quot;Fe_bands.pdf&quot;)
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-intense-fg ansi-bold">include_TR = True</span>
+<span class="ansi-green-intense-fg ansi-bold">include_TR = False</span>
+<span class="ansi-green-intense-fg ansi-bold">include_TR = None</span>
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/tutorials_6_wannierisation_wannierise_9_1.png" src="../../_images/tutorials_6_wannierisation_wannierise_9_1.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="5.-AHC-and-Ohmic-conductivity">
+<h2>5. AHC and Ohmic conductivity<a class="headerlink" href="#5.-AHC-and-Ohmic-conductivity" title="Link to this heading"></a></h2>
+<section id="5.1-calculate">
+<h3>5.1 calculate<a class="headerlink" href="#5.1-calculate" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>results_grid = {}
+efermi = np.linspace(12.4,12.8,1001)
+param = dict(Efermi=efermi)
+calculators_grid = {
+     &quot;CDOS&quot;: wberri.calculators.static.CumDOS(**param),
+                &quot;ohmic&quot;: wberri.calculators.static.Ohmic_FermiSea(**param),
+                &quot;ahc_internal&quot;: wberri.calculators.static.AHC(kwargs_formula={&quot;external_terms&quot;:False}, **param),
+            &quot;ahc_external&quot;: wberri.calculators.static.AHC(kwargs_formula={&quot;internal_terms&quot;:False}, **param ),
+}
+
+for includeTR in include_TR_list:
+    cprint (f&quot;include_TR = {includeTR}&quot;, &quot;green&quot;, attrs=[&quot;bold&quot;])
+    system = systems[includeTR]
+    grid =  wberri.Grid(system, NKFFT=6, NK=48)
+
+    results_grid[includeTR] = wberri.run(system, grid, calculators_grid,
+                                          fout_name=&quot;Fe_grid&quot;,
+                                          suffix = f&quot;TR={includeTR}&quot;,
+                                          adpt_num_iter=0,
+                                          symmetrize=False,  # we do not symmetrize here so that we can chaeck how symmetric are the WFs
+                                          use_irred_kpt=False,
+                                          print_progress_step=1,
+                                          parallel=parallel,
+                                          print_Kpoints=False,
+                                          )
+
+
+
+
+# plot the bands to compare with pw
+<br/><br/><br/><br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-intense-fg ansi-bold">include_TR = True</span>
+<span class="ansi-red-intense-fg ansi-bold">Starting run()</span>
+<span class="ansi-cyan-intense-fg ansi-bold">Using the follwing calculators :
+############################################################
+</span>
+<span class="ansi-magenta-intense-fg ansi-bold"> &#39;CDOS&#39; </span> : <span class="ansi-yellow-intense-fg ansi-bold"> &lt;wannierberri.calculators.static.CumDOS object at 0x7f9f1420a210&gt; </span> : Cumulative density of states
+<span class="ansi-magenta-intense-fg ansi-bold"> &#39;ohmic&#39; </span> : <span class="ansi-yellow-intense-fg ansi-bold"> &lt;wannierberri.calculators.static.Ohmic_FermiSea object at 0x7f9fb01edb50&gt; </span> : Ohmic conductivity (:math:`S/m`)
+
+        | With Fermi sea integral. Eq(31) in `Ref &lt;https://www.nature.com/articles/s41524-021-00498-5&gt;`__
+        | Output: :math:`\sigma_{\alpha\beta} = e^2/\hbar \tau \int [dk] \partial_\beta v_\alpha f`for \tau=1fs| Instruction: :math:`j_\alpha = \sigma_{\alpha\beta} E_\beta`
+<span class="ansi-magenta-intense-fg ansi-bold"> &#39;ahc_internal&#39; </span> : <span class="ansi-yellow-intense-fg ansi-bold"> &lt;wannierberri.calculators.static.AHC object at 0x7f9f4c45b610&gt; </span> : Anomalous Hall conductivity (:math:`s^3 \cdot A^2 / (kg \cdot m^3) = S/m`)
+
+        | With Fermi sea integral Eq(11) in `Ref &lt;https://www.nature.com/articles/s41524-021-00498-5&gt;`__
+        | Output: :math:`O = -e^2/\hbar \int [dk] \Omega f`
+        | Instruction: :math:`j_\alpha = \sigma_{\alpha\beta} E_\beta = \epsilon_{\alpha\beta\delta} O_\delta E_\beta`
+<span class="ansi-magenta-intense-fg ansi-bold"> &#39;ahc_external&#39; </span> : <span class="ansi-yellow-intense-fg ansi-bold"> &lt;wannierberri.calculators.static.AHC object at 0x7f9f142c0990&gt; </span> : Anomalous Hall conductivity (:math:`s^3 \cdot A^2 / (kg \cdot m^3) = S/m`)
+
+        | With Fermi sea integral Eq(11) in `Ref &lt;https://www.nature.com/articles/s41524-021-00498-5&gt;`__
+        | Output: :math:`O = -e^2/\hbar \int [dk] \Omega f`
+        | Instruction: :math:`j_\alpha = \sigma_{\alpha\beta} E_\beta = \epsilon_{\alpha\beta\delta} O_\delta E_\beta`
+<span class="ansi-cyan-intense-fg ansi-bold">############################################################</span>
+Calculation on  grid - checking calculators for compatibility
+CDOS &lt;wannierberri.calculators.static.CumDOS object at 0x7f9f1420a210&gt;
+ohmic &lt;wannierberri.calculators.static.Ohmic_FermiSea object at 0x7f9fb01edb50&gt;
+ahc_internal &lt;wannierberri.calculators.static.AHC object at 0x7f9f4c45b610&gt;
+ahc_external &lt;wannierberri.calculators.static.AHC object at 0x7f9f142c0990&gt;
+All calculators are compatible
+Grid is regular
+The set of k points is a Grid() with NKdiv=[8 8 8], NKFFT=[6 6 6], NKtot=[48 48 48]
+generating K_list
+Done in 0.001710653305053711 s
+K_list contains 512 Irreducible points(100.0%) out of initial 8x8x8=512 grid
+Done, sum of weights:1.0
+processing 512 K points : using  32 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)
+time for processing    512 K-points on  32 processes:     9.5603 ; per K-point          0.0187 ; proc-sec per K-point          0.5975
+time1 =  0.04990577697753906
+Totally processed 512 K-points
+run() finished
+<span class="ansi-green-intense-fg ansi-bold">include_TR = False</span>
+<span class="ansi-red-intense-fg ansi-bold">Starting run()</span>
+<span class="ansi-cyan-intense-fg ansi-bold">Using the follwing calculators :
+############################################################
+</span>
+<span class="ansi-magenta-intense-fg ansi-bold"> &#39;CDOS&#39; </span> : <span class="ansi-yellow-intense-fg ansi-bold"> &lt;wannierberri.calculators.static.CumDOS object at 0x7f9f1420a210&gt; </span> : Cumulative density of states
+<span class="ansi-magenta-intense-fg ansi-bold"> &#39;ohmic&#39; </span> : <span class="ansi-yellow-intense-fg ansi-bold"> &lt;wannierberri.calculators.static.Ohmic_FermiSea object at 0x7f9fb01edb50&gt; </span> : Ohmic conductivity (:math:`S/m`)
+
+        | With Fermi sea integral. Eq(31) in `Ref &lt;https://www.nature.com/articles/s41524-021-00498-5&gt;`__
+        | Output: :math:`\sigma_{\alpha\beta} = e^2/\hbar \tau \int [dk] \partial_\beta v_\alpha f`for \tau=1fs| Instruction: :math:`j_\alpha = \sigma_{\alpha\beta} E_\beta`
+<span class="ansi-magenta-intense-fg ansi-bold"> &#39;ahc_internal&#39; </span> : <span class="ansi-yellow-intense-fg ansi-bold"> &lt;wannierberri.calculators.static.AHC object at 0x7f9f4c45b610&gt; </span> : Anomalous Hall conductivity (:math:`s^3 \cdot A^2 / (kg \cdot m^3) = S/m`)
+
+        | With Fermi sea integral Eq(11) in `Ref &lt;https://www.nature.com/articles/s41524-021-00498-5&gt;`__
+        | Output: :math:`O = -e^2/\hbar \int [dk] \Omega f`
+        | Instruction: :math:`j_\alpha = \sigma_{\alpha\beta} E_\beta = \epsilon_{\alpha\beta\delta} O_\delta E_\beta`
+<span class="ansi-magenta-intense-fg ansi-bold"> &#39;ahc_external&#39; </span> : <span class="ansi-yellow-intense-fg ansi-bold"> &lt;wannierberri.calculators.static.AHC object at 0x7f9f142c0990&gt; </span> : Anomalous Hall conductivity (:math:`s^3 \cdot A^2 / (kg \cdot m^3) = S/m`)
+
+        | With Fermi sea integral Eq(11) in `Ref &lt;https://www.nature.com/articles/s41524-021-00498-5&gt;`__
+        | Output: :math:`O = -e^2/\hbar \int [dk] \Omega f`
+        | Instruction: :math:`j_\alpha = \sigma_{\alpha\beta} E_\beta = \epsilon_{\alpha\beta\delta} O_\delta E_\beta`
+<span class="ansi-cyan-intense-fg ansi-bold">############################################################</span>
+Calculation on  grid - checking calculators for compatibility
+CDOS &lt;wannierberri.calculators.static.CumDOS object at 0x7f9f1420a210&gt;
+ohmic &lt;wannierberri.calculators.static.Ohmic_FermiSea object at 0x7f9fb01edb50&gt;
+ahc_internal &lt;wannierberri.calculators.static.AHC object at 0x7f9f4c45b610&gt;
+ahc_external &lt;wannierberri.calculators.static.AHC object at 0x7f9f142c0990&gt;
+All calculators are compatible
+Grid is regular
+The set of k points is a Grid() with NKdiv=[8 8 8], NKFFT=[6 6 6], NKtot=[48 48 48]
+generating K_list
+Done in 0.0023353099822998047 s
+K_list contains 512 Irreducible points(100.0%) out of initial 8x8x8=512 grid
+Done, sum of weights:1.0
+processing 512 K points : using  32 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)
+time for processing    512 K-points on  32 processes:    10.3670 ; per K-point          0.0202 ; proc-sec per K-point          0.6479
+time1 =  0.04056549072265625
+Totally processed 512 K-points
+run() finished
+<span class="ansi-green-intense-fg ansi-bold">include_TR = None</span>
+<span class="ansi-red-intense-fg ansi-bold">Starting run()</span>
+<span class="ansi-cyan-intense-fg ansi-bold">Using the follwing calculators :
+############################################################
+</span>
+<span class="ansi-magenta-intense-fg ansi-bold"> &#39;CDOS&#39; </span> : <span class="ansi-yellow-intense-fg ansi-bold"> &lt;wannierberri.calculators.static.CumDOS object at 0x7f9f1420a210&gt; </span> : Cumulative density of states
+<span class="ansi-magenta-intense-fg ansi-bold"> &#39;ohmic&#39; </span> : <span class="ansi-yellow-intense-fg ansi-bold"> &lt;wannierberri.calculators.static.Ohmic_FermiSea object at 0x7f9fb01edb50&gt; </span> : Ohmic conductivity (:math:`S/m`)
+
+        | With Fermi sea integral. Eq(31) in `Ref &lt;https://www.nature.com/articles/s41524-021-00498-5&gt;`__
+        | Output: :math:`\sigma_{\alpha\beta} = e^2/\hbar \tau \int [dk] \partial_\beta v_\alpha f`for \tau=1fs| Instruction: :math:`j_\alpha = \sigma_{\alpha\beta} E_\beta`
+<span class="ansi-magenta-intense-fg ansi-bold"> &#39;ahc_internal&#39; </span> : <span class="ansi-yellow-intense-fg ansi-bold"> &lt;wannierberri.calculators.static.AHC object at 0x7f9f4c45b610&gt; </span> : Anomalous Hall conductivity (:math:`s^3 \cdot A^2 / (kg \cdot m^3) = S/m`)
+
+        | With Fermi sea integral Eq(11) in `Ref &lt;https://www.nature.com/articles/s41524-021-00498-5&gt;`__
+        | Output: :math:`O = -e^2/\hbar \int [dk] \Omega f`
+        | Instruction: :math:`j_\alpha = \sigma_{\alpha\beta} E_\beta = \epsilon_{\alpha\beta\delta} O_\delta E_\beta`
+<span class="ansi-magenta-intense-fg ansi-bold"> &#39;ahc_external&#39; </span> : <span class="ansi-yellow-intense-fg ansi-bold"> &lt;wannierberri.calculators.static.AHC object at 0x7f9f142c0990&gt; </span> : Anomalous Hall conductivity (:math:`s^3 \cdot A^2 / (kg \cdot m^3) = S/m`)
+
+        | With Fermi sea integral Eq(11) in `Ref &lt;https://www.nature.com/articles/s41524-021-00498-5&gt;`__
+        | Output: :math:`O = -e^2/\hbar \int [dk] \Omega f`
+        | Instruction: :math:`j_\alpha = \sigma_{\alpha\beta} E_\beta = \epsilon_{\alpha\beta\delta} O_\delta E_\beta`
+<span class="ansi-cyan-intense-fg ansi-bold">############################################################</span>
+Calculation on  grid - checking calculators for compatibility
+CDOS &lt;wannierberri.calculators.static.CumDOS object at 0x7f9f1420a210&gt;
+ohmic &lt;wannierberri.calculators.static.Ohmic_FermiSea object at 0x7f9fb01edb50&gt;
+ahc_internal &lt;wannierberri.calculators.static.AHC object at 0x7f9f4c45b610&gt;
+ahc_external &lt;wannierberri.calculators.static.AHC object at 0x7f9f142c0990&gt;
+All calculators are compatible
+Grid is regular
+The set of k points is a Grid() with NKdiv=[8 8 8], NKFFT=[6 6 6], NKtot=[48 48 48]
+generating K_list
+Done in 0.001852273941040039 s
+K_list contains 512 Irreducible points(100.0%) out of initial 8x8x8=512 grid
+Done, sum of weights:1.0
+processing 512 K points : using  32 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)
+time for processing    512 K-points on  32 processes:    10.5928 ; per K-point          0.0207 ; proc-sec per K-point          0.6620
+time1 =  0.04562973976135254
+Totally processed 512 K-points
+run() finished
+</pre></div></div>
+</div>
+</section>
+<section id="5.2-Plot">
+<h3>5.2 Plot<a class="headerlink" href="#5.2-Plot" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def plotxyz(axes, x, data, pre = &quot;&quot;, label=&quot;&quot;,ls=&quot;-&quot;):
+    for i in range(3):
+        ax =axes[i]
+        ax.plot(x, data[:,i], ls, label=label)
+        ax.set_title(f&quot;{pre}{&#39;xyz&#39;[i]}&quot;)
+
+
+
+quantities =  [&quot;ahc_internal&quot;, &quot;ahc_external&quot;,&quot;ohmic&quot;]
+linestyles = {k:v for k,v in zip( include_TR_list, [&quot;-&quot;, &quot;--&quot;, &quot;-.&quot;])}
+
+nfig = len(quantities)
+for quantity in quantities:
+    fig = None
+    for includeTR in include_TR_list:
+        res = results_grid[includeTR].results[quantity]
+        data = res.data
+        E = res.Energies[0]
+        if fig is None:
+            if data.ndim == 2:
+                nfigx = 1
+                nfigy = data.shape[1]
+            elif data.ndim == 3:
+                nfigx = data.shape[1]
+                nfigy = data.shape[2]
+            fig, axes = plt.subplots(nfigx, nfigy, figsize=(5*nfigy,5*nfigx))
+        if nfigx ==1:
+            plotxyz(axes, E, data, label=f&quot;{includeTR}&quot;, ls=linestyles[includeTR])
+        else:
+            for i in range(nfigx):
+                plotxyz(axes[i], E, data[:,i], pre=&quot;xyz&quot;[i], label=f&quot;{includeTR}&quot;, ls=linestyles[includeTR])
+    for ax in axes.flat:
+        ax.legend()
+    fig.suptitle(quantity)
+    plt.show()
+    plt.close()
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/tutorials_6_wannierisation_wannierise_13_0.png" src="../../_images/tutorials_6_wannierisation_wannierise_13_0.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/tutorials_6_wannierisation_wannierise_13_1.png" src="../../_images/tutorials_6_wannierisation_wannierise_13_1.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/tutorials_6_wannierisation_wannierise_13_2.png" src="../../_images/tutorials_6_wannierisation_wannierise_13_2.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="6.-Creating-the-dmn-files">
+<h2>6. Creating the dmn files<a class="headerlink" href="#6.-Creating-the-dmn-files" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">wannierberri.w90files.DMN</span></code> class is used to create the dmn files or read them from the disk. Note that although it can read the files created bt pw2wannier90, and also save in the same format the DMN object contains more information, which is lost when saving to wannier90 format therefore it is recommended to save the object as npz file, unless you need to use the dmn files with Wannier90 or other codes.</p>
+<p>In particular, the DMN object has extra information:</p>
+<ul class="simple">
+<li><p>The matrices D_wann and d_band are stored in block diagonal form, which saves memory and allows for faster calculations.</p>
+<ul>
+<li><p>for d_band the blocks correspond to (almost) degenerate bands</p></li>
+<li><p>for D_wann the blocks correspond to the same orbital at the same Wyckoff position</p></li>
+</ul>
+</li>
+<li><p>The information on magnetic symmeties (which symmetry operation includes time reversal)</p></li>
+</ul>
+<section id="6.1-read-the-bandstructure-using-irrep">
+<h3>6.1 read the bandstructure using irrep<a class="headerlink" href="#6.1-read-the-bandstructure-using-irrep" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span>from irrep.bandstructure import BandStructure
+path_data = Path(&quot;./wannier-berri/tests/data/Fe-222-pw/&quot;)
+assert os.path.exists(path_data), f&quot;Path {path_data} does not exist&quot;
+  # adjust path if needed to point to the data in the tests fo wannier-berri repository
+bandstructure = BandStructure(code=&#39;espresso&#39;,   # to work with VASP or abinit please refer to the documentation of irrep
+                            prefix=str(path_data / &quot;Fe&quot;),
+                            Ecut=100,
+                            normalize=False,
+                            magmom=[[0,0,1]],  # set the magnetic moments for a magnetic system (units do not matter)
+                            include_TR=True)  # set include_TR=False if you do not want to include the symmetries involving time reversal
+bandstructure.spacegroup.show()
+dmn = wberri.w90files.DMN(empty=True)
+dmn.from_irrep(bandstructure)
+<br/><br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+
+ ---------- CRYSTAL STRUCTURE ----------
+
+
+Cell vectors in angstroms:
+
+      Vectors of DFT cell       |      Vectors of REF. cell
+a0 =  1.4350   1.4350   1.4350  |  a0 =  1.4350  -1.4350  -1.4350
+a1 = -1.4350   1.4350   1.4350  |  a1 =  1.4350   1.4350  -1.4350
+a2 = -1.4350  -1.4350   1.4350  |  a2 =  1.4350   1.4350   1.4350
+
+Atomic positions in direct coordinates:
+
+Atom type |   Position in DFT cell    |   Position in REF cell
+    1     |  0.0000   0.0000   0.0000 |  0.0000   0.0000   0.0000
+
+
+ ---------- SPACE GROUP -----------
+
+
+Space group: magnetic-unknown (# None)
+Number of symmetries: 16 (mod. lattice translations)
+
+The transformation from the DFT cell to the reference cell of tables is given by:
+        |   1.0000  0.0000  0.0000 |
+refUC = |   0.0000  1.0000  0.0000 |    shiftUC = [0. 0. 0.]
+        |   0.0000  0.0000  1.0000 |
+
+
+ ### 1
+
+rotation : |  1   0   0 |
+           |  0   1   0 |
+           |  0   0   1 |
+
+
+ gk = [kx, ky, kz]
+
+spinor rot.         : | 1.000+0.000j  0.000+0.000j |
+                      | 0.000+0.000j  1.000+0.000j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [-0.240772  0.120386  0.963087] ; angle =  0 , inversion : False
+
+time-reversal : False
+
+ ### 2
+
+rotation : | -1   0   0 |
+           |  0  -1   0 |
+           |  0   0  -1 |
+
+
+ gk = [-kx, -ky, -kz]
+
+spinor rot.         : | 1.000+0.000j  0.000+0.000j |
+                      | 0.000+0.000j  1.000+0.000j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [-0.240772  0.120386  0.963087] ; angle =  0 , inversion : True
+
+time-reversal : False
+
+ ### 3
+
+rotation : |  0   0   1 |
+           |  1   0  -1 |
+           |  0   1   1 |
+
+
+ gk = [kx-ky+kz, kx, ky]
+
+spinor rot.         : | 0.707-0.707j  0.000+0.000j |
+                      |-0.000+0.000j  0.707+0.707j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [ 0. -0.  1.] ; angle = 1/2 pi, inversion : False
+
+time-reversal : False
+
+ ### 4
+
+rotation : |  0   0  -1 |
+           | -1   0   1 |
+           |  0  -1  -1 |
+
+
+ gk = [-kx+ky-kz, -kx, -ky]
+
+spinor rot.         : | 0.707-0.707j  0.000+0.000j |
+                      |-0.000+0.000j  0.707+0.707j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [ 0. -0.  1.] ; angle = 1/2 pi, inversion : True
+
+time-reversal : False
+
+ ### 5
+
+rotation : |  0   1   1 |
+           |  0  -1   0 |
+           |  1   1   0 |
+
+
+ gk = [kz, kx-ky+kz, kx]
+
+spinor rot.         : | 0.000-1.000j  0.000-0.000j |
+                      |-0.000-0.000j  0.000+1.000j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [ 0. -0.  1.] ; angle = 1 pi, inversion : False
+
+time-reversal : False
+
+ ### 6
+
+rotation : |  0  -1  -1 |
+           |  0   1   0 |
+           | -1  -1   0 |
+
+
+ gk = [-kz, -kx+ky-kz, -kx]
+
+spinor rot.         : | 0.000-1.000j  0.000-0.000j |
+                      |-0.000-0.000j  0.000+1.000j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [ 0. -0.  1.] ; angle = 1 pi, inversion : True
+
+time-reversal : False
+
+ ### 7
+
+rotation : |  1   1   0 |
+           | -1   0   1 |
+           |  1   0   0 |
+
+
+ gk = [ky, kz, kx-ky+kz]
+
+spinor rot.         : | 0.707+0.707j  0.000+0.000j |
+                      | 0.000+0.000j  0.707-0.707j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [0. 0. 1.] ; angle = -1/2 pi, inversion : False
+
+time-reversal : False
+
+ ### 8
+
+rotation : | -1  -1   0 |
+           |  1   0  -1 |
+           | -1   0   0 |
+
+
+ gk = [-ky, -kz, -kx+ky-kz]
+
+spinor rot.         : | 0.707+0.707j -0.000+0.000j |
+                      | 0.000+0.000j  0.707-0.707j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [ 0. -0.  1.] ; angle = -1/2 pi, inversion : True
+
+time-reversal : False
+
+ ### 9
+
+rotation : |  0  -1  -1 |
+           | -1   0   1 |
+           |  0   0  -1 |
+
+
+ gk = [-ky, -kx, -kx+ky-kz]
+
+spinor rot.         : | 0.000+0.000j  0.000-1.000j |
+                      |-0.000-1.000j  0.000+0.000j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [ 1. -0.  0.] ; angle = 1 pi, inversion : False
+
+time-reversal : True
+
+ ### 10
+
+rotation : |  0   1   1 |
+           |  1   0  -1 |
+           |  0   0   1 |
+
+
+ gk = [ky, kx, kx-ky+kz]
+
+spinor rot.         : | 0.000+0.000j  0.000-1.000j |
+                      |-0.000-1.000j  0.000+0.000j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [ 1. -0.  0.] ; angle = 1 pi, inversion : True
+
+time-reversal : True
+
+ ### 11
+
+rotation : | -1  -1   0 |
+           |  0   1   0 |
+           |  0  -1  -1 |
+
+
+ gk = [-kx, -kx+ky-kz, -kz]
+
+spinor rot.         : |-0.000+0.000j -0.707+0.707j |
+                      | 0.707+0.707j  0.000+0.000j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [-0.707107  0.707107  0.      ] ; angle = 1 pi, inversion : False
+
+time-reversal : True
+
+ ### 12
+
+rotation : |  1   1   0 |
+           |  0  -1   0 |
+           |  0   1   1 |
+
+
+ gk = [kx, kx-ky+kz, kz]
+
+spinor rot.         : |-0.000+0.000j  0.707-0.707j |
+                      |-0.707-0.707j  0.000+0.000j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [ 0.707107 -0.707107 -0.      ] ; angle = 1 pi, inversion : True
+
+time-reversal : True
+
+ ### 13
+
+rotation : | -1   0   0 |
+           |  1   0  -1 |
+           | -1  -1   0 |
+
+
+ gk = [-kx+ky-kz, -kz, -ky]
+
+spinor rot.         : | 0.000+0.000j -1.000+0.000j |
+                      | 1.000+0.000j  0.000+0.000j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [0. 1. 0.] ; angle = 1 pi, inversion : False
+
+time-reversal : True
+
+ ### 14
+
+rotation : |  1   0   0 |
+           | -1   0   1 |
+           |  1   1   0 |
+
+
+ gk = [kx-ky+kz, kz, ky]
+
+spinor rot.         : | 0.000+0.000j -1.000+0.000j |
+                      | 1.000+0.000j  0.000+0.000j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [0. 1. 0.] ; angle = 1 pi, inversion : True
+
+time-reversal : True
+
+ ### 15
+
+rotation : |  0   0  -1 |
+           |  0  -1   0 |
+           | -1   0   0 |
+
+
+ gk = [-kz, -ky, -kx]
+
+spinor rot.         : |-0.000+0.000j -0.707-0.707j |
+                      | 0.707-0.707j  0.000+0.000j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [ 0.707107  0.707107 -0.      ] ; angle = 1 pi, inversion : False
+
+time-reversal : True
+
+ ### 16
+
+rotation : |  0   0   1 |
+           |  0   1   0 |
+           |  1   0   0 |
+
+
+ gk = [kz, ky, kx]
+
+spinor rot.         : |-0.000+0.000j  0.707+0.707j |
+                      |-0.707+0.707j  0.000+0.000j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [-0.707107 -0.707107  0.      ] ; angle = 1 pi, inversion : True
+
+time-reversal : True
+mpgrid = [2 2 2], 8
+</pre></div></div>
+</div>
+</section>
+<section id="Set-projections">
+<h3>Set projections<a class="headerlink" href="#Set-projections" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span># now set the transformations of WFs. Make sure, the projections are consistent with the amn file
+pos = [[0,0,0]]
+dmn.set_D_wann_from_projections(projections=[(pos, &#39;s&#39;), (pos,&#39;p&#39;), (pos,&#39;d&#39;)])
+
+#write on disk
+dmn.to_npz(&quot;Fe_spd.dmn.npz&quot;)
+
+# later can be read with
+dmn_read_npz = wberri.w90files.DMN(seedname=&quot;Fe_spd&quot;, read_npz=True)
+
+# or write to w90 file (wiss not work if include_TR is True)
+#dmn.to_w90_file(&quot;Fe_spd&quot;)
+#dmn_read_w90 = wberri.w90files.DMN(seedname=&quot;Fe_spd&quot;, read_npz=False)
+<br/><br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+len(D_wann_list) = 0
+calculating Wannier functions for s at [[0, 0, 0]]
+calculating Wannier functions for p at [[0, 0, 0]]
+calculating Wannier functions for d at [[0, 0, 0]]
+len(D_wann_list) = 3
+D.shape [(4, 16, 2, 2), (4, 16, 6, 6), (4, 16, 10, 10)]
+num_wann 18
+D_wann_block_indices [[ 0  2]
+ [ 2  8]
+ [ 8 18]]
+saving to Fe_spd.dmn.npz :
+calling w90 file with Fe_spd, dmn, tags=[&#39;D_wann_block_indices&#39;, &#39;_NB&#39;, &#39;kpt2kptirr&#39;, &#39;kptirr&#39;, &#39;kptirr2kpt&#39;, &#39;kpt2kptirr_sym&#39;, &#39;_NK&#39;, &#39;num_wann&#39;, &#39;comment&#39;, &#39;NKirr&#39;, &#39;Nsym&#39;, &#39;time_reversals&#39;], read_npz=True, write_npz=True, kwargs={}
+</pre></div></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../5_symmetrization/tutorial_symmetrization-solution.html" class="btn btn-neutral float-left" title="Symmetrization of Wannier Hamiltonian and matrices" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Stepan Tsirkin.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

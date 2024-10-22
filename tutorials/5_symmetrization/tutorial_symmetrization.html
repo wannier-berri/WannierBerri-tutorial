@@ -1,0 +1,1411 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Symmetrization of Wannier Hamiltonian and matrices &mdash; Wannier Berri 0.17.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/style.css?v=88c5e859" />
+      <link rel="stylesheet" type="text/css" href="../../_static/nbsphinx-code-cells.css?v=2aa19091" />
+
+  
+    <link rel="shortcut icon" href="../../_static/WB-logo.ico"/>
+    <link rel="canonical" href="https://wannier-berri.org/tutorials/5_symmetrization/tutorial_symmetrization.html" />
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=0c3dd48d"></script>
+      <script src="../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within Wannier Berri 0.17.0 documentation"
+          href="../../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #009C46" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/tutorial.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../1_basic/tutorial-wb-basic-solution.html">Basic tutorial: Interpolating bands, Berry curvatures, and integrating them</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2_fermi_sea_vs_fermi_surface/solution/tutorial_sea_vs_surface_solution.html">WannierBerri advanced tutorial - Fermi surface and Fermi sea calculation of the Berry curvature dipole</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3_spin_hall/solution/tutorial_spin_hall.html">Spin Hall conductivity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../4_DIY/tutorial-wb-DIY-solution.html">DIY tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial_symmetrization-solution.html">Symmetrization of Wannier Hamiltonian and matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../6_wannierisation/wannierise.html">Wannier functions of bcc Fe</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #009C46" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Wannier Berri</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Symmetrization of Wannier Hamiltonian and matrices</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="Symmetrization-of-Wannier-Hamiltonian-and-matrices">
+<h1>Symmetrization of Wannier Hamiltonian and matrices<a class="headerlink" href="#Symmetrization-of-Wannier-Hamiltonian-and-matrices" title="Link to this heading"></a></h1>
+<p>By Xiaoxiong Liu : <a class="reference external" href="mailto:xxliu&#37;&#52;&#48;physik&#46;uzh&#46;ch">xxliu<span>&#64;</span>physik<span>&#46;</span>uzh<span>&#46;</span>ch</a></p>
+<p>The real-space Wannier Hamiltonian obtained by Wannier90 code generally does not strictly preserve the corresponding symmetry. The slight loss of symmetry will gap the expected band intersections. Berry curvature and orbital magnetic moment are more sensitive to symmetry than energy eigenvalues. In the following, I give details about the symmetrization of Wannier Hamiltonian and matrices.</p>
+<p>In WannierBerri, our built-in symmetrization method can enforce symmetrizing Wannier Hamiltonian (Ham_R) and matrices (AA_R, BB_R, CC_R, SS_R) after reading them.</p>
+<p><span class="math notranslate nohighlight">\(Ham\_R = &lt;n0|\hat{H}|mR&gt;\)</span></p>
+<p><span class="math notranslate nohighlight">\(AA\_R = &lt;n0|\hat{r}|mR&gt;\)</span></p>
+<p><span class="math notranslate nohighlight">\(BB\_R = &lt;n0|\hat{H}\cdot(\hat{r}-\hat{R})|mR&gt;\)</span></p>
+<p><span class="math notranslate nohighlight">\(CC\_R_c = i \epsilon_{abc} &lt;n0|\hat{r}_a\cdot\hat{H}\cdot(\hat{r}_b-\hat{R}_b)|mR&gt;\)</span></p>
+<p><span class="math notranslate nohighlight">\(SS\_R = &lt;n0|\hat{\sigma}|mR&gt;\)</span></p>
+<p>They are needed when calculating different quantities: 1. Energy eigenvalue &lt;– Ham_R 2. Berry Curvature &lt;– Ham_R, AA_R 3. Orbital magnetic moment &lt;– Ham_R, AA_R, BB_R, CC_R 4. Spin magnetic moment &lt;– SS_R</p>
+<p>NOTE: This method only works with Wannier Hamiltonian without maximal localized.</p>
+<p>We will show you two examples: 1. Symmetrize nonmagnetic system with SOC (trigonal Te) 2. Symmetrize magnetic system with SOC (bcc Fe)</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#import necessary packages
+import wannierberri as wberri
+import numpy as np
+import matplotlib.pyplot as plt #for plotting figures
+</pre></div>
+</div>
+</div>
+<section id="Nonmagnetic-system-(trigonal-Te)">
+<h2>Nonmagnetic system (trigonal Te)<a class="headerlink" href="#Nonmagnetic-system-(trigonal-Te)" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#Reading Wannier Hamiltonian and position element matrix from Te_tb.dat file.
+#We bulit to system, `system_Te` without symmetrization and `system_Te_sym` with symmetrization
+
+system_Te=wberri.System_tb(tb_file=&#39;./Te_data/Te_tb.dat&#39;,berry=True,use_ws=False)
+system_Te_sym=wberri.System_tb(tb_file=&#39;./Te_data/Te_tb.dat&#39;,berry=True,use_ws=False)
+
+#Symmetrization step.
+system_Te_sym.symmetrize(
+    # positions: positions of each atoms in a unitcell (direct coordinate system)
+    positions = np.array([[0.274, 0.274, 0.0],
+                    [0.726, 0.0, 0.33333333],
+                   [0.0, 0.726, 0.66666667]]),
+    # atom_name: name of each atoms, need to correspond to position order.
+    atom_name = [&#39;Te&#39;,&#39;Te&#39;,&#39;Te&#39;],
+    # projections: should be the same with projection card in wannier90.win
+    proj = [&#39;Te:s&#39;,&#39;Te:p&#39;],
+    # soc: with soc or spinless
+    soc=True,
+    # DFT_code: What code was used to complet the DFT calculation. only support VASP and QE now.
+    DFT_code=&#39;vasp&#39;,
+    )
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+reading TB file ./Te_data/Te_tb.dat ( written on  9May2022 at 22:54:49 )
+NOT using ws_dist
+Number of wannier functions: 24
+Number of R points: 195
+Recommended size of FFT grid [7 9 5]
+Reading the system from ./Te_data/Te_tb.dat finished successfully
+reading TB file ./Te_data/Te_tb.dat ( written on  9May2022 at 22:54:49 )
+NOT using ws_dist
+Number of wannier functions: 24
+Number of R points: 195
+Recommended size of FFT grid [7 9 5]
+Reading the system from ./Te_data/Te_tb.dat finished successfully
+Wannier atoms info
+(1, &#39;Te&#39;, array([0.274, 0.274, 0.   ]), [&#39;s&#39;, &#39;p&#39;], [[0, 12], [3, 4, 5, 15, 16, 17]])
+(2, &#39;Te&#39;, array([0.726     , 0.        , 0.33333333]), [&#39;s&#39;, &#39;p&#39;], [[1, 13], [6, 7, 8, 18, 19, 20]])
+(3, &#39;Te&#39;, array([0.        , 0.726     , 0.66666667]), [&#39;s&#39;, &#39;p&#39;], [[2, 14], [9, 10, 11, 21, 22, 23]])
+[get_spacegroup]
+  Spacegroup is P3_121 (152).
+  ---------------    1 ---------------
+ det =  0.9999999999999999
+  rotation:                    cart:
+     [ 1  0  0]                    [1.00 0.00 0.00]
+     [ 0  1  0]                    [0.00 1.00 0.00]
+     [ 0  0  1]                    [0.00 0.00 1.00]
+  translation:
+     (-0.00000 -0.00000 -0.00000)  ( 0.00000  0.00000  0.00000)
+  ---------------    2 ---------------
+ det =  1.0
+  rotation:                    cart:
+     [ 0 -1  0]                    [-0.50 -0.87 0.00]
+     [ 1 -1  0]                    [0.87 -0.50 0.00]
+     [ 0  0  1]                    [0.00 0.00 1.00]
+  translation:
+     ( 0.00000  0.00000  0.33333)  ( 0.00000  0.00000  0.33333)
+  ---------------    3 ---------------
+ det =  1.0
+  rotation:                    cart:
+     [-1  1  0]                    [-0.50 0.87 0.00]
+     [-1  0  0]                    [-0.87 -0.50 0.00]
+     [ 0  0  1]                    [0.00 0.00 1.00]
+  translation:
+     ( 0.00000  0.00000  0.66667)  ( 0.00000  0.00000  0.66667)
+  ---------------    4 ---------------
+ det =  1.0
+  rotation:                    cart:
+     [ 0  1  0]                    [-0.50 0.87 0.00]
+     [ 1  0  0]                    [0.87 0.50 0.00]
+     [ 0  0 -1]                    [0.00 0.00 -1.00]
+  translation:
+     (-0.00000 -0.00000 -0.00000)  ( 0.00000  0.00000  0.00000)
+  ---------------    5 ---------------
+ det =  0.9999999999999999
+  rotation:                    cart:
+     [ 1 -1  0]                    [1.00 0.00 0.00]
+     [ 0 -1  0]                    [0.00 -1.00 0.00]
+     [ 0  0 -1]                    [0.00 0.00 -1.00]
+  translation:
+     ( 0.00000  0.00000  0.66667)  ( 0.00000  0.00000  0.66667)
+  ---------------    6 ---------------
+ det =  1.0
+  rotation:                    cart:
+     [-1  0  0]                    [-0.50 -0.87 0.00]
+     [-1  1  0]                    [-0.87 0.50 0.00]
+     [ 0  0 -1]                    [0.00 0.00 -1.00]
+  translation:
+     ( 0.00000  0.00000  0.33333)  ( 0.00000  0.00000  0.33333)
+##########################
+Symmetrizing Start
+rot =  1
+rot =  2
+rot =  3
+rot =  4
+rot =  5
+rot =  6
+number of symmetry oprations ==  12
+nRvec_add = 288
+rot =  1
+rot =  2
+rot =  3
+rot =  4
+rot =  5
+rot =  6
+number of symmetry oprations ==  12
+Symmetrizing Finished
+</pre></div></div>
+</div>
+<p>Output card <code class="docutils literal notranslate"><span class="pre">Wannier</span> <span class="pre">atoms</span> <span class="pre">info</span></code> is showing informations about orbitals.</p>
+<p>Line <code class="docutils literal notranslate"><span class="pre">(1,</span> <span class="pre">'Te',</span> <span class="pre">array([0.274,</span> <span class="pre">0.274,</span> <span class="pre">0.</span>&#160;&#160; <span class="pre">]),</span> <span class="pre">['s',</span> <span class="pre">'p'],</span> <span class="pre">[[0,</span> <span class="pre">12],</span> <span class="pre">[3,</span> <span class="pre">4,</span> <span class="pre">5,</span> <span class="pre">15,</span> <span class="pre">16,</span> <span class="pre">17]])</span></code> read as: First atoms is Te at position 0.274, 0.274, 0. It contribute orbital <span class="math notranslate nohighlight">\(s\)</span> and <span class="math notranslate nohighlight">\(p\)</span>. Index of s-orbitals are 0 and 12. Index of d-orbitals are 3, 4, 5, 15, 16, 17.</p>
+<p>Informations of space group are showed as well.</p>
+<p>We can check if real space Hamiltonian are symmetrized.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#We check symmetry with operator 1 from Space group informations in the output.
+#prepare operator
+rot = np.array([[0., -1., 0.],[1, -1, 0.],[0., 0., 1.]]) # rotation matrix (direct)
+trans = np.array([0., 0., 1./3.])  #translation (direct)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#After operation, position of Te_1 match Te_2.
+Te_1_position = np.array([0.274, 0.274, 0.])
+position_rot = rot @ Te_1_position + trans
+print(&#39;Before operation&#39;, Te_1_position)
+print(&#39;After operation&#39;, position_rot, &#39;match Te_2_position&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Before operation [0.274 0.274 0.   ]
+After operation [-0.274       0.          0.33333333] match Te_2_position
+</pre></div></div>
+</div>
+<p>So the on-site energy of Te_1 s-orbitals should match on-site energy of Te_1 s-orbitals as well.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#Check unsymmetrized system
+
+#find index of R=[0,0,0] in R-vector list
+#dimension of Hamiltonian is [num_wann, num_wann, num_Rvec]
+R0 = system_Te.iRvec.tolist().index([0,0,0])
+onsite_Te_1 = np.diagonal(system_Te.Ham_R[:,:,R0]).real[np.array([0, 12])]
+onsite_Te_2 = np.diagonal(system_Te.Ham_R[:,:,R0]).real[np.array([1, 13])]
+
+print(&#39;unsymmetrized&#39;)
+print(&#39;on-site energy of Te_1 orbitals&#39;)
+print(onsite_Te_1)
+print(&#39;on-site energy of Te_2 orbitals&#39;)
+print(onsite_Te_2)
+print(&#39;not totaly the same&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+unsymmetrized
+on-site energy of Te_1 orbitals
+[-5.585966  -5.5859776]
+on-site energy of Te_2 orbitals
+[-5.588091  -5.5880802]
+not totaly the same
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#Check symmetrized system
+
+#find index of R=[0,0,0] in R-vector list
+#dimension of Hamiltonian is [num_wann, num_wann, num_Rvec]
+R0 = system_Te.iRvec.tolist().index([0,0,0])
+onsite_Te_1_sym = np.diagonal(system_Te_sym.Ham_R[:,:,R0]).real[np.array([0, 12])]
+onsite_Te_2_sym = np.diagonal(system_Te_sym.Ham_R[:,:,R0]).real[np.array([1, 13])]
+
+print(&#39;symmetrized&#39;)
+print(&#39;on-site energy of Te_1 orbitals&#39;)
+print(onsite_Te_1_sym)
+print(&#39;on-site energy of Te_2 orbitals&#39;)
+print(onsite_Te_2_sym)
+print(&#39;totaly the same&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+symmetrized
+on-site energy of Te_1 orbitals
+[-5.58668017 -5.58668017]
+on-site energy of Te_2 orbitals
+[-5.58668017 -5.58668017]
+totaly the same
+</pre></div></div>
+</div>
+<p>Checking band structures in k-space.</p>
+<p>The Brillouin zone of trigonal Te is: <img alt="e9c1835d50d649dca3dda9d6367be137" class="no-scaled-link" src="../../_images/Te_BZ.png" style="width: 300px;" /> We only consider kz=<span class="math notranslate nohighlight">\(\pi\)</span> plane. <img alt="f729dc3c23f04e538f94e28b73794308" class="no-scaled-link" src="../../_images/Te_kz%3Dpi.png" style="width: 300px;" /> The band structures of the three path:</p>
+<p>L1 -&gt; H -&gt; A1</p>
+<p>L2 -&gt; H -&gt; A2</p>
+<p>L3 -&gt; H -&gt; A3</p>
+<p>should be the same because of C3 rotation symmetry.</p>
+<p>But the Wannier Hamitonian break the symmetries slightly. So the band structure of the three path may not the same.</p>
+<p>After symmetrization they are the same.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#generate k-path
+path=wberri.Path(system_Te,
+    #start and end points of k_path.
+    #If two paths are not consencutive, put `None` between them.
+    k_nodes=[[0,0.5,0.5],[1./3,1./3,0.5],[1.,0.,0.5],None,
+            [0.5,0.,0.5],[1./3,1./3,0.5],[0.,1.,0.5],None,
+            [0.5,0.5,0.5],[1./3,1./3,0.5],[0.,0.,0.5]],
+    labels=[&quot;L1&quot;,&quot;H&quot;,&quot;A1&quot;,&quot;L3&quot;,&quot;H&quot;,&quot;A3&quot;,&quot;L2&quot;,&quot;H&quot;,&quot;A2&quot;],
+    #length: proportional to number of kpoints.
+    length=1000)
+
+#calculate band structure with unsymmetrized and symmetrized system.
+quantities = {&quot;Energy&quot;:wberri.calculators.tabulate.Energy()}
+
+calculators={}
+calculators [&quot;tabulate&quot;] = wberri.calculators.TabulatorAll(quantities,ibands=[18,19],mode=&quot;path&quot;)
+
+path_result_Te = wberri.run(
+        system=system_Te,
+        grid=path,
+        calculators=calculators,
+        print_Kpoints=False)
+
+path_result_Te_sym = wberri.run(
+        system=system_Te_sym,
+        grid=path,
+        calculators=calculators,
+        print_Kpoints=False)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+calculator not described
+
+Calculation along a path - checking calculators for compatibility
+tabulate &lt;wannierberri.calculators.TabulatorAll object at 0x7f56ca5fc310&gt;
+All calculators are compatible
+Symmetrization switched off for Path
+Grid is regular
+The set of k points is a Path() with 676 points and labels {0: &#39;L1&#39;, 75: &#39;H&#39;, 225: &#39;L3&#39;, 300: &#39;H&#39;, 450: &#39;L2&#39;, 525: &#39;H&#39;, 675: &#39;A2&#39;}
+WARNING : symmetry is not used for a tabulation along path
+generating K_list
+Done
+Done, sum of weights:676.0
+symgroup : None
+processing 676 K points : in serial.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)
+time for processing    676 K-points in serial:     1.1150 ; per K-point          0.0016 ; proc-sec per K-point          0.0016
+time1 =  0.0456690788269043
+Totally processed 676 K-points
+Calculation along a path - checking calculators for compatibility
+tabulate &lt;wannierberri.calculators.TabulatorAll object at 0x7f56ca5fc310&gt;
+All calculators are compatible
+Symmetrization switched off for Path
+Grid is regular
+The set of k points is a Path() with 676 points and labels {0: &#39;L1&#39;, 75: &#39;H&#39;, 225: &#39;L3&#39;, 300: &#39;H&#39;, 450: &#39;L2&#39;, 525: &#39;H&#39;, 675: &#39;A2&#39;}
+WARNING : symmetry is not used for a tabulation along path
+generating K_list
+Done
+Done, sum of weights:676.0
+symgroup : None
+processing 676 K points : in serial.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)
+time for processing    676 K-points in serial:     2.4738 ; per K-point          0.0037 ; proc-sec per K-point          0.0037
+time1 =  0.03712153434753418
+Totally processed 676 K-points
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#read energy eigenvalue data of band 18 and 19 from results.
+band_Te = path_result_Te.results[&#39;tabulate&#39;].get_data(quantity=&#39;Energy&#39;,iband=(0,1))
+band_Te_sym = path_result_Te_sym.results[&#39;tabulate&#39;].get_data(quantity=&#39;Energy&#39;,iband=(0,1))
+#read k-path data
+band_k=path.getKline()
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#plot band structure with unsymmetrized system
+NK=len(band_k)
+colour = [&#39;r&#39;,&#39;y&#39;,&#39;b&#39;]
+NK_one = NK//3
+plt.figure()
+for i in range(3):
+    plt.plot(band_k[0:NK_one],band_Te[NK_one*i:NK_one*(i+1)],colour[i],linewidth=5)
+plt.ylabel(&#39;Energy (eV)&#39;)
+plt.xlabel(&#39;L -&gt; H -&gt; A&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Text(0.5, 0, &#39;L -&gt; H -&gt; A&#39;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/tutorials_5_symmetrization_tutorial_symmetrization_15_1.png" src="../../_images/tutorials_5_symmetrization_tutorial_symmetrization_15_1.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#plot band structure with symmetrized system
+plt.figure()
+for i in range(3):
+    plt.plot(band_k[0:NK_one],band_Te_sym[NK_one*i:NK_one*(i+1)],colour[i],linewidth=5)
+plt.ylabel(&#39;Energy (eV)&#39;)
+plt.xlabel(&#39;L -&gt; H -&gt; A&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Text(0.5, 0, &#39;L -&gt; H -&gt; A&#39;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/tutorials_5_symmetrization_tutorial_symmetrization_16_1.png" src="../../_images/tutorials_5_symmetrization_tutorial_symmetrization_16_1.png" />
+</div>
+</div>
+<p>Symmetrization fix the symmetries of Hamiltonian</p>
+<p>The Berry curvature is more sensitive to symmetry than energy eigenvalues.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># calculate Berry curvature alone a k-path.
+path_berry=wberri.Path(system_Te,
+                 k_nodes=[[0,0.5,0.5],[1./3,1./3,0.5],[1./3,1./3,0.]],
+                 labels=[&quot;L&quot;,&quot;H&quot;,&quot;K&quot;,],
+                 length=500)
+
+quantities = {&quot;Energy&quot;:wberri.calculators.tabulate.Energy(),
+              &quot;berry&quot;:wberri.calculators.tabulate.BerryCurvature(),}
+
+calculators={}
+calculators [&quot;tabulate&quot;] = wberri.calculators.TabulatorAll(quantities,ibands=[18,19],mode=&quot;path&quot;)
+
+berry_result_Te = wberri.run(
+        system=system_Te,
+        grid=path_berry,
+        calculators=calculators)
+
+berry_result_Te_sym = wberri.run(
+        system=system_Te_sym,
+        grid=path_berry,
+        calculators=calculators)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+calculator not described
+
+calculator not described
+
+Calculation along a path - checking calculators for compatibility
+tabulate &lt;wannierberri.calculators.TabulatorAll object at 0x7f56ca9aa4c0&gt;
+All calculators are compatible
+Symmetrization switched off for Path
+Grid is regular
+The set of k points is a Path() with 80 points and labels {0: &#39;L&#39;, 37: &#39;H&#39;, 79: &#39;K&#39;}
+WARNING : symmetry is not used for a tabulation along path
+generating K_list
+Done
+Done, sum of weights:80.0
+iteration 0 - 80 points. New points are:
+ K-point 0 : coord in rec.lattice = [   0.000000  ,   0.500000 ,    0.500000 ]
+ K-point 1 : coord in rec.lattice = [   0.009009  ,   0.495495 ,    0.500000 ]
+ K-point 2 : coord in rec.lattice = [   0.018018  ,   0.490991 ,    0.500000 ]
+ K-point 3 : coord in rec.lattice = [   0.027027  ,   0.486486 ,    0.500000 ]
+ K-point 4 : coord in rec.lattice = [   0.036036  ,   0.481982 ,    0.500000 ]
+ K-point 5 : coord in rec.lattice = [   0.045045  ,   0.477477 ,    0.500000 ]
+ K-point 6 : coord in rec.lattice = [   0.054054  ,   0.472973 ,    0.500000 ]
+ K-point 7 : coord in rec.lattice = [   0.063063  ,   0.468468 ,    0.500000 ]
+ K-point 8 : coord in rec.lattice = [   0.072072  ,   0.463964 ,    0.500000 ]
+ K-point 9 : coord in rec.lattice = [   0.081081  ,   0.459459 ,    0.500000 ]
+ K-point 10 : coord in rec.lattice = [   0.090090  ,   0.454955 ,    0.500000 ]
+ K-point 11 : coord in rec.lattice = [   0.099099  ,   0.450450 ,    0.500000 ]
+ K-point 12 : coord in rec.lattice = [   0.108108  ,   0.445946 ,    0.500000 ]
+ K-point 13 : coord in rec.lattice = [   0.117117  ,   0.441441 ,    0.500000 ]
+ K-point 14 : coord in rec.lattice = [   0.126126  ,   0.436937 ,    0.500000 ]
+ K-point 15 : coord in rec.lattice = [   0.135135  ,   0.432432 ,    0.500000 ]
+ K-point 16 : coord in rec.lattice = [   0.144144  ,   0.427928 ,    0.500000 ]
+ K-point 17 : coord in rec.lattice = [   0.153153  ,   0.423423 ,    0.500000 ]
+ K-point 18 : coord in rec.lattice = [   0.162162  ,   0.418919 ,    0.500000 ]
+ K-point 19 : coord in rec.lattice = [   0.171171  ,   0.414414 ,    0.500000 ]
+ K-point 20 : coord in rec.lattice = [   0.180180  ,   0.409910 ,    0.500000 ]
+ K-point 21 : coord in rec.lattice = [   0.189189  ,   0.405405 ,    0.500000 ]
+ K-point 22 : coord in rec.lattice = [   0.198198  ,   0.400901 ,    0.500000 ]
+ K-point 23 : coord in rec.lattice = [   0.207207  ,   0.396396 ,    0.500000 ]
+ K-point 24 : coord in rec.lattice = [   0.216216  ,   0.391892 ,    0.500000 ]
+ K-point 25 : coord in rec.lattice = [   0.225225  ,   0.387387 ,    0.500000 ]
+ K-point 26 : coord in rec.lattice = [   0.234234  ,   0.382883 ,    0.500000 ]
+ K-point 27 : coord in rec.lattice = [   0.243243  ,   0.378378 ,    0.500000 ]
+ K-point 28 : coord in rec.lattice = [   0.252252  ,   0.373874 ,    0.500000 ]
+ K-point 29 : coord in rec.lattice = [   0.261261  ,   0.369369 ,    0.500000 ]
+ K-point 30 : coord in rec.lattice = [   0.270270  ,   0.364865 ,    0.500000 ]
+ K-point 31 : coord in rec.lattice = [   0.279279  ,   0.360360 ,    0.500000 ]
+ K-point 32 : coord in rec.lattice = [   0.288288  ,   0.355856 ,    0.500000 ]
+ K-point 33 : coord in rec.lattice = [   0.297297  ,   0.351351 ,    0.500000 ]
+ K-point 34 : coord in rec.lattice = [   0.306306  ,   0.346847 ,    0.500000 ]
+ K-point 35 : coord in rec.lattice = [   0.315315  ,   0.342342 ,    0.500000 ]
+ K-point 36 : coord in rec.lattice = [   0.324324  ,   0.337838 ,    0.500000 ]
+ K-point 37 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.500000 ]
+ K-point 38 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.488095 ]
+ K-point 39 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.476190 ]
+ K-point 40 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.464286 ]
+ K-point 41 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.452381 ]
+ K-point 42 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.440476 ]
+ K-point 43 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.428571 ]
+ K-point 44 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.416667 ]
+ K-point 45 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.404762 ]
+ K-point 46 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.392857 ]
+ K-point 47 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.380952 ]
+ K-point 48 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.369048 ]
+ K-point 49 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.357143 ]
+ K-point 50 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.345238 ]
+ K-point 51 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.333333 ]
+ K-point 52 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.321429 ]
+ K-point 53 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.309524 ]
+ K-point 54 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.297619 ]
+ K-point 55 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.285714 ]
+ K-point 56 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.273810 ]
+ K-point 57 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.261905 ]
+ K-point 58 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.250000 ]
+ K-point 59 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.238095 ]
+ K-point 60 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.226190 ]
+ K-point 61 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.214286 ]
+ K-point 62 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.202381 ]
+ K-point 63 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.190476 ]
+ K-point 64 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.178571 ]
+ K-point 65 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.166667 ]
+ K-point 66 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.154762 ]
+ K-point 67 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.142857 ]
+ K-point 68 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.130952 ]
+ K-point 69 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.119048 ]
+ K-point 70 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.107143 ]
+ K-point 71 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.095238 ]
+ K-point 72 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.083333 ]
+ K-point 73 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.071429 ]
+ K-point 74 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.059524 ]
+ K-point 75 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.047619 ]
+ K-point 76 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.035714 ]
+ K-point 77 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.023810 ]
+ K-point 78 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.011905 ]
+ K-point 79 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.000000 ]
+symgroup : None
+processing 80 K points : in serial.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)
+time for processing     80 K-points in serial:     1.7330 ; per K-point          0.0217 ; proc-sec per K-point          0.0217
+time1 =  0.004291534423828125
+Totally processed 80 K-points
+Calculation along a path - checking calculators for compatibility
+tabulate &lt;wannierberri.calculators.TabulatorAll object at 0x7f56ca9aa4c0&gt;
+All calculators are compatible
+Symmetrization switched off for Path
+Grid is regular
+The set of k points is a Path() with 80 points and labels {0: &#39;L&#39;, 37: &#39;H&#39;, 79: &#39;K&#39;}
+WARNING : symmetry is not used for a tabulation along path
+generating K_list
+Done
+Done, sum of weights:80.0
+iteration 0 - 80 points. New points are:
+ K-point 0 : coord in rec.lattice = [   0.000000  ,   0.500000 ,    0.500000 ]
+ K-point 1 : coord in rec.lattice = [   0.009009  ,   0.495495 ,    0.500000 ]
+ K-point 2 : coord in rec.lattice = [   0.018018  ,   0.490991 ,    0.500000 ]
+ K-point 3 : coord in rec.lattice = [   0.027027  ,   0.486486 ,    0.500000 ]
+ K-point 4 : coord in rec.lattice = [   0.036036  ,   0.481982 ,    0.500000 ]
+ K-point 5 : coord in rec.lattice = [   0.045045  ,   0.477477 ,    0.500000 ]
+ K-point 6 : coord in rec.lattice = [   0.054054  ,   0.472973 ,    0.500000 ]
+ K-point 7 : coord in rec.lattice = [   0.063063  ,   0.468468 ,    0.500000 ]
+ K-point 8 : coord in rec.lattice = [   0.072072  ,   0.463964 ,    0.500000 ]
+ K-point 9 : coord in rec.lattice = [   0.081081  ,   0.459459 ,    0.500000 ]
+ K-point 10 : coord in rec.lattice = [   0.090090  ,   0.454955 ,    0.500000 ]
+ K-point 11 : coord in rec.lattice = [   0.099099  ,   0.450450 ,    0.500000 ]
+ K-point 12 : coord in rec.lattice = [   0.108108  ,   0.445946 ,    0.500000 ]
+ K-point 13 : coord in rec.lattice = [   0.117117  ,   0.441441 ,    0.500000 ]
+ K-point 14 : coord in rec.lattice = [   0.126126  ,   0.436937 ,    0.500000 ]
+ K-point 15 : coord in rec.lattice = [   0.135135  ,   0.432432 ,    0.500000 ]
+ K-point 16 : coord in rec.lattice = [   0.144144  ,   0.427928 ,    0.500000 ]
+ K-point 17 : coord in rec.lattice = [   0.153153  ,   0.423423 ,    0.500000 ]
+ K-point 18 : coord in rec.lattice = [   0.162162  ,   0.418919 ,    0.500000 ]
+ K-point 19 : coord in rec.lattice = [   0.171171  ,   0.414414 ,    0.500000 ]
+ K-point 20 : coord in rec.lattice = [   0.180180  ,   0.409910 ,    0.500000 ]
+ K-point 21 : coord in rec.lattice = [   0.189189  ,   0.405405 ,    0.500000 ]
+ K-point 22 : coord in rec.lattice = [   0.198198  ,   0.400901 ,    0.500000 ]
+ K-point 23 : coord in rec.lattice = [   0.207207  ,   0.396396 ,    0.500000 ]
+ K-point 24 : coord in rec.lattice = [   0.216216  ,   0.391892 ,    0.500000 ]
+ K-point 25 : coord in rec.lattice = [   0.225225  ,   0.387387 ,    0.500000 ]
+ K-point 26 : coord in rec.lattice = [   0.234234  ,   0.382883 ,    0.500000 ]
+ K-point 27 : coord in rec.lattice = [   0.243243  ,   0.378378 ,    0.500000 ]
+ K-point 28 : coord in rec.lattice = [   0.252252  ,   0.373874 ,    0.500000 ]
+ K-point 29 : coord in rec.lattice = [   0.261261  ,   0.369369 ,    0.500000 ]
+ K-point 30 : coord in rec.lattice = [   0.270270  ,   0.364865 ,    0.500000 ]
+ K-point 31 : coord in rec.lattice = [   0.279279  ,   0.360360 ,    0.500000 ]
+ K-point 32 : coord in rec.lattice = [   0.288288  ,   0.355856 ,    0.500000 ]
+ K-point 33 : coord in rec.lattice = [   0.297297  ,   0.351351 ,    0.500000 ]
+ K-point 34 : coord in rec.lattice = [   0.306306  ,   0.346847 ,    0.500000 ]
+ K-point 35 : coord in rec.lattice = [   0.315315  ,   0.342342 ,    0.500000 ]
+ K-point 36 : coord in rec.lattice = [   0.324324  ,   0.337838 ,    0.500000 ]
+ K-point 37 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.500000 ]
+ K-point 38 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.488095 ]
+ K-point 39 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.476190 ]
+ K-point 40 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.464286 ]
+ K-point 41 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.452381 ]
+ K-point 42 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.440476 ]
+ K-point 43 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.428571 ]
+ K-point 44 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.416667 ]
+ K-point 45 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.404762 ]
+ K-point 46 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.392857 ]
+ K-point 47 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.380952 ]
+ K-point 48 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.369048 ]
+ K-point 49 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.357143 ]
+ K-point 50 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.345238 ]
+ K-point 51 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.333333 ]
+ K-point 52 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.321429 ]
+ K-point 53 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.309524 ]
+ K-point 54 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.297619 ]
+ K-point 55 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.285714 ]
+ K-point 56 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.273810 ]
+ K-point 57 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.261905 ]
+ K-point 58 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.250000 ]
+ K-point 59 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.238095 ]
+ K-point 60 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.226190 ]
+ K-point 61 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.214286 ]
+ K-point 62 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.202381 ]
+ K-point 63 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.190476 ]
+ K-point 64 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.178571 ]
+ K-point 65 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.166667 ]
+ K-point 66 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.154762 ]
+ K-point 67 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.142857 ]
+ K-point 68 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.130952 ]
+ K-point 69 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.119048 ]
+ K-point 70 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.107143 ]
+ K-point 71 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.095238 ]
+ K-point 72 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.083333 ]
+ K-point 73 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.071429 ]
+ K-point 74 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.059524 ]
+ K-point 75 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.047619 ]
+ K-point 76 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.035714 ]
+ K-point 77 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.023810 ]
+ K-point 78 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.011905 ]
+ K-point 79 : coord in rec.lattice = [   0.333333  ,   0.333333 ,    0.000000 ]
+symgroup : None
+processing 80 K points : in serial.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)
+time for processing     80 K-points in serial:     4.7883 ; per K-point          0.0599 ; proc-sec per K-point          0.0599
+time1 =  0.003511667251586914
+Totally processed 80 K-points
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># use built-in plotting method to plot berry cuvature.
+# red means positive, blue means negative.
+# size of the dots shows the amplitude of the quantity.
+# unsymmetrized:
+berry_result_Te.results[&#39;tabulate&#39;].plot_path_fat(path_berry,
+              quantity=&#39;berry&#39;,
+              component=&#39;z&#39;, # only take z compoment
+              Emin=6.0,  Emax=6.8,
+              mode=&quot;fatband&quot;,
+              fatfactor=20,  # size of dots.
+              )
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/tutorials_5_symmetrization_tutorial_symmetrization_19_0.png" src="../../_images/tutorials_5_symmetrization_tutorial_symmetrization_19_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># symmetrized:
+berry_result_Te_sym.results[&#39;tabulate&#39;].plot_path_fat(path_berry,
+              quantity=&#39;berry&#39;,
+              component=&#39;z&#39;, # only take z compoment
+              Emin=6.0,  Emax=6.8,
+              mode=&quot;fatband&quot;,
+              fatfactor=20,  # size of dots.
+              )
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/tutorials_5_symmetrization_tutorial_symmetrization_20_0.png" src="../../_images/tutorials_5_symmetrization_tutorial_symmetrization_20_0.png" />
+</div>
+</div>
+<p>z-component of Berry curvature alone L-H path should be zero because of symmetry. The loss of symmetry has a big impact to Berry curvature of single k-point. It is fixed by symmetrization.</p>
+</section>
+<section id="Magnetic-system-with-SOC-(bcc-Fe)">
+<h2>Magnetic system with SOC (bcc Fe)<a class="headerlink" href="#Magnetic-system-with-SOC-(bcc-Fe)" title="Link to this heading"></a></h2>
+<p>bcc Fe is a magnetic system with magnetic moment -2.31 <span class="math">\mu</span>_B point to -z direction of cartesian coordinate system of lattice. We need to set parameter ‘magmom’.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>system_Fe=wberri.System_tb(tb_file=&#39;./Fe_data/Fe_tb.dat&#39;,berry=True, use_ws=False)
+system_Fe_sym=wberri.System_tb(tb_file=&#39;./Fe_data/Fe_tb.dat&#39;,berry=True, use_ws=False)
+system_Fe_sym.symmetrize(
+             proj = [&#39;Fe:sp3d2;t2g&#39;],
+             atom_name = [&#39;Fe&#39;],
+             positions = [[0,0,0]],
+             #magmom: magnetic moment of each atoms.
+             magmom = [[0.,0.,-2.31]],
+             soc=True,
+             DFT_code = &#39;qe&#39;
+             )
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+reading TB file ./Fe_data/Fe_tb.dat ( written on 13May2022 at 01:23:14 )
+NOT using ws_dist
+Number of wannier functions: 18
+Number of R points: 27
+Recommended size of FFT grid [5 5 5]
+Reading the system from ./Fe_data/Fe_tb.dat finished successfully
+reading TB file ./Fe_data/Fe_tb.dat ( written on 13May2022 at 01:23:14 )
+NOT using ws_dist
+Number of wannier functions: 18
+Number of R points: 27
+Recommended size of FFT grid [5 5 5]
+Reading the system from ./Fe_data/Fe_tb.dat finished successfully
+Wannier atoms info
+(1, &#39;Fe&#39;, [0, 0, 0], [&#39;sp3d2&#39;, &#39;t2g&#39;], [[0, 1, 2, 3, 4, 5, 9, 10, 11, 12, 13, 14], [6, 7, 8, 15, 16, 17]], [0.0, 0.0, -2.31])
+[get_spacegroup]
+  Spacegroup is Im-3m (229).
+  ---------------    1 ---------------
+ det =  1.0
+  rotation:                    cart:
+     [ 1  0  0]                    [1.00 0.00 -0.00]
+     [ 0  1  0]                    [0.00 1.00 -0.00]
+     [ 0  0  1]                    [0.00 -0.00 1.00]
+  translation:
+     ( 0.00000  0.00000  0.00000)  ( 0.00000  0.00000  0.00000)
+  ---------------    2 ---------------
+ det =  -1.0
+  rotation:                    cart:
+     [-1  0  0]                    [-1.00 -0.00 0.00]
+     [ 0 -1  0]                    [0.00 -1.00 0.00]
+     [ 0  0 -1]                    [0.00 0.00 -1.00]
+  translation:
+     ( 0.00000  0.00000  0.00000)  ( 0.00000  0.00000  0.00000)
+  ---------------    3 ---------------
+ det =  1.0
+  rotation:                    cart:
+     [ 0  0  1]                    [0.00 -1.00 0.00]
+     [ 1  0 -1]                    [1.00 0.00 -0.00]
+     [ 0  1  1]                    [0.00 -0.00 1.00]
+  translation:
+     ( 0.00000  0.00000  0.00000)  ( 0.00000  0.00000  0.00000)
+  ---------------    4 ---------------
+ det =  -1.0
+  rotation:                    cart:
+     [ 0  0 -1]                    [0.00 1.00 -0.00]
+     [-1  0  1]                    [-1.00 -0.00 0.00]
+     [ 0 -1 -1]                    [0.00 0.00 -1.00]
+  translation:
+     ( 0.00000  0.00000  0.00000)  ( 0.00000  0.00000  0.00000)
+  ---------------    5 ---------------
+ det =  1.0
+  rotation:                    cart:
+     [ 0  1  1]                    [-1.00 -0.00 0.00]
+     [ 0 -1  0]                    [0.00 -1.00 0.00]
+     [ 1  1  0]                    [0.00 -0.00 1.00]
+  translation:
+     ( 0.00000  0.00000  0.00000)  ( 0.00000  0.00000  0.00000)
+  ---------------    6 ---------------
+ det =  -1.0
+  rotation:                    cart:
+     [ 0 -1 -1]                    [1.00 0.00 -0.00]
+     [ 0  1  0]                    [0.00 1.00 -0.00]
+     [-1 -1  0]                    [0.00 0.00 -1.00]
+  translation:
+     ( 0.00000  0.00000  0.00000)  ( 0.00000  0.00000  0.00000)
+  ---------------    7 ---------------
+ det =  1.0
+  rotation:                    cart:
+     [ 1  1  0]                    [0.00 1.00 -0.00]
+     [-1  0  1]                    [-1.00 -0.00 0.00]
+     [ 1  0  0]                    [0.00 -0.00 1.00]
+  translation:
+     ( 0.00000  0.00000  0.00000)  ( 0.00000  0.00000  0.00000)
+  ---------------    8 ---------------
+ det =  -1.0
+  rotation:                    cart:
+     [-1 -1  0]                    [0.00 -1.00 0.00]
+     [ 1  0 -1]                    [1.00 0.00 -0.00]
+     [-1  0  0]                    [0.00 0.00 -1.00]
+  translation:
+     ( 0.00000  0.00000  0.00000)  ( 0.00000  0.00000  0.00000)
+  ---------------    9 ---------------
+ det =  1.0
+  rotation:                    cart:
+     [ 0 -1 -1]                    [1.00 0.00 -0.00]
+     [-1  0  1]                    [0.00 -1.00 0.00]
+     [ 0  0 -1]                    [0.00 0.00 -1.00]
+  translation:
+     ( 0.00000  0.00000  0.00000)  ( 0.00000  0.00000  0.00000)
+  ---------------   10 ---------------
+ det =  -1.0
+  rotation:                    cart:
+     [ 0  1  1]                    [-1.00 -0.00 0.00]
+     [ 1  0 -1]                    [0.00 1.00 -0.00]
+     [ 0  0  1]                    [0.00 -0.00 1.00]
+  translation:
+     ( 0.00000  0.00000  0.00000)  ( 0.00000  0.00000  0.00000)
+  ---------------   11 ---------------
+ det =  1.0
+  rotation:                    cart:
+     [-1 -1  0]                    [0.00 -1.00 0.00]
+     [ 0  1  0]                    [-1.00 -0.00 0.00]
+     [ 0 -1 -1]                    [0.00 0.00 -1.00]
+  translation:
+     ( 0.00000  0.00000  0.00000)  ( 0.00000  0.00000  0.00000)
+  ---------------   12 ---------------
+ det =  -1.0
+  rotation:                    cart:
+     [ 1  1  0]                    [0.00 1.00 -0.00]
+     [ 0 -1  0]                    [1.00 0.00 -0.00]
+     [ 0  1  1]                    [0.00 -0.00 1.00]
+  translation:
+     ( 0.00000  0.00000  0.00000)  ( 0.00000  0.00000  0.00000)
+  ---------------   13 ---------------
+ det =  1.0
+  rotation:                    cart:
+     [-1  0  0]                    [-1.00 -0.00 0.00]
+     [ 1  0 -1]                    [0.00 1.00 -0.00]
+     [-1 -1  0]                    [0.00 0.00 -1.00]
+  translation:
+     ( 0.00000  0.00000  0.00000)  ( 0.00000  0.00000  0.00000)
+  ---------------   14 ---------------
+ det =  -1.0
+  rotation:                    cart:
+     [ 1  0  0]                    [1.00 0.00 -0.00]
+     [-1  0  1]                    [0.00 -1.00 0.00]
+     [ 1  1  0]                    [0.00 -0.00 1.00]
+  translation:
+     ( 0.00000  0.00000  0.00000)  ( 0.00000  0.00000  0.00000)
+  ---------------   15 ---------------
+ det =  1.0
+  rotation:                    cart:
+     [ 0  0 -1]                    [0.00 1.00 -0.00]
+     [ 0 -1  0]                    [1.00 0.00 -0.00]
+     [-1  0  0]                    [0.00 0.00 -1.00]
+  translation:
+     ( 0.00000  0.00000  0.00000)  ( 0.00000  0.00000  0.00000)
+  ---------------   16 ---------------
+ det =  -1.0
+  rotation:                    cart:
+     [ 0  0  1]                    [0.00 -1.00 0.00]
+     [ 0  1  0]                    [-1.00 -0.00 0.00]
+     [ 1  0  0]                    [0.00 -0.00 1.00]
+  translation:
+     ( 0.00000  0.00000  0.00000)  ( 0.00000  0.00000  0.00000)
+  ---------------   17 ---------------
+ det =  1.0
+  rotation:                    cart:
+     [ 1  1  0]                    [0.00 -0.00 1.00]
+     [ 0 -1 -1]                    [1.00 0.00 -0.00]
+     [ 0  1  0]                    [0.00 1.00 -0.00]
+  translation:
+     ( 0.00000  0.00000  0.00000)  ( 0.00000  0.00000  0.00000)
+  ---------------   18 ---------------
+ det =  -1.0
+  rotation:                    cart:
+     [-1 -1  0]                    [0.00 0.00 -1.00]
+     [ 0  1  1]                    [-1.00 -0.00 0.00]
+     [ 0 -1  0]                    [0.00 -1.00 0.00]
+  translation:
+     ( 0.00000  0.00000  0.00000)  ( 0.00000  0.00000  0.00000)
+  ---------------   19 ---------------
+ det =  1.0
+  rotation:                    cart:
+     [ 1  0  0]                    [0.00 -0.00 1.00]
+     [-1 -1  0]                    [0.00 -1.00 0.00]
+     [ 1  0 -1]                    [1.00 0.00 -0.00]
+  translation:
+     ( 0.00000  0.00000  0.00000)  ( 0.00000  0.00000  0.00000)
+  ---------------   20 ---------------
+ det =  -1.0
+  rotation:                    cart:
+     [-1  0  0]                    [0.00 0.00 -1.00]
+     [ 1  1  0]                    [0.00 1.00 -0.00]
+     [-1  0  1]                    [-1.00 -0.00 0.00]
+  translation:
+     ( 0.00000  0.00000  0.00000)  ( 0.00000  0.00000  0.00000)
+  ---------------   21 ---------------
+ det =  1.0
+  rotation:                    cart:
+     [ 0  0  1]                    [0.00 -0.00 1.00]
+     [-1  0  0]                    [-1.00 -0.00 0.00]
+     [ 0 -1  0]                    [0.00 -1.00 0.00]
+  translation:
+     ( 0.00000  0.00000  0.00000)  ( 0.00000  0.00000  0.00000)
+  ---------------   22 ---------------
+ det =  -1.0
+  rotation:                    cart:
+     [ 0  0 -1]                    [0.00 0.00 -1.00]
+     [ 1  0  0]                    [1.00 0.00 -0.00]
+     [ 0  1  0]                    [0.00 1.00 -0.00]
+  translation:
+     ( 0.00000  0.00000  0.00000)  ( 0.00000  0.00000  0.00000)
+  ---------------   23 ---------------
+ det =  1.0
+  rotation:                    cart:
+     [ 0  1  1]                    [0.00 -0.00 1.00]
+     [ 0  0 -1]                    [0.00 1.00 -0.00]
+     [-1  0  1]                    [-1.00 -0.00 0.00]
+  translation:
+     ( 0.00000  0.00000  0.00000)  ( 0.00000  0.00000  0.00000)
+  ---------------   24 ---------------
+ det =  -1.0
+  rotation:                    cart:
+     [ 0 -1 -1]                    [0.00 0.00 -1.00]
+     [ 0  0  1]                    [0.00 -1.00 0.00]
+     [ 1  0 -1]                    [1.00 0.00 -0.00]
+  translation:
+     ( 0.00000  0.00000  0.00000)  ( 0.00000  0.00000  0.00000)
+  ---------------   25 ---------------
+ det =  1.0
+  rotation:                    cart:
+     [-1 -1  0]                    [0.00 0.00 -1.00]
+     [ 1  0  0]                    [1.00 0.00 -0.00]
+     [-1  0  1]                    [0.00 -1.00 0.00]
+  translation:
+     ( 0.00000  0.00000  0.00000)  ( 0.00000  0.00000  0.00000)
+  ---------------   26 ---------------
+ det =  -1.0
+  rotation:                    cart:
+     [ 1  1  0]                    [0.00 -0.00 1.00]
+     [-1  0  0]                    [-1.00 -0.00 0.00]
+     [ 1  0 -1]                    [0.00 1.00 -0.00]
+  translation:
+     ( 0.00000  0.00000  0.00000)  ( 0.00000  0.00000  0.00000)
+  ---------------   27 ---------------
+ det =  1.0
+  rotation:                    cart:
+     [-1  0  0]                    [0.00 0.00 -1.00]
+     [ 0  0  1]                    [0.00 -1.00 0.00]
+     [ 0  1  0]                    [-1.00 -0.00 0.00]
+  translation:
+     ( 0.00000  0.00000  0.00000)  ( 0.00000  0.00000  0.00000)
+  ---------------   28 ---------------
+ det =  -1.0
+  rotation:                    cart:
+     [ 1  0  0]                    [0.00 -0.00 1.00]
+     [ 0  0 -1]                    [0.00 1.00 -0.00]
+     [ 0 -1  0]                    [1.00 0.00 -0.00]
+  translation:
+     ( 0.00000  0.00000  0.00000)  ( 0.00000  0.00000  0.00000)
+  ---------------   29 ---------------
+ det =  1.0
+  rotation:                    cart:
+     [ 0  0 -1]                    [0.00 0.00 -1.00]
+     [ 0  1  1]                    [-1.00 -0.00 0.00]
+     [ 1  0 -1]                    [0.00 1.00 -0.00]
+  translation:
+     ( 0.00000  0.00000  0.00000)  ( 0.00000  0.00000  0.00000)
+  ---------------   30 ---------------
+ det =  -1.0
+  rotation:                    cart:
+     [ 0  0  1]                    [0.00 -0.00 1.00]
+     [ 0 -1 -1]                    [1.00 0.00 -0.00]
+     [-1  0  1]                    [0.00 -1.00 0.00]
+  translation:
+     ( 0.00000  0.00000  0.00000)  ( 0.00000  0.00000  0.00000)
+  ---------------   31 ---------------
+ det =  1.0
+  rotation:                    cart:
+     [ 0 -1 -1]                    [0.00 0.00 -1.00]
+     [ 1  1  0]                    [0.00 1.00 -0.00]
+     [ 0 -1  0]                    [1.00 0.00 -0.00]
+  translation:
+     ( 0.00000  0.00000  0.00000)  ( 0.00000  0.00000  0.00000)
+  ---------------   32 ---------------
+ det =  -1.0
+  rotation:                    cart:
+     [ 0  1  1]                    [0.00 -0.00 1.00]
+     [-1 -1  0]                    [0.00 -1.00 0.00]
+     [ 0  1  0]                    [-1.00 -0.00 0.00]
+  translation:
+     ( 0.00000  0.00000  0.00000)  ( 0.00000  0.00000  0.00000)
+  ---------------   33 ---------------
+ det =  1.0
+  rotation:                    cart:
+     [ 1  0 -1]                    [0.00 1.00 -0.00]
+     [ 0  0  1]                    [0.00 -0.00 1.00]
+     [ 0 -1 -1]                    [1.00 0.00 -0.00]
+  translation:
+     ( 0.00000  0.00000  0.00000)  ( 0.00000  0.00000  0.00000)
+  ---------------   34 ---------------
+ det =  -1.0
+  rotation:                    cart:
+     [-1  0  1]                    [0.00 -1.00 0.00]
+     [ 0  0 -1]                    [0.00 0.00 -1.00]
+     [ 0  1  1]                    [-1.00 -0.00 0.00]
+  translation:
+     ( 0.00000  0.00000  0.00000)  ( 0.00000  0.00000  0.00000)
+  ---------------   35 ---------------
+ det =  1.0
+  rotation:                    cart:
+     [ 0 -1  0]                    [1.00 0.00 -0.00]
+     [ 0  1  1]                    [0.00 -0.00 1.00]
+     [-1 -1  0]                    [0.00 -1.00 0.00]
+  translation:
+     ( 0.00000  0.00000  0.00000)  ( 0.00000  0.00000  0.00000)
+  ---------------   36 ---------------
+ det =  -1.0
+  rotation:                    cart:
+     [ 0  1  0]                    [-1.00 -0.00 0.00]
+     [ 0 -1 -1]                    [0.00 0.00 -1.00]
+     [ 1  1  0]                    [0.00 1.00 -0.00]
+  translation:
+     ( 0.00000  0.00000  0.00000)  ( 0.00000  0.00000  0.00000)
+  ---------------   37 ---------------
+ det =  1.0
+  rotation:                    cart:
+     [-1  0  1]                    [0.00 -1.00 0.00]
+     [ 1  1  0]                    [0.00 -0.00 1.00]
+     [-1  0  0]                    [-1.00 -0.00 0.00]
+  translation:
+     ( 0.00000  0.00000  0.00000)  ( 0.00000  0.00000  0.00000)
+  ---------------   38 ---------------
+ det =  -1.0
+  rotation:                    cart:
+     [ 1  0 -1]                    [0.00 1.00 -0.00]
+     [-1 -1  0]                    [0.00 0.00 -1.00]
+     [ 1  0  0]                    [1.00 0.00 -0.00]
+  translation:
+     ( 0.00000  0.00000  0.00000)  ( 0.00000  0.00000  0.00000)
+  ---------------   39 ---------------
+ det =  1.0
+  rotation:                    cart:
+     [ 0  1  0]                    [-1.00 -0.00 0.00]
+     [ 1  0  0]                    [0.00 -0.00 1.00]
+     [ 0  0 -1]                    [0.00 1.00 -0.00]
+  translation:
+     ( 0.00000  0.00000  0.00000)  ( 0.00000  0.00000  0.00000)
+  ---------------   40 ---------------
+ det =  -1.0
+  rotation:                    cart:
+     [ 0 -1  0]                    [1.00 0.00 -0.00]
+     [-1  0  0]                    [0.00 0.00 -1.00]
+     [ 0  0  1]                    [0.00 -1.00 0.00]
+  translation:
+     ( 0.00000  0.00000  0.00000)  ( 0.00000  0.00000  0.00000)
+  ---------------   41 ---------------
+ det =  1.0
+  rotation:                    cart:
+     [ 0 -1  0]                    [0.00 -1.00 0.00]
+     [ 0  0 -1]                    [0.00 0.00 -1.00]
+     [ 1  0  0]                    [1.00 0.00 -0.00]
+  translation:
+     ( 0.00000  0.00000  0.00000)  ( 0.00000  0.00000  0.00000)
+  ---------------   42 ---------------
+ det =  -1.0
+  rotation:                    cart:
+     [ 0  1  0]                    [0.00 1.00 -0.00]
+     [ 0  0  1]                    [0.00 -0.00 1.00]
+     [-1  0  0]                    [-1.00 -0.00 0.00]
+  translation:
+     ( 0.00000  0.00000  0.00000)  ( 0.00000  0.00000  0.00000)
+  ---------------   43 ---------------
+ det =  1.0
+  rotation:                    cart:
+     [-1  0  1]                    [-1.00 -0.00 0.00]
+     [ 0 -1 -1]                    [0.00 0.00 -1.00]
+     [ 0  0  1]                    [0.00 -1.00 0.00]
+  translation:
+     ( 0.00000  0.00000  0.00000)  ( 0.00000  0.00000  0.00000)
+  ---------------   44 ---------------
+ det =  -1.0
+  rotation:                    cart:
+     [ 1  0 -1]                    [1.00 0.00 -0.00]
+     [ 0  1  1]                    [0.00 -0.00 1.00]
+     [ 0  0 -1]                    [0.00 1.00 -0.00]
+  translation:
+     ( 0.00000  0.00000  0.00000)  ( 0.00000  0.00000  0.00000)
+  ---------------   45 ---------------
+ det =  1.0
+  rotation:                    cart:
+     [ 0  1  0]                    [0.00 1.00 -0.00]
+     [-1 -1  0]                    [0.00 0.00 -1.00]
+     [ 0  1  1]                    [-1.00 -0.00 0.00]
+  translation:
+     ( 0.00000  0.00000  0.00000)  ( 0.00000  0.00000  0.00000)
+  ---------------   46 ---------------
+ det =  -1.0
+  rotation:                    cart:
+     [ 0 -1  0]                    [0.00 -1.00 0.00]
+     [ 1  1  0]                    [0.00 -0.00 1.00]
+     [ 0 -1 -1]                    [1.00 0.00 -0.00]
+  translation:
+     ( 0.00000  0.00000  0.00000)  ( 0.00000  0.00000  0.00000)
+  ---------------   47 ---------------
+ det =  1.0
+  rotation:                    cart:
+     [ 1  0 -1]                    [1.00 0.00 -0.00]
+     [-1  0  0]                    [0.00 0.00 -1.00]
+     [ 1  1  0]                    [0.00 1.00 -0.00]
+  translation:
+     ( 0.00000  0.00000  0.00000)  ( 0.00000  0.00000  0.00000)
+  ---------------   48 ---------------
+ det =  -1.0
+  rotation:                    cart:
+     [-1  0  1]                    [-1.00 -0.00 0.00]
+     [ 1  0  0]                    [0.00 -0.00 1.00]
+     [-1 -1  0]                    [0.00 -1.00 0.00]
+  translation:
+     ( 0.00000  0.00000  0.00000)  ( 0.00000  0.00000  0.00000)
+====================
+System have inversion symmetry
+====================
+##########################
+Symmetrizing Start
+Symmetry operator 1 respect magnetic moment
+rot =  1
+Symmetry operator 2 respect magnetic moment
+rot =  2
+Symmetry operator 3 respect magnetic moment
+rot =  3
+Symmetry operator 4 respect magnetic moment
+rot =  4
+Symmetry operator 5 respect magnetic moment
+rot =  5
+Symmetry operator 6 respect magnetic moment
+rot =  6
+Symmetry operator 7 respect magnetic moment
+rot =  7
+Symmetry operator 8 respect magnetic moment
+rot =  8
+Symmetry operator 9*T respect magnetic moment
+rot =  9
+Symmetry operator 10*T respect magnetic moment
+rot =  10
+Symmetry operator 11*T respect magnetic moment
+rot =  11
+Symmetry operator 12*T respect magnetic moment
+rot =  12
+Symmetry operator 13*T respect magnetic moment
+rot =  13
+Symmetry operator 14*T respect magnetic moment
+rot =  14
+Symmetry operator 15*T respect magnetic moment
+rot =  15
+Symmetry operator 16*T respect magnetic moment
+rot =  16
+number of symmetry oprations ==  16
+nRvec_add = 0
+Symmetrizing Finished
+</pre></div></div>
+</div>
+<p>Important explanations: 1. The projection card in wannier90.win of bcc Fe is <code class="docutils literal notranslate"><span class="pre">'Fe':sp3d2;dxz,dyz,dxy</span></code>. But in the symmetrization, orbitals must project to complete sets of coordinates after symmetry opration. So we must label orbitals which shares the same complete sets of coordinates. eg: <code class="docutils literal notranslate"><span class="pre">sp3d2,</span> <span class="pre">dxz,dyz,dxy</span> <span class="pre">-&gt;</span> <span class="pre">sp3d2,</span> <span class="pre">t2g</span></code> and <code class="docutils literal notranslate"><span class="pre">sp,px,py</span> <span class="pre">-&gt;</span> <span class="pre">sp,p2</span></code> 2. We print out all the symmetry operators in the space group. But magnetic moments break some of them. Afte line <code class="docutils literal notranslate"><span class="pre">Symmetrizing</span> <span class="pre">start</span></code>. You
+can find details about which operator belong to the magnetic group.</p>
+<p>bcc Fe have inversion symmetry, so the Berry curvature dipole should be zero. Ref: <a class="reference external" href="https://journals.aps.org/prl/pdf/10.1103/PhysRevLett.115.216806">https://journals.aps.org/prl/pdf/10.1103/PhysRevLett.115.216806</a></p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#calculate berry curvature dipole
+Efermi_Fe = np.linspace(15.5,16,301)
+NK = 10
+
+result_Fe = wberri.run(system_Fe,
+            grid=wberri.Grid(system_Fe,NK=NK,NKFFT=1),
+            calculators = {&quot;BerryDipole&quot;:wberri.calculators.static.BerryDipole_FermiSea(Efermi=Efermi_Fe,tetra=True)},
+            adpt_num_iter=0,
+            fout_name=&#39;Fe&#39;,
+            restart=False,
+            print_Kpoints=False
+            )
+
+result_Fe_sym = wberri.run(system_Fe_sym,
+            grid=wberri.Grid(system_Fe_sym,NK=NK,NKFFT=1),
+            calculators = {&quot;BerryDipole&quot;:wberri.calculators.static.BerryDipole_FermiSea(Efermi=Efermi_Fe,tetra=True)},
+            adpt_num_iter=0,
+            fout_name=&#39;Fe_sym&#39;,
+            restart=False,
+            print_Kpoints=False
+            )
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+determining grids from NK=10 (&lt;class &#39;int&#39;&gt;), NKdiv=None (&lt;class &#39;NoneType&#39;&gt;), NKFFT=1 (&lt;class &#39;NoneType&#39;&gt;)
+The grids were set to NKdiv=[10 10 10], NKFFT=[1 1 1], NKtot=[10 10 10]
+Berry curvature dipole (dimensionless)
+
+        | With Fermi sea integral. Eq(29) in `Ref &lt;https://www.nature.com/articles/s41524-021-00498-5&gt;`_
+        | Output: :math:`D_{\beta\delta} = \int [dk] \partial_\beta \Omega_\delta f`
+
+Grid is regular
+The set of k points is a Grid() with NKdiv=[10 10 10], NKFFT=[1 1 1], NKtot=[10 10 10]
+generating K_list
+Done in 0.013763904571533203 s
+excluding symmetry-equivalent K-points from initial grid
+Done in 0.04297304153442383 s
+Done in 0.043154001235961914 s
+K_list contains 1000 Irreducible points(100.0%) out of initial 10x10x10=1000 grid
+Done, sum of weights:1.0000000000000007
+symgroup : &lt;wannierberri.symmetry.Group object at 0x7f56cb96a0a0&gt;
+processing 1000 K points : in serial.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)
+time for processing   1000 K-points in serial:     9.0876 ; per K-point          0.0091 ; proc-sec per K-point          0.0091
+time1 =  0.03978538513183594
+Totally processed 1000 K-points
+determining grids from NK=10 (&lt;class &#39;int&#39;&gt;), NKdiv=None (&lt;class &#39;NoneType&#39;&gt;), NKFFT=1 (&lt;class &#39;NoneType&#39;&gt;)
+The grids were set to NKdiv=[10 10 10], NKFFT=[1 1 1], NKtot=[10 10 10]
+Berry curvature dipole (dimensionless)
+
+        | With Fermi sea integral. Eq(29) in `Ref &lt;https://www.nature.com/articles/s41524-021-00498-5&gt;`_
+        | Output: :math:`D_{\beta\delta} = \int [dk] \partial_\beta \Omega_\delta f`
+
+Grid is regular
+The set of k points is a Grid() with NKdiv=[10 10 10], NKFFT=[1 1 1], NKtot=[10 10 10]
+generating K_list
+Done in 0.09415769577026367 s
+excluding symmetry-equivalent K-points from initial grid
+Done in 0.02924966812133789 s
+Done in 0.029316425323486328 s
+K_list contains 1000 Irreducible points(100.0%) out of initial 10x10x10=1000 grid
+Done, sum of weights:1.0000000000000007
+symgroup : &lt;wannierberri.symmetry.Group object at 0x7f56caed8880&gt;
+processing 1000 K points : in serial.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)
+time for processing   1000 K-points in serial:    10.8592 ; per K-point          0.0109 ; proc-sec per K-point          0.0109
+time1 =  0.03904366493225098
+Totally processed 1000 K-points
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#read data
+Fe_BCD = result_Fe.results[&quot;BerryDipole&quot;].data
+Fe_sym_BCD = result_Fe_sym.results[&quot;BerryDipole&quot;].data
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#unsymmetrized
+#print zz component of berry dipole
+fig=plt.figure()
+plt.plot(Efermi_Fe,Fe_BCD[:,2,2],&#39;r&#39;,label=&quot;Unsymmetrized&quot;)
+plt.plot(Efermi_Fe,Fe_sym_BCD[:,2,2],&#39;b:&#39;,label=&quot;Symmetrized&quot;)
+plt.legend()
+plt.xlabel(&#39;Energy (eV)&#39;)
+plt.ylabel(&#39;Berry curvature dipole&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Text(0, 0.5, &#39;Berry curvature dipole&#39;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/tutorials_5_symmetrization_tutorial_symmetrization_29_1.png" src="../../_images/tutorials_5_symmetrization_tutorial_symmetrization_29_1.png" />
+</div>
+</div>
+<p>Symmetrized system gives us better results with low-density k-grid. But it still looks like not perfect zero. At some energy where have band intersections, we can see some little peaks come from digital error. There are very large Berry curvature and it’s divergent around band intersections. They may enlarge digital errors.</p>
+</section>
+</section>
+<section id="Have-fun!">
+<h1>Have fun!<a class="headerlink" href="#Have-fun!" title="Link to this heading"></a></h1>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Stepan Tsirkin.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
