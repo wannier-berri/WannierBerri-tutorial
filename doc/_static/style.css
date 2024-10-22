@@ -9,3 +9,15 @@ max-width: 1000px !important;
 .green {
     color:green;
 }
+
+.nboutput .output {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.jp-RenderedText {
+    margin-left: 0;
+    overflow: auto;
+    max-height: 600px;
+    max-width: 700px;
+}
