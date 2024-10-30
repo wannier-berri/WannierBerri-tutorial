@@ -6,3 +6,5 @@ sphinx-pyreverse
 sphinx_sitemap
 nbsphinx
 irrep
+sympy
+
