@@ -1,0 +1,1420 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spin Hall conductivity &mdash; Wannier Berri 1.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/style.css?v=88c5e859" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/nbsphinx-code-cells.css?v=2aa19091" />
+
+  
+    <link rel="shortcut icon" href="../../../_static/WB-logo.ico"/>
+    <link rel="canonical" href="https://tutorial.wannier-berri.org/tutorials/3_spin_hall/solution/tutorial_spin_hall.html" />
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=292eb321"></script>
+      <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within Wannier Berri 1.0.1 documentation"
+          href="../../../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="DIY tutorial" href="../../4_DIY/tutorial-wb-DIY-solution.html" />
+    <link rel="prev" title="WannierBerri advanced tutorial - Fermi surface and Fermi sea calculation of the Berry curvature dipole" href="../../2_fermi_sea_vs_fermi_surface/solution/tutorial_sea_vs_surface_solution.html" />
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #009C46" >
+
+          
+          
+          <a href="../../../index.html">
+            
+              <img src="../../../_static/tutorial.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+    
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../1_basic/tutorial-wb-basic-solution.html">Basic tutorial: Interpolating bands, Berry curvatures, and integrating them</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../2_fermi_sea_vs_fermi_surface/solution/tutorial_sea_vs_surface_solution.html">WannierBerri advanced tutorial - Fermi surface and Fermi sea calculation of the Berry curvature dipole</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Spin Hall conductivity</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Model,-band-structure">Model, band structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Static-spin-Hall-conductivity">Static spin Hall conductivity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Dynamic-spin-Hall-conductivity">Dynamic spin Hall conductivity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Spin-Berry-curvature">Spin Berry curvature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Generating-.sHu-and-.sIu-from-.mmn-and-.spn:-mmn2uHu">Generating .sHu and .sIu from .mmn and .spn: mmn2uHu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Further-questions">Further questions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../4_DIY/tutorial-wb-DIY-solution.html">DIY tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../5_symmetrization/tutorial_symmetrization-solution.html">Symmetrization of Wannier Hamiltonian and matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../6_wannierisation/wannierise.html">Wannierisation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../7_find_projections/find_projections.html">Finding initial projections based on symmetry indicators</a></li>
+</ul>
+
+    <a href="genindex.html">Index</a>
+    <a href="http://wannier-berri.org">Back to Wannier-Berri.org</a>
+  
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #009C46" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Wannier Berri</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Spin Hall conductivity</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="Spin-Hall-conductivity">
+<h1>Spin Hall conductivity<a class="headerlink" href="#Spin-Hall-conductivity" title="Link to this heading"></a></h1>
+<p>author: Jae-Mo Lihm (<a class="reference external" href="mailto:jaemo&#46;lihm&#37;&#52;&#48;gmail&#46;com">jaemo<span>&#46;</span>lihm<span>&#64;</span>gmail<span>&#46;</span>com</a>) and Minsu Ghim (<a class="reference external" href="mailto:minsu&#46;ghim&#46;physics&#37;&#52;&#48;gmail&#46;com">minsu<span>&#46;</span>ghim<span>&#46;</span>physics<span>&#64;</span>gmail<span>&#46;</span>com</a>)</p>
+<p>In this tutorial, we calculate the spin Berry curvature and the spin Hall conductivity of bcc Platinum. We compare the two methods for calculating the spin velocity matrix, which we call the “Qiao” method [1] and the “Ryoo” method [2].</p>
+<p>[1] <a class="reference external" href="https://journals.aps.org/prb/abstract/10.1103/PhysRevB.98.214402">J. Qiao et al, Phys. Rev. B 98, 214402 (2018)</a> [2] <a class="reference external" href="https://journals.aps.org/prb/abstract/10.1103/PhysRevB.99.235113">J. H. Ryoo et al, Phys. Rev. B 99, 235113 (2019)</a></p>
+<p>Both methods use the Kubo formula to calculate spin Hall conductivity under time-reversal symmetry:</p>
+<p><span class="math">\begin{equation}
+\sigma^{{\rm SHC}, \gamma}_{\alpha\beta} = \frac{-e\hbar}{N_k V_c}\sum_{\bf k}\sum_{n,m}\left(f_{n{\bf k}}-f_{m{\bf k}}\right)\frac{\textrm{Im}\left[\langle\psi_{n{\bf k}}\vert \frac{1}{2}\{ s^{\gamma}, v_\alpha \} \vert\psi_{m{\bf k}}\rangle\langle\psi_{m{\bf k}}\vert v_\beta\vert\psi_{n{\bf k}}\rangle\right]}{(\varepsilon_{n{\bf k}}-\varepsilon_{m{\bf k}})^2-(\hbar\omega+i\eta)^2}\,,
+\label{eq:shc}\tag{1}
+\end{equation}</span></p>
+<p>where <span class="math notranslate nohighlight">\(\alpha\)</span>, <span class="math notranslate nohighlight">\(\beta\)</span>, <span class="math notranslate nohighlight">\(\gamma\)</span> are respectively the direction of spin current, applied electric field, and spin polarisation.</p>
+<p>The “Ryoo” method requires <code class="docutils literal notranslate"><span class="pre">.chk</span></code>, <code class="docutils literal notranslate"><span class="pre">.eig</span></code>, <code class="docutils literal notranslate"><span class="pre">.mmn</span></code>, <code class="docutils literal notranslate"><span class="pre">.spn</span></code>, <code class="docutils literal notranslate"><span class="pre">.sHu</span></code>, and <code class="docutils literal notranslate"><span class="pre">.sIu</span></code> files to calculate the spin velocity matrix in (<span class="math">\ref{eq:shc}</span>), <span class="math notranslate nohighlight">\(\langle\psi_{n{\bf k}}\vert \frac{1}{2}\{ s^{\gamma}, v_\alpha \} \vert\psi_{m{\bf k}}\rangle\)</span>,from pw2wannier90.x, while the “Qiao” method does not use the last two files, and instead applies an approximation <span class="math notranslate nohighlight">\(\mathbf{1}=\sum_{l\in \it{ab\,initio}} \vert u_{l{\bf q}}\rangle\langle u_{l{\bf q}}\vert\)</span>. The <code class="docutils literal notranslate"><span class="pre">sHu</span></code>
+and <code class="docutils literal notranslate"><span class="pre">sIu</span></code> files are calculated by setting <code class="docutils literal notranslate"><span class="pre">write_sHu</span> <span class="pre">=</span> <span class="pre">.true.</span></code> and <code class="docutils literal notranslate"><span class="pre">write_sIu</span> <span class="pre">=</span> <span class="pre">.true.</span></code> to the <code class="docutils literal notranslate"><span class="pre">pw2wannier90.x</span></code> input file: see <code class="docutils literal notranslate"><span class="pre">data_Pt/pw2wan.in</span></code>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Preliminary (Do only once)
+%load_ext autoreload
+%autoreload 2
+
+# Set environment variables - not mandatory but recommended
+import os
+os.environ[&#39;OPENBLAS_NUM_THREADS&#39;] = &#39;1&#39;
+os.environ[&#39;MKL_NUM_THREADS&#39;] = &#39;1&#39;
+
+
+import wannierberri as wberri
+import numpy as np
+import scipy
+import matplotlib.pyplot as plt
+
+#  This block is needed if you run this cell for a second time
+#  because one cannot initiate two parallel environments at a time
+try:
+    parallel.shutdown()
+except NameError:
+    pass
+
+# parallel = wberri.Parallel(num_cpus=1, progress_step_percent=10)
+parallel = wberri.Serial(progress_step_percent=10)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+The autoreload extension is already loaded. To reload it, use:
+  %reload_ext autoreload
+No need to shutdown Serial()
+</pre></div></div>
+</div>
+<section id="Model,-band-structure">
+<h2>Model, band structure<a class="headerlink" href="#Model,-band-structure" title="Link to this heading"></a></h2>
+<p>We load the system from a Wannier90 output. Note the arguments <code class="docutils literal notranslate"><span class="pre">SHCryoo=True</span></code> and <code class="docutils literal notranslate"><span class="pre">SHCqiao=True</span></code> which are required to compute spin Hall conductivity using the Ryoo and Qiao methods, respectively.</p>
+<p>We set symmetry using the <code class="docutils literal notranslate"><span class="pre">set_symmetry_from_structure</span></code> method, which calls spglib to automatically determine the symmetry of the system.</p>
+<!-- We also symmetrize the system. See `data_Pt/Pt.win` file and check that the initial projections are correct. For details, refer to the symmetrization tutorial. --><div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>system = wberri.System_w90(&quot;data_Pt/Pt&quot;, berry=True, SHCryoo=True, SHCqiao=True)
+system.set_structure([[0., 0., 0.]], [&quot;Pt&quot;])
+system.set_symmetry_from_structure()
+
+efermi = 18.1605
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+using fortio to read
+Reading restart information from file data_Pt/Pt.chk :
+Time to read .chk : 0.15277957916259766
+Time for MMN.__init__() : 0.8216688632965088 , read : 0.8122344017028809 , headstring 0.00943446159362793
+----------
+ SPN
+---------
+
+using fortio to read
+reading data_Pt/Pt.spn : Created on 13May2022 at 15:23:23
+----------
+ SPN OK
+---------
+
+----------
+  sIu
+---------
+using fortio to read
+reading data_Pt/Pt.sIu : &lt;Created on 13May2022 at 15:23:23&gt;
+----------
+ sIu OK
+---------
+
+----------
+  sHu
+---------
+using fortio to read
+reading data_Pt/Pt.sHu : &lt;Created on 13May2022 at 15:23:23&gt;
+----------
+ sHu OK
+---------
+
+time for FFT_q_to_R : 1.6445608139038086 s
+using ws_distance
+irvec_new_all shape (93,)
+using ws_dist for Ham_R
+using ws_dist for AA_R
+using ws_dist for SS_R
+using ws_dist for SA_R
+using ws_dist for SHA_R
+using ws_dist for SR_R
+using ws_dist for SH_R
+using ws_dist for SHR_R
+Number of wannier functions: 18
+Number of R points: 93
+Recommended size of FFT grid [4 4 4]
+Real-space lattice:
+ [[-1.95599772  0.          1.95599772]
+ [ 0.          1.95599772  1.95599772]
+ [-1.95599772  1.95599772  0.        ]]
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>path = wberri.Path(
+    system,
+    k_nodes=[
+        [0.25, 0.75, 0.50], # W
+        [0.50, 0.50, 0.50], # L
+        [0.00, 0.00, 0.00], # Gamma
+        [0.50, 0.00, 0.50], # X
+        [0.50, 0.25, 0.75], # W
+        [0.00, 0.00, 0.00], # Gamma
+    ],
+    labels=[&quot;W&quot;, &quot;L&quot;, &quot;$\Gamma$&quot;, &quot;X&quot;, &quot;W&quot;, &quot;$\Gamma$&quot;],
+    length=300,
+)
+
+from wannierberri import calculators as calc
+calculators = {}
+calculators[&quot;tabulate&quot;] = calc.TabulatorAll(
+    {&quot;Energy&quot;: calc.tabulate.Energy()},
+    ibands=np.arange(system.num_wann),
+    mode=&quot;path&quot;,
+)
+
+path_result = wberri.run(
+    system,
+    grid=path,
+    calculators=calculators,
+    parallel=parallel,
+    print_Kpoints = False,
+)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-cyan-intense-fg ansi-bold">calculator not described
+</span>
+Calculation along a path - checking calculators for compatibility
+tabulate &lt;wannierberri.calculators.TabulatorAll object at 0x7fbc89a4b130&gt;
+All calculators are compatible
+Symmetrization switched off for Path
+The set of k points is a Path() with 322 points and labels {0: &#39;W&#39;, 54: &#39;L&#39;, 120: &#39;$\\Gamma$&#39;, 197: &#39;X&#39;, 235: &#39;W&#39;, 321: &#39;$\\Gamma$&#39;}
+WARNING : symmetry is not used for a tabulation along path
+generating K_list
+Done
+Done, sum of weights:322.0
+symgroup : None
+processing 322 K points : in serial.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)
+                  32              0.1                   1.0
+                  64              0.2                   0.8
+                  96              0.3                   0.7
+                 128              0.4                   0.6
+                 160              0.5                   0.5
+                 192              0.6                   0.4
+                 224              0.7                   0.3
+                 256              0.8                   0.2
+                 288              0.9                   0.1
+                 320              1.0                   0.0
+time for processing    322 K-points in serial:     1.0007 ; per K-point          0.0031 ; proc-sec per K-point          0.0031
+time1 =  0.052553415298461914
+Totally processed 322 K-points
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fig = path_result.results[&quot;tabulate&quot;].plot_path_fat(path, close_fig=False, show_fig=False)
+
+ax = fig.get_axes()[0]
+ax.axhline(efermi, c=&quot;r&quot;, ls=&quot;--&quot;)
+plt.show(fig)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../_images/tutorials_3_spin_hall_solution_tutorial_spin_hall_8_0.png" src="../../../_images/tutorials_3_spin_hall_solution_tutorial_spin_hall_8_0.png" />
+</div>
+</div>
+</section>
+<section id="Static-spin-Hall-conductivity">
+<h2>Static spin Hall conductivity<a class="headerlink" href="#Static-spin-Hall-conductivity" title="Link to this heading"></a></h2>
+<p>We calculate the static (i.e. DC) spin Hall conductivity. We fix <span class="math notranslate nohighlight">\(\omega\)</span> to 0 and scan the Fermi energy.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[165]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from wannierberri import calculators as calc
+
+efermi_list = np.linspace(efermi - 1.0, efermi + 1.0, 101, True)
+
+kwargs = dict(
+    Efermi=efermi_list,
+    omega=np.array([0.]),
+    smr_fixed_width = 0.1, # Smearing for frequency in eV
+    kBT = 0.026, # Smearing for Fermi level (Fermi-Dirac factor) in eV (not Kelvin)
+)
+
+calculators = dict(
+    SHC_ryoo = calc.dynamic.SHC(SHC_type=&quot;ryoo&quot;, **kwargs),
+    SHC_qiao = calc.dynamic.SHC(SHC_type=&quot;qiao&quot;, **kwargs),
+)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-cyan-intense-fg ansi-bold">a more laconic implementation of the energy factor
+</span>
+<span class="ansi-cyan-intense-fg ansi-bold">a more laconic implementation of the energy factor
+</span>
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[166]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>nk = 30
+grid = wberri.Grid(system, NK=nk)
+result = wberri.run(
+    system,
+    grid=grid,
+    calculators=calculators,
+    parallel=parallel,
+    print_Kpoints = False,
+)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+determining grids from NK=30 (&lt;class &#39;int&#39;&gt;), NKdiv=None (&lt;class &#39;NoneType&#39;&gt;), NKFFT=None (&lt;class &#39;NoneType&#39;&gt;)
+Minimal symmetric FFT grid :  [4 4 4]
+The grids were set to NKdiv=[6 6 6], NKFFT=[5 5 5], NKtot=[30 30 30]
+Grid is regular
+The set of k points is a Grid() with NKdiv=[6 6 6], NKFFT=[5 5 5], NKtot=[30 30 30]
+generating K_list
+Done in 0.005416393280029297 s
+excluding symmetry-equivalent K-points from initial grid
+Done in 0.1416611671447754 s
+Done in 0.14187836647033691 s
+K_list contains 16 Irreducible points(7.41%) out of initial 6x6x6=216 grid
+Done, sum of weights:0.9999999999999997
+symgroup : &lt;wannierberri.symmetry.Group object at 0x7ff9bc556490&gt;
+processing 16 K points : in serial.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)
+                   2             13.7                  95.7
+                   4             26.2                  78.7
+                   6             41.2                  68.7
+                   8             57.4                  57.4
+                  10             74.9                  45.0
+                  12             97.6                  32.5
+                  14            121.8                  17.4
+                  16            138.2                   0.0
+time for processing     16 K-points in serial:   139.6814 ; per K-point          8.7301 ; proc-sec per K-point          8.7301
+time1 =  0.008065938949584961
+Totally processed 16 K-points
+</pre></div></div>
+</div>
+<p>The SHC data has 5 indices: 1. The Fermi level index, 2. The frequency index, 3. The spin current direction index, 4. The electric field direction index, and 5. The spin polarization index.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[167]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>print(&quot;result.results[\&quot;SHC_ryoo\&quot;].data.shape = &quot;, result.results[&quot;SHC_ryoo&quot;].data.shape)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+result.results[&#34;SHC_ryoo&#34;].data.shape =  (101, 1, 3, 3, 3)
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[168]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>shc_ryoo = result.results[&quot;SHC_ryoo&quot;].data[:, 0, 0, 1, 2]
+shc_qiao = result.results[&quot;SHC_qiao&quot;].data[:, 0, 0, 1, 2]
+
+fig, axes = plt.subplots(1, 2, figsize=(12, 4))
+axes[0].plot(efermi_list, shc_ryoo.real, label=&quot;Ryoo&quot;)
+axes[0].plot(efermi_list, shc_qiao.real, label=&quot;Qiao&quot;)
+axes[1].plot(efermi_list, shc_ryoo.imag)
+axes[1].plot(efermi_list, shc_qiao.imag)
+for ax in axes:
+    ax.set_xlabel(&quot;Efermi (eV)&quot;)
+    ax.axhline(0, c=&quot;k&quot;)
+axes[0].set_ylabel(&quot;Re(SHC)&quot;)
+axes[1].set_ylabel(&quot;Im(SHC)&quot;)
+axes[0].legend()
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../_images/tutorials_3_spin_hall_solution_tutorial_spin_hall_14_0.png" src="../../../_images/tutorials_3_spin_hall_solution_tutorial_spin_hall_14_0.png" />
+</div>
+</div>
+</section>
+<section id="Dynamic-spin-Hall-conductivity">
+<h2>Dynamic spin Hall conductivity<a class="headerlink" href="#Dynamic-spin-Hall-conductivity" title="Link to this heading"></a></h2>
+<p>We calculate the dynamic (i.e. frequency-dependent, AC) spin Hall conductivity. We fix the Fermi energy to the value <code class="docutils literal notranslate"><span class="pre">efermi</span></code> and scan the frequency in the range <code class="docutils literal notranslate"><span class="pre">omega</span></code>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">smr_fixed_width</span></code> parameter controls the smearing of the frequency-dependent terms (delta functions and principal values).</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[169]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from wannierberri import calculators as calc
+
+omega = np.linspace(0, 4, 101, True)
+
+kwargs = dict(
+    Efermi=np.array([efermi]),
+    omega=omega,
+    smr_fixed_width = 0.1, # Smearing for frequency in eV
+    kBT = 0.026, # Smearing for Fermi level (Fermi-Dirac factor)
+)
+
+calculators = dict(
+    SHC_ryoo = calc.dynamic.SHC(SHC_type=&quot;ryoo&quot;, **kwargs),
+    SHC_qiao = calc.dynamic.SHC(SHC_type=&quot;qiao&quot;, **kwargs),
+)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-cyan-intense-fg ansi-bold">a more laconic implementation of the energy factor
+</span>
+<span class="ansi-cyan-intense-fg ansi-bold">a more laconic implementation of the energy factor
+</span>
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[170]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>nk = 30
+grid = wberri.Grid(system, NK=nk)
+result = wberri.run(
+    system,
+    grid=grid,
+    calculators=calculators,
+    parallel=parallel,
+    print_Kpoints = False,
+)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+determining grids from NK=30 (&lt;class &#39;int&#39;&gt;), NKdiv=None (&lt;class &#39;NoneType&#39;&gt;), NKFFT=None (&lt;class &#39;NoneType&#39;&gt;)
+Minimal symmetric FFT grid :  [4 4 4]
+The grids were set to NKdiv=[6 6 6], NKFFT=[5 5 5], NKtot=[30 30 30]
+Grid is regular
+The set of k points is a Grid() with NKdiv=[6 6 6], NKFFT=[5 5 5], NKtot=[30 30 30]
+generating K_list
+Done in 0.003348112106323242 s
+excluding symmetry-equivalent K-points from initial grid
+Done in 0.1131124496459961 s
+Done in 0.11329960823059082 s
+K_list contains 16 Irreducible points(7.41%) out of initial 6x6x6=216 grid
+Done, sum of weights:0.9999999999999997
+symgroup : &lt;wannierberri.symmetry.Group object at 0x7ff9bc556490&gt;
+processing 16 K points : in serial.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)
+                   2              9.5                  66.4
+                   4             19.2                  57.6
+                   6             29.1                  48.5
+                   8             39.3                  39.3
+                  10             48.4                  29.1
+                  12             57.9                  19.3
+                  14             67.5                   9.6
+                  16             76.2                   0.0
+time for processing     16 K-points in serial:    77.2919 ; per K-point          4.8307 ; proc-sec per K-point          4.8307
+time1 =  0.008670330047607422
+Totally processed 16 K-points
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[171]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>shc_ryoo = result.results[&quot;SHC_ryoo&quot;].data[0, :, 0, 1, 2]
+shc_qiao = result.results[&quot;SHC_qiao&quot;].data[0, :, 0, 1, 2]
+
+fig, axes = plt.subplots(1, 2, figsize=(12, 4))
+axes[0].plot(omega, shc_ryoo.real, label=&quot;Ryoo&quot;)
+axes[0].plot(omega, shc_qiao.real, label=&quot;Qiao&quot;)
+axes[1].plot(omega, shc_ryoo.imag)
+axes[1].plot(omega, shc_qiao.imag)
+for ax in axes:
+    ax.set_xlabel(&quot;omega (eV)&quot;)
+    ax.axhline(0, c=&quot;k&quot;)
+axes[0].set_ylabel(&quot;Re(SHC)&quot;)
+axes[1].set_ylabel(&quot;Im(SHC)&quot;)
+axes[0].legend()
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../_images/tutorials_3_spin_hall_solution_tutorial_spin_hall_18_0.png" src="../../../_images/tutorials_3_spin_hall_solution_tutorial_spin_hall_18_0.png" />
+</div>
+</div>
+</section>
+<section id="Spin-Berry-curvature">
+<h2>Spin Berry curvature<a class="headerlink" href="#Spin-Berry-curvature" title="Link to this heading"></a></h2>
+<p>To understand the microscopic origin of the spin Hall conductivity, one may inspect the k-resolved spin Berry curvature. Eq. (<span class="math">\ref{eq:shc}</span>) is recast into the sum of a Berry-curvature-like term, the spin Berry curvature.</p>
+<p>The spin Berry curvature is</p>
+<dl class="simple">
+<dt>:nbsphinx-math:<a href="#id1"><span class="problematic" id="id2">`</span></a>begin{equation}</dt><dd><p>Omega^{n, gamma}_{alphabeta}({bf k}) = -sum_{m neq n}frac{2textrm{Im}left[langlepsi_{n{bf k}}vert frac{1}{2}{ s^{gamma}, <a href="#id11"><span class="problematic" id="id12">v_</span></a>alpha } vertpsi_{m{bf k}}ranglelanglepsi_{m{bf k}}vert <a href="#id13"><span class="problematic" id="id14">v_</span></a>betavertpsi_{n{bf k}}rangleright]}{(varepsilon_{n{bf k}}-varepsilon_{m{bf k}})^2-(ieta)^2},,
+label{eq:sbc}tag{2}</p>
+</dd>
+</dl>
+<p>end{equation}`</p>
+<p>and the k-resolved spin Berry curvature summed over the band index is</p>
+<dl class="simple">
+<dt>:nbsphinx-math:<a href="#id3"><span class="problematic" id="id4">`</span></a>begin{equation}</dt><dd><p>Omega^{gamma}_{alphabeta}({bf k}) = sum_{n}f_{n{bf k}}Omega^{n, gamma}_{alphabeta}({bf k}),.
+label{eq:sbc_k_resolved}tag{3}</p>
+</dd>
+<dt>end{equation}` :nbsphinx-math:<a href="#id5"><span class="problematic" id="id6">`</span></a>begin{equation}</dt><dd><p>sigma^{{rm SHC}, gamma}_{alphabeta} = frac{-ehbar}{N_kOmega_c}sum_{bf k}Omega^{gamma}_{alphabeta}({bf k})
+label{eq:shc_sbc}tag{4}</p>
+</dd>
+</dl>
+<p>end{equation}`</p>
+<p>Therefore, where in the k-space contributes to the total SHC can be investigated using the k-resolved spin Berry curvature.</p>
+<p>Here, we compute the spin Berry curvature again using the Ryoo method and the Qiao method. Note that we pass the spin curren type as a <code class="docutils literal notranslate"><span class="pre">kwargs_formula</span></code> to the calculator, e.g. <code class="docutils literal notranslate"><span class="pre">kwargs_formula=dict(spin_current_type=&quot;ryoo&quot;)</span></code>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[113]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from wannierberri import calculators as calc
+calculators = {}
+calculators[&quot;tabulate&quot;] = calc.TabulatorAll(
+     {
+         &quot;Energy&quot;: calc.tabulate.Energy(),
+         &#39;spin_berry_ryoo&#39;: calc.tabulate.SpinBerry(kwargs_formula=dict(spin_current_type=&quot;ryoo&quot;), degen_thresh=1e-2),
+         &#39;spin_berry_qiao&#39;: calc.tabulate.SpinBerry(kwargs_formula=dict(spin_current_type=&quot;qiao&quot;), degen_thresh=1e-2),
+     },
+    ibands=np.arange(system.num_wann),
+    mode=&quot;path&quot;,
+ )
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-cyan-intense-fg ansi-bold">calculator not described
+</span>
+<span class="ansi-cyan-intense-fg ansi-bold">calculator not described
+</span>
+<span class="ansi-cyan-intense-fg ansi-bold">calculator not described
+</span>
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[114]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>path = wberri.Path(
+    system,
+    k_nodes=[
+        [0.25, 0.75, 0.50], # W
+        [0.50, 0.50, 0.50], # L
+        [0.00, 0.00, 0.00], # Gamma
+        [0.50, 0.00, 0.50], # X
+        [0.50, 0.25, 0.75], # W
+        [0.00, 0.00, 0.00], # Gamma
+    ],
+    labels=[&quot;W&quot;, &quot;L&quot;, &quot;$\Gamma$&quot;, &quot;X&quot;, &quot;W&quot;, &quot;$\Gamma$&quot;],
+    length=600,
+)
+
+result_spin_berry = wberri.run(
+    system,
+    grid=path,
+    calculators=calculators,
+    parallel = parallel,
+    print_Kpoints = False,
+)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Calculation along a path - checking calculators for compatibility
+tabulate &lt;wannierberri.calculators.TabulatorAll object at 0x7ff9bb6850a0&gt;
+All calculators are compatible
+Symmetrization switched off for Path
+The set of k points is a Path() with 643 points and labels {0: &#39;W&#39;, 108: &#39;L&#39;, 241: &#39;$\\Gamma$&#39;, 394: &#39;X&#39;, 471: &#39;W&#39;, 642: &#39;$\\Gamma$&#39;}
+WARNING : symmetry is not used for a tabulation along path
+generating K_list
+Done
+Done, sum of weights:643.0
+symgroup : None
+processing 643 K points : in serial.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)
+                  64              2.6                  23.6
+                 128              5.3                  21.5
+                 192              8.5                  19.9
+                 256             11.2                  16.9
+                 320             13.5                  13.6
+                 384             16.0                  10.8
+                 448             18.4                   8.0
+                 512             20.7                   5.3
+                 576             23.2                   2.7
+                 640             25.5                   0.1
+time for processing    643 K-points in serial:    25.6413 ; per K-point          0.0399 ; proc-sec per K-point          0.0399
+time1 =  0.17302536964416504
+Totally processed 643 K-points
+</pre></div></div>
+</div>
+<p>Now we sum over bands to compute the k-resolved spin Berry curvature:</p>
+<div class="math notranslate nohighlight">
+\[\Omega^{\gamma}_{\alpha\beta}({\bf k}) = \sum_{n \in {\rm occ.}} \Omega^{n, \gamma}_{\alpha\beta}({\bf k})\]</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[116]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>nk = path.K_list.shape[0]
+spin_berry_ryoo = np.zeros((nk, 3, 3, 3))
+spin_berry_qiao = np.zeros((nk, 3, 3, 3))
+
+for iband in range(system.num_wann):
+    # Get the data for iband-th band
+    e = result_spin_berry.results[&quot;tabulate&quot;].get_data(&quot;Energy&quot;, iband)
+    spin_berry_ryoo_nk = result_spin_berry.results[&quot;tabulate&quot;].get_data(&quot;spin_berry_ryoo&quot;, iband)
+    spin_berry_qiao_nk = result_spin_berry.results[&quot;tabulate&quot;].get_data(&quot;spin_berry_qiao&quot;, iband)
+
+    # Select k-point indices where the iband-th band is occupied
+    inds_occupied = e &lt; efermi
+
+    # Add the spin Berry curvature of those bands
+    spin_berry_ryoo[inds_occupied] += spin_berry_ryoo_nk[inds_occupied]
+    spin_berry_qiao[inds_occupied] += spin_berry_qiao_nk[inds_occupied]
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[117]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def get_signed_log10(x):
+    return np.log10(abs(x)) * np.sign(x)
+
+kline = path.getKline()
+plt.plot(kline, get_signed_log10(spin_berry_ryoo[:, 0, 1, 2]), &quot;k-&quot;, label=&#39;Ryoo&#39;)
+plt.plot(kline, get_signed_log10(spin_berry_qiao[:, 0, 1, 2]), &quot;r--&quot;, label=&#39;Qiao&#39;)
+
+for i in path.labels.keys():
+    plt.axvline(kline[i], c=&quot;k&quot;, lw=1)
+plt.xticks([kline[i] for i in path.labels.keys()], path.labels.values())
+plt.xlim([min(kline), max(kline)])
+plt.axhline(0, c=&quot;k&quot;, lw=1)
+plt.legend()
+plt.title(&quot;$\mathrm{log}_{10} \Omega_\mathbf{k}$&quot;)
+
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../_images/tutorials_3_spin_hall_solution_tutorial_spin_hall_25_0.png" src="../../../_images/tutorials_3_spin_hall_solution_tutorial_spin_hall_25_0.png" />
+</div>
+</div>
+<p>You can find that the spin Berry curvature calculated using the Qiao method shows more “wiggles” than the Ryoo method. This numerical difference has been first reported in <a class="reference external" href="https://journals.aps.org/prb/abstract/10.1103/PhysRevB.104.014412">T. Ng et al, PRB 104 014412 (2021)</a>:</p>
+<blockquote>
+<div><p>It is worth noting that there is jittering along Γ-Z, which occurs in the same path in WTe2 using the same method [22] (Qiao et al). However, such jittering disappears and the spin Berry curvature along Γ-Z becomes a smooth function using the method in Ref. [45] (Ryoo et al).</p>
+</div></blockquote>
+</section>
+<section id="Generating-.sHu-and-.sIu-from-.mmn-and-.spn:-mmn2uHu">
+<h2>Generating .sHu and .sIu from .mmn and .spn: mmn2uHu<a class="headerlink" href="#Generating-.sHu-and-.sIu-from-.mmn-and-.spn:-mmn2uHu" title="Link to this heading"></a></h2>
+<p>Even if you have not obtained .shu and .sIu from an ab initio code, you can make them from the overlap matrix and the spin matrix. Wannierberri provides the utility <code class="docutils literal notranslate"><span class="pre">wannierberri.utils.mmn2uHu</span></code>, which calculated the matrices <code class="docutils literal notranslate"><span class="pre">.uHu</span></code>, <code class="docutils literal notranslate"><span class="pre">.uIu</span></code>, <code class="docutils literal notranslate"><span class="pre">.sHu</span></code>, and/or <code class="docutils literal notranslate"><span class="pre">.sIu</span></code> from the <code class="docutils literal notranslate"><span class="pre">.mmn</span></code>, <code class="docutils literal notranslate"><span class="pre">.spn</span></code>, <code class="docutils literal notranslate"><span class="pre">.eig</span></code> matrices, and also reduces the number of bands in <code class="docutils literal notranslate"><span class="pre">.amn</span></code>, <code class="docutils literal notranslate"><span class="pre">.mmn</span></code>, <code class="docutils literal notranslate"><span class="pre">.eig</span></code> and <code class="docutils literal notranslate"><span class="pre">.spn</span></code> files, by means of the sum-over-states formula</p>
+<dl class="simple">
+<dt>:nbsphinx-math:<a href="#id7"><span class="problematic" id="id8">`</span></a>begin{equation}</dt><dd><p>langle u_{m{bf q}}verthat{s}hat{H}_{bf q}vert u_{n{bf q}+mathbf{b}}rangle approx sum_l^{l_{rm max}}  left(s_{lm}({bf q})right)^* E_{l{bf q}}   M_{ln}^{mathbf{b}}({bf q}),.</p>
+</dd>
+</dl>
+<p>label{eq:sHu}tag{5}
+end{equation}`</p>
+<dl class="simple">
+<dt>:nbsphinx-math:<a href="#id9"><span class="problematic" id="id10">`</span></a>begin{equation}</dt><dd><p>langle u_{m{bf q}}verthat{s}vert u_{n{bf q}+mathbf{b}}rangle approx sum_l^{l_{rm max}}  left(s_{lm}({bf q})right)^*   M_{ln}^{mathbf{b}}({bf q}),.</p>
+</dd>
+</dl>
+<p>label{eq:sIu}tag{6}
+end{equation}`</p>
+<p>Here, <span class="math notranslate nohighlight">\(l_{\rm max}\)</span> cannot exceed the number of bands included in the Wannier90 calculation (i.e. the <code class="docutils literal notranslate"><span class="pre">num_bands</span></code> parameter in <code class="docutils literal notranslate"><span class="pre">Pt.win</span></code>).</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">mmn2uHu</span></code> utility can be particularly useful when the calculation of <code class="docutils literal notranslate"><span class="pre">sHu</span></code> and <code class="docutils literal notranslate"><span class="pre">sIu</span></code> files are not implemented in the DFT code you are using.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from wannierberri.utils import mmn2uHu as mmn2uHu
+os.chdir(&quot;data_Pt&quot;)
+mmn2uHu.run_mmn2uHu(PREFIX=&quot;Pt&quot;, writeSHU=True, writeSIU=True, NBout=18, NBsum=24)
+#In case of direct execution of mmn2uHu module,
+#python3 -m wannierberri.utils.mmn2uHu Pt NBout=18,NBsum=24,targets=sHu,sIu
+os.chdir(&quot;..&quot;)
+
+# Rename sHu and sIu files
+import shutil
+shutil.move(&quot;reduced_NB=24/Pt_nbs=24.sHu&quot;, &quot;reduced_NB=24/Pt.sHu&quot;)
+shutil.move(&quot;reduced_NB=24/Pt_nbs=24.sIu&quot;, &quot;reduced_NB=24/Pt.sIu&quot;)
+
+# Copy chk and spn files
+shutil.copyfile(&quot;Pt.chk&quot;, &quot;reduced_NB=24/Pt.chk&quot;)
+shutil.copyfile(&quot;Pt.spn&quot;, &quot;reduced_NB=24/Pt.spn&quot;)
+
+os.chdir(&quot;..&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+----------
+ MMN  read
+---------
+
+k-point 1 of 64
+k-point 2 of 64
+k-point 3 of 64
+k-point 4 of 64
+k-point 5 of 64
+k-point 6 of 64
+k-point 7 of 64
+k-point 8 of 64
+k-point 9 of 64
+k-point 10 of 64
+k-point 11 of 64
+k-point 12 of 64
+k-point 13 of 64
+k-point 14 of 64
+k-point 15 of 64
+k-point 16 of 64
+k-point 17 of 64
+k-point 18 of 64
+k-point 19 of 64
+k-point 20 of 64
+k-point 21 of 64
+k-point 22 of 64
+k-point 23 of 64
+k-point 24 of 64
+k-point 25 of 64
+k-point 26 of 64
+k-point 27 of 64
+k-point 28 of 64
+k-point 29 of 64
+k-point 30 of 64
+k-point 31 of 64
+k-point 32 of 64
+k-point 33 of 64
+k-point 34 of 64
+k-point 35 of 64
+k-point 36 of 64
+k-point 37 of 64
+k-point 38 of 64
+k-point 39 of 64
+k-point 40 of 64
+k-point 41 of 64
+k-point 42 of 64
+k-point 43 of 64
+k-point 44 of 64
+k-point 45 of 64
+k-point 46 of 64
+k-point 47 of 64
+k-point 48 of 64
+k-point 49 of 64
+k-point 50 of 64
+k-point 51 of 64
+k-point 52 of 64
+k-point 53 of 64
+k-point 54 of 64
+k-point 55 of 64
+k-point 56 of 64
+k-point 57 of 64
+k-point 58 of 64
+k-point 59 of 64
+k-point 60 of 64
+k-point 61 of 64
+k-point 62 of 64
+k-point 63 of 64
+k-point 64 of 64
+----------
+ MMN  read - OK
+---------
+
+k-point 0 of 64
+k-point 1 of 64
+k-point 2 of 64
+k-point 3 of 64
+k-point 4 of 64
+k-point 5 of 64
+k-point 6 of 64
+k-point 7 of 64
+k-point 8 of 64
+k-point 9 of 64
+k-point 10 of 64
+k-point 11 of 64
+k-point 12 of 64
+k-point 13 of 64
+k-point 14 of 64
+k-point 15 of 64
+k-point 16 of 64
+k-point 17 of 64
+k-point 18 of 64
+k-point 19 of 64
+k-point 20 of 64
+k-point 21 of 64
+k-point 22 of 64
+k-point 23 of 64
+k-point 24 of 64
+k-point 25 of 64
+k-point 26 of 64
+k-point 27 of 64
+k-point 28 of 64
+k-point 29 of 64
+k-point 30 of 64
+k-point 31 of 64
+k-point 32 of 64
+k-point 33 of 64
+k-point 34 of 64
+k-point 35 of 64
+k-point 36 of 64
+k-point 37 of 64
+k-point 38 of 64
+k-point 39 of 64
+k-point 40 of 64
+k-point 41 of 64
+k-point 42 of 64
+k-point 43 of 64
+k-point 44 of 64
+k-point 45 of 64
+k-point 46 of 64
+k-point 47 of 64
+k-point 48 of 64
+k-point 49 of 64
+k-point 50 of 64
+k-point 51 of 64
+k-point 52 of 64
+k-point 53 of 64
+k-point 54 of 64
+k-point 55 of 64
+k-point 56 of 64
+k-point 57 of 64
+k-point 58 of 64
+k-point 59 of 64
+k-point 60 of 64
+k-point 61 of 64
+k-point 62 of 64
+k-point 63 of 64
+----------
+ MMN OK
+---------
+
+----------
+ AMN
+---------
+
+AMN size= (27648, 2)
+24 18 64
+----------
+ AMN  - OK
+---------
+
+[(&#39;uHu&#39;, False)]
+----------
+  uHu  NBsum=24
+---------
+uHu from mmn red to 24 sum 24 bnd 2022-05-16T23:29:17.629221
+60
+using scipy.io to write
+k-point 1 of 64
+k-point 2 of 64
+k-point 3 of 64
+k-point 4 of 64
+k-point 5 of 64
+k-point 6 of 64
+k-point 7 of 64
+k-point 8 of 64
+k-point 9 of 64
+k-point 10 of 64
+k-point 11 of 64
+k-point 12 of 64
+k-point 13 of 64
+k-point 14 of 64
+k-point 15 of 64
+k-point 16 of 64
+k-point 17 of 64
+k-point 18 of 64
+k-point 19 of 64
+k-point 20 of 64
+k-point 21 of 64
+k-point 22 of 64
+k-point 23 of 64
+k-point 24 of 64
+k-point 25 of 64
+k-point 26 of 64
+k-point 27 of 64
+k-point 28 of 64
+k-point 29 of 64
+k-point 30 of 64
+k-point 31 of 64
+k-point 32 of 64
+k-point 33 of 64
+k-point 34 of 64
+k-point 35 of 64
+k-point 36 of 64
+k-point 37 of 64
+k-point 38 of 64
+k-point 39 of 64
+k-point 40 of 64
+k-point 41 of 64
+k-point 42 of 64
+k-point 43 of 64
+k-point 44 of 64
+k-point 45 of 64
+k-point 46 of 64
+k-point 47 of 64
+k-point 48 of 64
+k-point 49 of 64
+k-point 50 of 64
+k-point 51 of 64
+k-point 52 of 64
+k-point 53 of 64
+k-point 54 of 64
+k-point 55 of 64
+k-point 56 of 64
+k-point 57 of 64
+k-point 58 of 64
+k-point 59 of 64
+k-point 60 of 64
+k-point 61 of 64
+k-point 62 of 64
+k-point 63 of 64
+k-point 64 of 64
+----------
+ uHu OK
+---------
+
+----------
+ SPN
+---------
+
+using fortio to read
+Created on 13May2022 at 15:23:23
+using scipy.io to write
+----------
+ SPN OK
+---------
+
+[(&#39;sHu&#39;, False), (&#39;sIu&#39;, False)]
+----------
+  sHu  NBsum=24
+---------
+sHu from mmn red to 24 sum 24 bnd 2022-05-16T23:29:18.531152
+60
+using scipy.io to write
+k-point 1 of 64
+k-point 2 of 64
+k-point 3 of 64
+k-point 4 of 64
+k-point 5 of 64
+k-point 6 of 64
+k-point 7 of 64
+k-point 8 of 64
+k-point 9 of 64
+k-point 10 of 64
+k-point 11 of 64
+k-point 12 of 64
+k-point 13 of 64
+k-point 14 of 64
+k-point 15 of 64
+k-point 16 of 64
+k-point 17 of 64
+k-point 18 of 64
+k-point 19 of 64
+k-point 20 of 64
+k-point 21 of 64
+k-point 22 of 64
+k-point 23 of 64
+k-point 24 of 64
+k-point 25 of 64
+k-point 26 of 64
+k-point 27 of 64
+k-point 28 of 64
+k-point 29 of 64
+k-point 30 of 64
+k-point 31 of 64
+k-point 32 of 64
+k-point 33 of 64
+k-point 34 of 64
+k-point 35 of 64
+k-point 36 of 64
+k-point 37 of 64
+k-point 38 of 64
+k-point 39 of 64
+k-point 40 of 64
+k-point 41 of 64
+k-point 42 of 64
+k-point 43 of 64
+k-point 44 of 64
+k-point 45 of 64
+k-point 46 of 64
+k-point 47 of 64
+k-point 48 of 64
+k-point 49 of 64
+k-point 50 of 64
+k-point 51 of 64
+k-point 52 of 64
+k-point 53 of 64
+k-point 54 of 64
+k-point 55 of 64
+k-point 56 of 64
+k-point 57 of 64
+k-point 58 of 64
+k-point 59 of 64
+k-point 60 of 64
+k-point 61 of 64
+k-point 62 of 64
+k-point 63 of 64
+k-point 64 of 64
+----------
+ sHu OK
+---------
+
+----------
+  sIu  NBsum=24
+---------
+sIu from mmn red to 24 sum 24 bnd 2022-05-16T23:29:18.929873
+60
+using scipy.io to write
+k-point 1 of 64
+k-point 2 of 64
+k-point 3 of 64
+k-point 4 of 64
+k-point 5 of 64
+k-point 6 of 64
+k-point 7 of 64
+k-point 8 of 64
+k-point 9 of 64
+k-point 10 of 64
+k-point 11 of 64
+k-point 12 of 64
+k-point 13 of 64
+k-point 14 of 64
+k-point 15 of 64
+k-point 16 of 64
+k-point 17 of 64
+k-point 18 of 64
+k-point 19 of 64
+k-point 20 of 64
+k-point 21 of 64
+k-point 22 of 64
+k-point 23 of 64
+k-point 24 of 64
+k-point 25 of 64
+k-point 26 of 64
+k-point 27 of 64
+k-point 28 of 64
+k-point 29 of 64
+k-point 30 of 64
+k-point 31 of 64
+k-point 32 of 64
+k-point 33 of 64
+k-point 34 of 64
+k-point 35 of 64
+k-point 36 of 64
+k-point 37 of 64
+k-point 38 of 64
+k-point 39 of 64
+k-point 40 of 64
+k-point 41 of 64
+k-point 42 of 64
+k-point 43 of 64
+k-point 44 of 64
+k-point 45 of 64
+k-point 46 of 64
+k-point 47 of 64
+k-point 48 of 64
+k-point 49 of 64
+k-point 50 of 64
+k-point 51 of 64
+k-point 52 of 64
+k-point 53 of 64
+k-point 54 of 64
+k-point 55 of 64
+k-point 56 of 64
+k-point 57 of 64
+k-point 58 of 64
+k-point 59 of 64
+k-point 60 of 64
+k-point 61 of 64
+k-point 62 of 64
+k-point 63 of 64
+k-point 64 of 64
+----------
+ sIu OK
+---------
+
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">FileNotFoundError</span>                         Traceback (most recent call last)
+<span class="ansi-green-fg">/tmp/ipykernel_1923/239562535.py</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
+<span class="ansi-green-intense-fg ansi-bold">      4</span> <span class="ansi-red-fg">#In case of direct execution of mmn2uHu module,</span>
+<span class="ansi-green-intense-fg ansi-bold">      5</span> <span class="ansi-red-fg">#python3 -m wannierberri.utils.mmn2uHu Pt NBout=18,NBsum=24,targets=sHu,sIu</span>
+<span class="ansi-green-fg">----&gt; 6</span><span class="ansi-red-fg"> </span>os<span class="ansi-blue-fg">.</span>chdir<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#34;-&#34;</span><span class="ansi-blue-fg">)</span>
+
+<span class="ansi-red-fg">FileNotFoundError</span>: [Errno 2] No such file or directory: &#39;-&#39;
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>system_mmn2uhu = wberri.System_w90(&quot;data_Pt/reduced_NB=24/Pt&quot;, berry=True, SHCryoo=True, SHCqiao=True)
+system_mmn2uhu.set_structure([[0., 0., 0.]], [&quot;Pt&quot;])
+system_mmn2uhu.set_symmetry_from_structure()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+using fortio to read
+Reading restart information from file data_Pt/reduced_NB=24/Pt.chk :
+Time to read .chk : 0.1561284065246582
+Time for MMN.__init__() : 0.909125566482544 , read : 0.8991467952728271 , headstring 0.009978771209716797
+----------
+ SPN
+---------
+
+using fortio to read
+reading data_Pt/reduced_NB=24/Pt.spn : Created on 13May2022 at 15:23:23
+----------
+ SPN OK
+---------
+
+----------
+  sIu
+---------
+using fortio to read
+reading data_Pt/reduced_NB=24/Pt.sIu : &lt;sIu from mmn red to 24 sum 24 bnd 2022-05-16T23:29:18.929873&gt;
+----------
+ sIu OK
+---------
+
+----------
+  sHu
+---------
+using fortio to read
+reading data_Pt/reduced_NB=24/Pt.sHu : &lt;sHu from mmn red to 24 sum 24 bnd 2022-05-16T23:29:18.531152&gt;
+----------
+ sHu OK
+---------
+
+time for FFT_q_to_R : 1.7439723014831543 s
+using ws_distance
+irvec_new_all shape (93,)
+using ws_dist for Ham_R
+using ws_dist for AA_R
+using ws_dist for SS_R
+using ws_dist for SA_R
+using ws_dist for SHA_R
+using ws_dist for SR_R
+using ws_dist for SH_R
+using ws_dist for SHR_R
+Number of wannier functions: 18
+Number of R points: 93
+Recommended size of FFT grid [4 4 4]
+Real-space lattice:
+ [[-1.95599772  0.          1.95599772]
+ [ 0.          1.95599772  1.95599772]
+ [-1.95599772  1.95599772  0.        ]]
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from wannierberri import calculators as calc
+
+efermi_list = np.linspace(efermi - 1.0, efermi + 1.0, 101, True)
+
+kwargs = dict(
+    Efermi=efermi_list,
+    omega=np.array([0.]),
+    smr_fixed_width = 0.1, # Smearing for frequency in eV
+    kBT = 0.026, # Smearing for Fermi level (Fermi-Dirac factor) in eV (not Kelvin)
+)
+
+calculators = dict(
+    SHC_ryoo = calc.dynamic.SHC(SHC_type=&quot;ryoo&quot;, **kwargs),
+)
+
+nk = 30
+result_pw2w90 = wberri.run(
+    system,
+    grid=wberri.Grid(system, NK=nk),
+    calculators=calculators,
+    parallel=parallel,
+    print_Kpoints = False,
+)
+
+result_mmn2uhu = wberri.run(
+    system_mmn2uhu,
+    grid=wberri.Grid(system, NK=nk),
+    calculators=calculators,
+    parallel=parallel,
+    print_Kpoints = False,
+)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-cyan-intense-fg ansi-bold">a more laconic implementation of the energy factor
+</span>
+determining grids from NK=30 (&lt;class &#39;int&#39;&gt;), NKdiv=None (&lt;class &#39;NoneType&#39;&gt;), NKFFT=None (&lt;class &#39;NoneType&#39;&gt;)
+Minimal symmetric FFT grid :  [4 4 4]
+The grids were set to NKdiv=[6 6 6], NKFFT=[5 5 5], NKtot=[30 30 30]
+Grid is regular
+The set of k points is a Grid() with NKdiv=[6 6 6], NKFFT=[5 5 5], NKtot=[30 30 30]
+generating K_list
+Done in 0.0029904842376708984 s
+excluding symmetry-equivalent K-points from initial grid
+Done in 0.13321137428283691 s
+Done in 0.13338375091552734 s
+K_list contains 16 Irreducible points(7.41%) out of initial 6x6x6=216 grid
+Done, sum of weights:0.9999999999999997
+symgroup : &lt;wannierberri.symmetry.Group object at 0x7f676be449a0&gt;
+processing 16 K points : in serial.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)
+                   2              8.5                  59.2
+                   4             19.2                  57.5
+                   6             26.7                  44.5
+                   8             34.9                  34.9
+                  10             42.3                  25.4
+                  12             49.7                  16.6
+                  14             57.2                   8.2
+                  16             64.8                   0.0
+time for processing     16 K-points in serial:    65.4276 ; per K-point          4.0892 ; proc-sec per K-point          4.0892
+time1 =  0.003787517547607422
+Totally processed 16 K-points
+determining grids from NK=30 (&lt;class &#39;int&#39;&gt;), NKdiv=None (&lt;class &#39;NoneType&#39;&gt;), NKFFT=None (&lt;class &#39;NoneType&#39;&gt;)
+Minimal symmetric FFT grid :  [4 4 4]
+The grids were set to NKdiv=[6 6 6], NKFFT=[5 5 5], NKtot=[30 30 30]
+Grid is regular
+The set of k points is a Grid() with NKdiv=[6 6 6], NKFFT=[5 5 5], NKtot=[30 30 30]
+generating K_list
+Done in 0.0033483505249023438 s
+excluding symmetry-equivalent K-points from initial grid
+Done in 0.12982869148254395 s
+Done in 0.12998056411743164 s
+K_list contains 16 Irreducible points(7.41%) out of initial 6x6x6=216 grid
+Done, sum of weights:0.9999999999999997
+symgroup : &lt;wannierberri.symmetry.Group object at 0x7f676c2c1a60&gt;
+processing 16 K points : in serial.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)
+                   2              7.5                  52.8
+                   4             15.1                  45.2
+                   6             23.9                  39.8
+                   8             31.9                  31.9
+                  10             39.4                  23.7
+                  12             47.0                  15.7
+                  14             54.5                   7.8
+                  16             61.9                   0.0
+time for processing     16 K-points in serial:    62.4541 ; per K-point          3.9034 ; proc-sec per K-point          3.9034
+time1 =  0.004681825637817383
+Totally processed 16 K-points
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>shc_pw2w90 = result_pw2w90.results[&quot;SHC_ryoo&quot;].data[:, 0, 0, 1, 2]
+shc_mmn2uHu = result_mmn2uhu.results[&quot;SHC_ryoo&quot;].data[:, 0, 0, 1, 2]
+
+plt.plot(efermi_list, shc_pw2w90.real, label=&quot;sHu from pw2wannier90&quot;)
+plt.plot(efermi_list, shc_mmn2uHu.real, label=&quot;sHu from mmn2uHu&quot;)
+plt.xlabel(&quot;Efermi (eV)&quot;)
+plt.axhline(0, c=&quot;k&quot;)
+plt.ylabel(&quot;Re(SHC)&quot;)
+plt.legend()
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../_images/tutorials_3_spin_hall_solution_tutorial_spin_hall_31_0.png" src="../../../_images/tutorials_3_spin_hall_solution_tutorial_spin_hall_31_0.png" />
+</div>
+</div>
+</section>
+<section id="Further-questions">
+<h2>Further questions<a class="headerlink" href="#Further-questions" title="Link to this heading"></a></h2>
+<p>If you are interested, try to answer the following questions: - Try to converge the calculation using a different value of <code class="docutils literal notranslate"><span class="pre">smr_fixed_width</span></code>. In principle, to achieve an ideal convergence to the zero-smearing limit, one needs to first converge SHC increasing the grid size for a fixed <code class="docutils literal notranslate"><span class="pre">smr_fixed_width</span></code>, and then repeat the procedure with smaller <code class="docutils literal notranslate"><span class="pre">smr_fixed_width</span></code> until convergence. - What happens if one include more bands in the NSCF calculation? Does the two methods converge to the same
+result? (To answer this question, one needs to perform additional DFT calculations.)</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../../2_fermi_sea_vs_fermi_surface/solution/tutorial_sea_vs_surface_solution.html" class="btn btn-neutral float-left" title="WannierBerri advanced tutorial - Fermi surface and Fermi sea calculation of the Berry curvature dipole" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../../4_DIY/tutorial-wb-DIY-solution.html" class="btn btn-neutral float-right" title="DIY tutorial" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Stepan Tsirkin.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
