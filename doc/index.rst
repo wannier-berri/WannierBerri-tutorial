@@ -14,5 +14,6 @@ This page shows the tutorialsfor demonstration purposes. To run the tutorials yo
    tutorials/4_DIY/tutorial-wb-DIY-solution.ipynb
    tutorials/5_symmetrization/tutorial_symmetrization-solution.ipynb
    tutorials/6_wannierisation/wannierise.ipynb
+   tutorials/7_find_projections/find_projections.ipynb
 
 
