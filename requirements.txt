@@ -1,4 +1,5 @@
 wannierberri
+ray
 pythtb
 sphinx
 sphinx_rtd_theme
