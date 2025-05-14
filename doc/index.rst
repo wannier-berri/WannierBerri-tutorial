@@ -3,7 +3,9 @@
 .. title:: Wannier Berri Tutorial
 
 
-This page shows the tutorialsfor demonstration purposes. To run the tutorials yourself, please download them from `GitHub <https://github.com/wannier-berri/WannierBerri-tutorial>`__
+This page shows the tutorials for demonstration purposes. To run the tutorials yourself, please download them from `GitHub <https://github.com/wannier-berri/WannierBerri-tutorial>`__
+
+Note that the tutroials were tested with version `1.3.0` later versions may have changes that are not compatible with the tutorials, please report any issues you may encounter, we do our best to keep the tutorials up to date with the latest version of WannierBerri.
 
 .. toctree::
    :maxdepth: 4
