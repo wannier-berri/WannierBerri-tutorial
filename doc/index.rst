@@ -17,5 +17,5 @@ Note that the tutroials were tested with version `1.3.0` later versions may have
    tutorials/5_symmetrization/tutorial_symmetrization-solution.ipynb
    tutorials/6_wannierisation/wannierise.ipynb
    tutorials/7_find_projections/find_projections.ipynb
-
+   tutorials/8_GPAW/8_1_diamond/tutorial.ipynb
 
