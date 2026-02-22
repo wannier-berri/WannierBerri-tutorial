@@ -1,0 +1,1744 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Symmetrization of Wannier Hamiltonian and matrices &mdash; Wannier Berri 1.8.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/style.css?v=88c5e859" />
+      <link rel="stylesheet" type="text/css" href="../../_static/nbsphinx-code-cells.css?v=2aa19091" />
+
+  
+    <link rel="shortcut icon" href="../../_static/WB-logo.ico"/>
+    <link rel="canonical" href="https://tutorial.wannier-berri.org/tutorials/5_symmetrization/tutorial_symmetrization.html" />
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=b51e6972"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within Wannier Berri 1.8.0 documentation"
+          href="../../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #009C46" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/tutorial.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+    
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../1_basic/tutorial-wb-basic-solution.html">Basic tutorial: Interpolating bands, Berry curvatures, and integrating them</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2_fermi_sea_vs_fermi_surface/solution/tutorial_sea_vs_surface_solution.html">WannierBerri advanced tutorial - Fermi surface and Fermi sea calculation of the Berry curvature dipole</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3_spin_hall/solution/tutorial_spin_hall.html">Spin Hall conductivity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../4_DIY/tutorial-wb-DIY-solution.html">DIY tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial_symmetrization-solution.html">Symmetrization of Wannier Hamiltonian and matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../6_wannierisation/wannierise.html">Wannierisation (including SAWF)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../7_find_projections/find_projections.html">Finding initial projections based on symmetry indicators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../8_GPAW/1.diamond/diamond.html">GPAW + WannierBerri: spinless bandstructure (diamond)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../8_GPAW/2.Fe/bccFe.html">GPAW + WannierBerri: Magnetism and spin-orbit coupling (bcc Fe)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../8_GPAW/3.MnTe/mnte.html">GPAW + WannierBerri: Altermagnet MnTe</a></li>
+</ul>
+
+    <a href="genindex.html">Index</a>
+    <a href="http://wannier-berri.org">Back to Wannier-Berri.org</a>
+  
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #009C46" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Wannier Berri</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Symmetrization of Wannier Hamiltonian and matrices</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="Symmetrization-of-Wannier-Hamiltonian-and-matrices">
+<h1>Symmetrization of Wannier Hamiltonian and matrices<a class="headerlink" href="#Symmetrization-of-Wannier-Hamiltonian-and-matrices" title="Link to this heading"></a></h1>
+<p>By Xiaoxiong Liu : <a class="reference external" href="mailto:xxliu&#37;&#52;&#48;physik&#46;uzh&#46;ch">xxliu<span>&#64;</span>physik<span>&#46;</span>uzh<span>&#46;</span>ch</a></p>
+<p>The real-space Wannier Hamiltonian obtained by Wannier90 code generally does not strictly preserve the corresponding symmetry. The slight loss of symmetry will gap the expected band intersections. Berry curvature and orbital magnetic moment are more sensitive to symmetry than energy eigenvalues. In the following, I give details about the symmetrization of Wannier Hamiltonian and matrices.</p>
+<p>In WannierBerri, our built-in symmetrization method can enforce symmetrizing Wannier Hamiltonian (Ham_R) and matrices (AA_R, BB_R, CC_R, SS_R) after reading them.</p>
+<p><span class="math notranslate nohighlight">\(\texttt{Ham\_R} = &lt;n0|\hat{H}|mR&gt;\)</span></p>
+<p><span class="math notranslate nohighlight">\(\texttt{AA\_R} = &lt;n0|\hat{r}|mR&gt;\)</span></p>
+<p><span class="math notranslate nohighlight">\(\texttt{BB\_R} = &lt;n0|\hat{H}\cdot(\hat{r}-\hat{R})|mR&gt;\)</span></p>
+<p><span class="math notranslate nohighlight">\(\texttt{CC\_Rc} = i \epsilon_{abc} &lt;n0|\hat{r}_a\cdot\hat{H}\cdot(\hat{r}_b-\hat{R}_b)|mR&gt;\)</span></p>
+<p><span class="math notranslate nohighlight">\(\texttt{SS\_R} = &lt;n0|\hat{\sigma}|mR&gt;\)</span></p>
+<p>They are needed when calculating different quantities:</p>
+<ol class="arabic simple">
+<li><p>Energy eigenvalue &lt;– Ham_R</p></li>
+<li><p>Berry Curvature &lt;– Ham_R, AA_R</p></li>
+<li><p>Orbital magnetic moment &lt;– Ham_R, AA_R, BB_R, CC_R</p></li>
+<li><p>Spin magnetic moment &lt;– SS_R</p></li>
+</ol>
+<p>NOTE: This method only works with Wannier Hamiltonian without maximal localized.</p>
+<p>We will show you two examples:</p>
+<ol class="arabic simple">
+<li><p>Symmetrize nonmagnetic system with SOC (trigonal Te)</p></li>
+<li><p>Symmetrize magnetic system with SOC (bcc Fe)</p></li>
+</ol>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#import necessary packages
+import wannierberri as wberri
+import warnings
+tested_version = &#39;1.3.0&#39;
+if wberri.__version__ != tested_version:
+    warnings.warn(f&#39;This tutorial was tested with version {tested_version} of wannierberri. You are using version {wberri.__version__}.&#39;)
+
+
+
+import numpy as np
+import matplotlib.pyplot as plt #for plotting figures
+
+try :
+    parallel.shutdown()
+except:
+    parallel = wberri.Parallel(num_cpus=8)
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+initializing ray with  {&#39;num_cpus&#39;: 8}
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+2025-05-14 16:29:57,292 INFO worker.py:1879 -- Started a local Ray instance. View the dashboard at <span class="ansi-green-intense-fg ansi-bold">http://127.0.0.1:8266 </span>
+</pre></div></div>
+</div>
+<section id="Nonmagnetic-system-(trigonal-Te)">
+<h2>Nonmagnetic system (trigonal Te)<a class="headerlink" href="#Nonmagnetic-system-(trigonal-Te)" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#Reading Wannier Hamiltonian and position element matrix from Te_tb.dat file.
+#We bulit to system, `system_Te` without symmetrization and `system_Te_sym` with symmetrization
+
+import copy
+
+from irrep.spacegroup import SpaceGroup
+from wannierberri.symmetry.sawf import SymmetrizerSAWF
+from wannierberri.symmetry.projections import Projection
+
+
+system_Te=wberri.System_tb(tb_file=&#39;./Te_data/Te_tb.dat&#39;,berry=True)
+system_Te.spin_block2interlace()  # the data come from old vasp, which stored WF spins separated into two blocks. QE and modern VASP intrelace the spin channels
+
+#Check unsymmetrized system
+system = system_Te
+
+def check_onsite(system):
+    #find index of R=[0,0,0] in R-vector list
+    #dimension of Hamiltonian is [num_wann, num_wann, num_Rvec]
+    iR0 = system.rvec.iR0
+    onsite_Te_1 = np.diagonal(system.Ham_R[iR0]).real[:2]
+    onsite_Te_2 = np.diagonal(system.Ham_R[iR0]).real[2:4]
+    print(f&#39;on-site energy of Te_1 orbitals spin up : {onsite_Te_1[0]}, spin_down: {onsite_Te_1[1]}, difference: {abs(onsite_Te_1[0]-onsite_Te_1[1])}&#39;)
+    print(f&#39;on-site energy of Te_2 orbitals spin up : {onsite_Te_2[0]}, spin_down: {onsite_Te_2[1]}, difference: {abs(onsite_Te_2[0]-onsite_Te_2[1])}&#39;)
+    print(&#39;difference:&#39;, abs(onsite_Te_1-onsite_Te_2))
+
+print(&#39;unsymmetrized&#39;)
+check_onsite(system_Te)
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-intense-fg ansi-bold">reading TB file ./Te_data/Te_tb.dat ( written on  9May2022 at 22:54:49 )</span>
+Real-space lattice:
+ [[ 4.457      0.         0.       ]
+ [-2.2285     3.8598752  0.       ]
+ [ 0.         0.         5.9581176]]
+Number of wannier functions: 24
+Number of R points: 195
+Recommended size of FFT grid [7 9 5]
+<span class="ansi-green-intense-fg ansi-bold">Reading the system from ./Te_data/Te_tb.dat finished successfully</span>
+unsymmetrized
+on-site energy of Te_1 orbitals spin up : -5.585966, spin_down: -5.5859776, difference: 1.1599999999667432e-05
+on-site energy of Te_2 orbitals spin up : -5.588091, spin_down: -5.5880802, difference: 1.0800000000088517e-05
+difference: [0.002125  0.0021026]
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><br/><span></span>system_Te_sym_new=wberri.System_tb(tb_file=&#39;./Te_data/Te_tb.dat&#39;,berry=True)
+system_Te_sym_new.spin_block2interlace()  # the data come from old vasp, which stored WF spins separated into two blocks. QE and modern VASP intrelace the spin channels
+
+
+# #symmetrization step - new method using SymmetrizerSAWF
+x = 0.274
+positions = np.array([ [x , x  ,   0.],
+                      [1-x, 0  , 1./3],
+                      [0  , 1-x, 2./3]] )
+
+spacegroup = SpaceGroup(cell=(system_Te.real_lattice, positions, [1,1,1]),
+                                     magmom=None, include_TR=True,
+                                     spinor=True)
+spacegroup.show()
+
+proj_list = []
+for proj_str in [&quot;s&quot;,&quot;p&quot;]:
+        proj = Projection(position_num=positions, orbital=proj_str, spacegroup=spacegroup)
+        # print (f&quot;adding projection {proj} ({pos} {suborbital})&quot;)
+        proj_list.append(proj)
+symmetrizer = SymmetrizerSAWF().set_spacegroup(spacegroup).set_D_wann_from_projections(projections=proj_list)
+system_Te_sym_new.symmetrize2(symmetrizer)
+
+
+print(&#39;symmetrized&#39;)
+check_onsite(system_Te_sym_new)
+<br/><br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-intense-fg ansi-bold">reading TB file ./Te_data/Te_tb.dat ( written on  9May2022 at 22:54:49 )</span>
+Real-space lattice:
+ [[ 4.457      0.         0.       ]
+ [-2.2285     3.8598752  0.       ]
+ [ 0.         0.         5.9581176]]
+Number of wannier functions: 24
+Number of R points: 195
+Recommended size of FFT grid [7 9 5]
+<span class="ansi-green-intense-fg ansi-bold">Reading the system from ./Te_data/Te_tb.dat finished successfully</span>
+
+
+ ---------- CRYSTAL STRUCTURE ----------
+
+
+Cell vectors in angstroms:
+
+      Vectors of DFT cell
+a0 =  4.4570   0.0000   0.0000
+a1 = -2.2285   3.8599   0.0000
+a2 =  0.0000   0.0000   5.9581
+
+
+
+ ---------- SPACE GROUP -----------
+
+
+Space group: P3_1211&#39; (# 152.34)
+Number of symmetries: 12 (mod. lattice translations)
+
+ ### 1
+
+rotation : |  1   0   0 |
+           |  0   1   0 |
+           |  0   0   1 |
+
+
+ gk = [kx, ky, kz]
+
+spinor rot.         : | 1.000+0.000j  0.000+0.000j |
+                      | 0.000+0.000j  1.000+0.000j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [0. 0. 1.] ; angle =  0 , inversion : False, time reversal: False
+
+ ### 2
+
+rotation : |  1   0   0 |
+           |  0   1   0 |
+           |  0   0   1 |
+
+
+ gk = [-kx, -ky, -kz]
+
+spinor rot.         : | 1.000+0.000j  0.000+0.000j |
+                      | 0.000+0.000j  1.000+0.000j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [0. 0. 1.] ; angle =  0 , inversion : False, time reversal: True
+
+ ### 3
+
+rotation : |  0  -1   0 |
+           |  1  -1   0 |
+           |  0   0   1 |
+
+
+ gk = [-kx-ky, kx, kz]
+
+spinor rot.         : | 0.500-0.866j  0.000+0.000j |
+                      | 0.000+0.000j  0.500+0.866j |
+
+translation         :  [   0.0000   0.0000   0.3333 ]
+
+axis: [0. 0. 1.] ; angle = 2/3 pi, inversion : False, time reversal: False
+
+ ### 4
+
+rotation : |  0  -1   0 |
+           |  1  -1   0 |
+           |  0   0   1 |
+
+
+ gk = [kx+ky, -kx, -kz]
+
+spinor rot.         : | 0.500-0.866j  0.000+0.000j |
+                      | 0.000+0.000j  0.500+0.866j |
+
+translation         :  [   0.0000   0.0000   0.3333 ]
+
+axis: [0. 0. 1.] ; angle = 2/3 pi, inversion : False, time reversal: True
+
+ ### 5
+
+rotation : | -1   1   0 |
+           | -1   0   0 |
+           |  0   0   1 |
+
+
+ gk = [ky, -kx-ky, kz]
+
+spinor rot.         : | 0.500+0.866j  0.000+0.000j |
+                      | 0.000+0.000j  0.500-0.866j |
+
+translation         :  [   0.0000   0.0000   0.6667 ]
+
+axis: [0. 0. 1.] ; angle = -2/3 pi, inversion : False, time reversal: False
+
+ ### 6
+
+rotation : | -1   1   0 |
+           | -1   0   0 |
+           |  0   0   1 |
+
+
+ gk = [-ky, kx+ky, -kz]
+
+spinor rot.         : | 0.500+0.866j  0.000+0.000j |
+                      | 0.000+0.000j  0.500-0.866j |
+
+translation         :  [   0.0000   0.0000   0.6667 ]
+
+axis: [0. 0. 1.] ; angle = -2/3 pi, inversion : False, time reversal: True
+
+ ### 7
+
+rotation : |  0   1   0 |
+           |  1   0   0 |
+           |  0   0  -1 |
+
+
+ gk = [ky, kx, -kz]
+
+spinor rot.         : | 0.000+0.000j  0.866+0.500j |
+                      |-0.866+0.500j  0.000-0.000j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [-0.5      -0.866025  0.      ] ; angle = 1 pi, inversion : False, time reversal: False
+
+ ### 8
+
+rotation : |  0   1   0 |
+           |  1   0   0 |
+           |  0   0  -1 |
+
+
+ gk = [-ky, -kx, kz]
+
+spinor rot.         : | 0.000+0.000j  0.866+0.500j |
+                      |-0.866+0.500j  0.000-0.000j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [-0.5      -0.866025  0.      ] ; angle = 1 pi, inversion : False, time reversal: True
+
+ ### 9
+
+rotation : |  1  -1   0 |
+           |  0  -1   0 |
+           |  0   0  -1 |
+
+
+ gk = [kx, -kx-ky, -kz]
+
+spinor rot.         : | 0.000+0.000j  0.000-1.000j |
+                      | 0.000-1.000j  0.000+0.000j |
+
+translation         :  [   0.0000   0.0000   0.6667 ]
+
+axis: [1. 0. 0.] ; angle = 1 pi, inversion : False, time reversal: False
+
+ ### 10
+
+rotation : |  1  -1   0 |
+           |  0  -1   0 |
+           |  0   0  -1 |
+
+
+ gk = [-kx, kx+ky, kz]
+
+spinor rot.         : | 0.000+0.000j  0.000-1.000j |
+                      | 0.000-1.000j  0.000+0.000j |
+
+translation         :  [   0.0000   0.0000   0.6667 ]
+
+axis: [1. 0. 0.] ; angle = 1 pi, inversion : False, time reversal: True
+
+ ### 11
+
+rotation : | -1   0   0 |
+           | -1   1   0 |
+           |  0   0  -1 |
+
+
+ gk = [-kx-ky, ky, -kz]
+
+spinor rot.         : | 0.000+0.000j  0.866-0.500j |
+                      |-0.866-0.500j  0.000+0.000j |
+
+translation         :  [   0.0000   0.0000   0.3333 ]
+
+axis: [ 0.5      -0.866025  0.      ] ; angle = 1 pi, inversion : False, time reversal: False
+
+ ### 12
+
+rotation : | -1   0   0 |
+           | -1   1   0 |
+           |  0   0  -1 |
+
+
+ gk = [kx+ky, -ky, kz]
+
+spinor rot.         : | 0.000+0.000j  0.866-0.500j |
+                      |-0.866-0.500j  0.000+0.000j |
+
+translation         :  [   0.0000   0.0000   0.3333 ]
+
+axis: [ 0.5      -0.866025  0.      ] ; angle = 1 pi, inversion : False, time reversal: True
+orbitals = [&#39;s&#39;]
+orbitals = [&#39;p&#39;]
+calculating Wannier functions for s at [[0.274      0.274      0.        ]
+ [0.726      0.         0.33333333]
+ [0.         0.726      0.66666667]]
+calculating Wannier functions for p at [[0.274      0.274      0.        ]
+ [0.726      0.         0.33333333]
+ [0.         0.726      0.66666667]]
+len(D_wann_list) = 2
+D.shape [(0, 12, 6, 6), (0, 12, 18, 18)]
+num_wann 24
+D_wann_block_indices [[ 0  6]
+ [ 6 24]]
+symmetrized
+on-site energy of Te_1 orbitals spin up : -5.586680166666666, spin_down: -5.586680166666666, difference: 0.0
+on-site energy of Te_2 orbitals spin up : -5.586680166666666, spin_down: -5.586680166666666, difference: 0.0
+difference: [0. 0.]
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span>#Symmetrization step (old method interface, but still works so far. Internally it creates a SymmetrizerSAWF object)
+system_Te_sym_old=copy.deepcopy(system_Te)
+system_Te_sym_old.symmetrize(
+    # positions: positions of each atoms in a unitcell (direct coordinate system)
+    positions = positions,
+    # atom_name: name of each atoms, need to correspond to position order.
+    atom_name = [&#39;Te&#39;,&#39;Te&#39;,&#39;Te&#39;],
+    # projections: should be the same with projection card in wannier90.win
+    proj = [&#39;Te:s&#39;,&#39;Te:p&#39;],
+    # soc: with soc or spinless
+    soc=True,
+    )
+
+print(&#39;symmetrized - old interface&#39;)
+check_onsite(system_Te_sym_old)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+
+ ---------- CRYSTAL STRUCTURE ----------
+
+
+Cell vectors in angstroms:
+
+      Vectors of DFT cell
+a0 =  4.4570   0.0000   0.0000
+a1 = -2.2285   3.8599   0.0000
+a2 =  0.0000   0.0000   5.9581
+
+
+
+ ---------- SPACE GROUP -----------
+
+
+Space group: P3_1211&#39; (# 152.34)
+Number of symmetries: 12 (mod. lattice translations)
+
+ ### 1
+
+rotation : |  1   0   0 |
+           |  0   1   0 |
+           |  0   0   1 |
+
+
+ gk = [kx, ky, kz]
+
+spinor rot.         : | 1.000+0.000j  0.000+0.000j |
+                      | 0.000+0.000j  1.000+0.000j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [0. 0. 1.] ; angle =  0 , inversion : False, time reversal: False
+
+ ### 2
+
+rotation : |  1   0   0 |
+           |  0   1   0 |
+           |  0   0   1 |
+
+
+ gk = [-kx, -ky, -kz]
+
+spinor rot.         : | 1.000+0.000j  0.000+0.000j |
+                      | 0.000+0.000j  1.000+0.000j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [0. 0. 1.] ; angle =  0 , inversion : False, time reversal: True
+
+ ### 3
+
+rotation : |  0  -1   0 |
+           |  1  -1   0 |
+           |  0   0   1 |
+
+
+ gk = [-kx-ky, kx, kz]
+
+spinor rot.         : | 0.500-0.866j  0.000+0.000j |
+                      | 0.000+0.000j  0.500+0.866j |
+
+translation         :  [   0.0000   0.0000   0.3333 ]
+
+axis: [0. 0. 1.] ; angle = 2/3 pi, inversion : False, time reversal: False
+
+ ### 4
+
+rotation : |  0  -1   0 |
+           |  1  -1   0 |
+           |  0   0   1 |
+
+
+ gk = [kx+ky, -kx, -kz]
+
+spinor rot.         : | 0.500-0.866j  0.000+0.000j |
+                      | 0.000+0.000j  0.500+0.866j |
+
+translation         :  [   0.0000   0.0000   0.3333 ]
+
+axis: [0. 0. 1.] ; angle = 2/3 pi, inversion : False, time reversal: True
+
+ ### 5
+
+rotation : | -1   1   0 |
+           | -1   0   0 |
+           |  0   0   1 |
+
+
+ gk = [ky, -kx-ky, kz]
+
+spinor rot.         : | 0.500+0.866j  0.000+0.000j |
+                      | 0.000+0.000j  0.500-0.866j |
+
+translation         :  [   0.0000   0.0000   0.6667 ]
+
+axis: [0. 0. 1.] ; angle = -2/3 pi, inversion : False, time reversal: False
+
+ ### 6
+
+rotation : | -1   1   0 |
+           | -1   0   0 |
+           |  0   0   1 |
+
+
+ gk = [-ky, kx+ky, -kz]
+
+spinor rot.         : | 0.500+0.866j  0.000+0.000j |
+                      | 0.000+0.000j  0.500-0.866j |
+
+translation         :  [   0.0000   0.0000   0.6667 ]
+
+axis: [0. 0. 1.] ; angle = -2/3 pi, inversion : False, time reversal: True
+
+ ### 7
+
+rotation : |  0   1   0 |
+           |  1   0   0 |
+           |  0   0  -1 |
+
+
+ gk = [ky, kx, -kz]
+
+spinor rot.         : | 0.000+0.000j  0.866+0.500j |
+                      |-0.866+0.500j  0.000-0.000j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [-0.5      -0.866025  0.      ] ; angle = 1 pi, inversion : False, time reversal: False
+
+ ### 8
+
+rotation : |  0   1   0 |
+           |  1   0   0 |
+           |  0   0  -1 |
+
+
+ gk = [-ky, -kx, kz]
+
+spinor rot.         : | 0.000+0.000j  0.866+0.500j |
+                      |-0.866+0.500j  0.000-0.000j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [-0.5      -0.866025  0.      ] ; angle = 1 pi, inversion : False, time reversal: True
+
+ ### 9
+
+rotation : |  1  -1   0 |
+           |  0  -1   0 |
+           |  0   0  -1 |
+
+
+ gk = [kx, -kx-ky, -kz]
+
+spinor rot.         : | 0.000+0.000j  0.000-1.000j |
+                      | 0.000-1.000j  0.000+0.000j |
+
+translation         :  [   0.0000   0.0000   0.6667 ]
+
+axis: [1. 0. 0.] ; angle = 1 pi, inversion : False, time reversal: False
+
+ ### 10
+
+rotation : |  1  -1   0 |
+           |  0  -1   0 |
+           |  0   0  -1 |
+
+
+ gk = [-kx, kx+ky, kz]
+
+spinor rot.         : | 0.000+0.000j  0.000-1.000j |
+                      | 0.000-1.000j  0.000+0.000j |
+
+translation         :  [   0.0000   0.0000   0.6667 ]
+
+axis: [1. 0. 0.] ; angle = 1 pi, inversion : False, time reversal: True
+
+ ### 11
+
+rotation : | -1   0   0 |
+           | -1   1   0 |
+           |  0   0  -1 |
+
+
+ gk = [-kx-ky, ky, -kz]
+
+spinor rot.         : | 0.000+0.000j  0.866-0.500j |
+                      |-0.866-0.500j  0.000+0.000j |
+
+translation         :  [   0.0000   0.0000   0.3333 ]
+
+axis: [ 0.5      -0.866025  0.      ] ; angle = 1 pi, inversion : False, time reversal: False
+
+ ### 12
+
+rotation : | -1   0   0 |
+           | -1   1   0 |
+           |  0   0  -1 |
+
+
+ gk = [kx+ky, -ky, kz]
+
+spinor rot.         : | 0.000+0.000j  0.866-0.500j |
+                      |-0.866-0.500j  0.000+0.000j |
+
+translation         :  [   0.0000   0.0000   0.3333 ]
+
+axis: [ 0.5      -0.866025  0.      ] ; angle = 1 pi, inversion : False, time reversal: True
+pos_list: [[0, 1, 2]]
+proj: Projection 0.274, 0.274, 0.0:[&#39;s&#39;] with 3 Wannier functions on 3 points (1 per site)
+orbital = s, num wann per site = 2
+pos_list: [[0, 1, 2]]
+proj: Projection 0.274, 0.274, 0.0:[&#39;p&#39;] with 9 Wannier functions on 3 points (3 per site)
+orbital = p, num wann per site = 6
+new_wann_indices: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
+orbitals = [&#39;s&#39;]
+orbitals = [&#39;p&#39;]
+calculating Wannier functions for s at [[0.274      0.274      0.        ]
+ [0.726      0.         0.33333333]
+ [0.         0.726      0.66666667]]
+calculating Wannier functions for p at [[0.274      0.274      0.        ]
+ [0.726      0.         0.33333333]
+ [0.         0.726      0.66666667]]
+len(D_wann_list) = 2
+D.shape [(0, 12, 6, 6), (0, 12, 18, 18)]
+num_wann 24
+D_wann_block_indices [[ 0  6]
+ [ 6 24]]
+symmetrized - old interface
+on-site energy of Te_1 orbitals spin up : -5.586680166666666, spin_down: -5.586680166666666, difference: 0.0
+on-site energy of Te_2 orbitals spin up : -5.586680166666666, spin_down: -5.586680166666666, difference: 0.0
+difference: [0. 0.]
+</pre></div></div>
+</div>
+<p>Output card <code class="docutils literal notranslate"><span class="pre">Wannier</span> <span class="pre">atoms</span> <span class="pre">info</span></code> is showing informations about orbitals.</p>
+<p>Line <code class="docutils literal notranslate"><span class="pre">(1,</span> <span class="pre">'Te',</span> <span class="pre">array([0.274,</span> <span class="pre">0.274,</span> <span class="pre">0.</span>&#160;&#160; <span class="pre">]),</span> <span class="pre">['s',</span> <span class="pre">'p'],</span> <span class="pre">[[0,</span> <span class="pre">12],</span> <span class="pre">[3,</span> <span class="pre">4,</span> <span class="pre">5,</span> <span class="pre">15,</span> <span class="pre">16,</span> <span class="pre">17]])</span></code> read as: First atoms is Te at position 0.274, 0.274, 0. It contribute orbital <span class="math notranslate nohighlight">\(s\)</span> and <span class="math notranslate nohighlight">\(p\)</span>. Index of s-orbitals are 0 and 12. Index of d-orbitals are 3, 4, 5, 15, 16, 17.</p>
+<p>Informations of space group are showed as well.</p>
+<p>We can check if real space Hamiltonian are symmetrized.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#We check symmetry with operator 1 from Space group informations in the output.
+#prepare operator
+symop = spacegroup.symmetries[2]
+rot = symop.rotation
+trans = symop.translation
+print (f&quot;rotation \n {rot}\n translation :{trans}&quot;)
+
+print (f&quot;positions before operation: \n {positions}&quot;)
+positions_rot =  positions @ rot.T + trans[None,:]
+print(&#39;After operation\n&#39;, positions_rot)
+
+print (f&quot;they match the original positions upto reordering and integer latticle vector : \n{positions_rot[[2,0,1]]-positions}&quot;)
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+rotation
+ [[ 0 -1  0]
+ [ 1 -1  0]
+ [ 0  0  1]]
+ translation :[0.         0.         0.33333333]
+positions before operation:
+ [[0.274      0.274      0.        ]
+ [0.726      0.         0.33333333]
+ [0.         0.726      0.66666667]]
+After operation
+ [[-0.274       0.          0.33333333]
+ [ 0.          0.726       0.66666667]
+ [-0.726      -0.726       1.        ]]
+they match the original positions upto reordering and integer latticle vector :
+[[-1. -1.  1.]
+ [-1.  0.  0.]
+ [ 0.  0.  0.]]
+</pre></div></div>
+</div>
+<p>Checking band structures in k-space.</p>
+<p>The Brillouin zone of trigonal Te is: <img alt="29bf6b60abc94471a564c99993f1ea5a" class="no-scaled-link" src="../../_images/Te_BZ.png" width="300" /> We only consider kz=<span class="math notranslate nohighlight">\(\pi\)</span> plane. <img alt="9ffc89f6141b4fbf9dbfc11553833481" class="no-scaled-link" src="../../_images/Te_kz%3Dpi.png" width="300" /> The band structures of the three path:</p>
+<p>L1 -&gt; H -&gt; A1</p>
+<p>L2 -&gt; H -&gt; A2</p>
+<p>L3 -&gt; H -&gt; A3</p>
+<p>should be the same because of C3 rotation symmetry.</p>
+<p>But the Wannier Hamitonian break the symmetries slightly. So the band structure of the three path may not the same.</p>
+<p>After symmetrization they are the same.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#generate k-path
+path=wberri.Path(system_Te,
+    #start and end points of k_path.
+    #If two paths are not consencutive, put `None` between them.
+    nodes=[[0,0.5,0.5],[1./3,1./3,0.5],[1.,0.,0.5],None,
+            [0.5,0.,0.5],[1./3,1./3,0.5],[0.,1.,0.5],None,
+            [0.5,0.5,0.5],[1./3,1./3,0.5],[0.,0.,0.5]],
+    labels=[&quot;L1&quot;,&quot;H&quot;,&quot;A1&quot;,&quot;L3&quot;,&quot;H&quot;,&quot;A3&quot;,&quot;L2&quot;,&quot;H&quot;,&quot;A2&quot;],
+    #length: proportional to number of kpoints.
+    length=1000)
+
+
+bands_Te = wberri.evaluate_k_path(path = path, parallel=parallel, system = system_Te)
+bands_Te_sym = wberri.evaluate_k_path(path = path, parallel=parallel, system = system_Te_sym_new)
+<br/><br/></pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-red-intense-fg ansi-bold">Starting run()</span>
+<span class="ansi-cyan-intense-fg ansi-bold">Using the follwing calculators :
+############################################################
+</span>
+<span class="ansi-magenta-intense-fg ansi-bold"> &#39;tabulate&#39; </span> : <span class="ansi-yellow-intense-fg ansi-bold"> &lt;wannierberri.calculators.tabulate.TabulatorAll object at 0x77f998110dd0&gt; </span> :
+    TabulatorAll - a pack of all k-resolved calculators (Tabulators)
+
+ Includes the following tabulators :
+--------------------------------------------------
+ &#34;Energy&#34; : &lt;wannierberri.calculators.tabulate.Energy object at 0x77fa3492da90&gt; : calculator not described
+
+--------------------------------------------------
+
+<span class="ansi-cyan-intense-fg ansi-bold">############################################################</span>
+Calculation along a path - checking calculators for compatibility
+tabulate &lt;wannierberri.calculators.tabulate.TabulatorAll object at 0x77f998110dd0&gt;
+All calculators are compatible
+Symmetrization switched off for Path
+Grid is regular
+The set of k points is a Path() with 676 points and labels {0: &#39;L1&#39;, 75: &#39;H&#39;, 225: &#39;L3&#39;, 300: &#39;H&#39;, 450: &#39;L2&#39;, 525: &#39;H&#39;, 675: &#39;A2&#39;}
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+2025-05-14 14:57:00,292 INFO worker.py:1879 -- Started a local Ray instance. View the dashboard at <span class="ansi-green-intense-fg ansi-bold">http://127.0.0.1:8272 </span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+generating K_list
+Done
+Done, sum of weights:676.0
+processing 676 K points : using  8 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/home/stepan/github/wannier-berri/wannierberri/grid/path.py:163: UserWarning: symmetry is not used for a tabulation along path
+  warnings.warn(&#34;symmetry is not used for a tabulation along path&#34;)
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+time for processing    676 K-points on   8 processes:     2.3563 ; per K-point          0.0035 ; proc-sec per K-point          0.0279
+time1 =  0.030200958251953125
+Totally processed 676 K-points
+run() finished
+<span class="ansi-red-intense-fg ansi-bold">Starting run()</span>
+<span class="ansi-cyan-intense-fg ansi-bold">Using the follwing calculators :
+############################################################
+</span>
+<span class="ansi-magenta-intense-fg ansi-bold"> &#39;tabulate&#39; </span> : <span class="ansi-yellow-intense-fg ansi-bold"> &lt;wannierberri.calculators.tabulate.TabulatorAll object at 0x77f998110dd0&gt; </span> :
+    TabulatorAll - a pack of all k-resolved calculators (Tabulators)
+
+ Includes the following tabulators :
+--------------------------------------------------
+ &#34;Energy&#34; : &lt;wannierberri.calculators.tabulate.Energy object at 0x77f98d92b530&gt; : calculator not described
+
+--------------------------------------------------
+
+<span class="ansi-cyan-intense-fg ansi-bold">############################################################</span>
+Calculation along a path - checking calculators for compatibility
+tabulate &lt;wannierberri.calculators.tabulate.TabulatorAll object at 0x77f998110dd0&gt;
+All calculators are compatible
+Symmetrization switched off for Path
+Grid is regular
+The set of k points is a Path() with 676 points and labels {0: &#39;L1&#39;, 75: &#39;H&#39;, 225: &#39;L3&#39;, 300: &#39;H&#39;, 450: &#39;L2&#39;, 525: &#39;H&#39;, 675: &#39;A2&#39;}
+generating K_list
+Done
+Done, sum of weights:676.0
+processing 676 K points : using  8 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)
+time for processing    676 K-points on   8 processes:     0.5299 ; per K-point          0.0008 ; proc-sec per K-point          0.0063
+time1 =  0.030505657196044922
+Totally processed 676 K-points
+run() finished
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-yellow-fg">(raylet)</span> [2025-05-14 15:05:00,207 E 51192 51192] (raylet) node_manager.cc:3287: 5 Workers (tasks / actors) killed due to memory pressure (OOM), 0 Workers crashed due to other reasons at node (ID: cf1363e04f08183d8658c718b94e1a562fa325d34d4e6c70a68b7ed6, IP: 128.179.188.185) over the last time period. To see more information about the Workers killed on this node, use `ray logs raylet.out -ip 128.179.188.185`
+<span class="ansi-yellow-fg">(raylet)</span>
+<span class="ansi-yellow-fg">(raylet)</span> Refer to the documentation on how to address the out of memory issue: https://docs.ray.io/en/latest/ray-core/scheduling/ray-oom-prevention.html. Consider provisioning more memory on this node or reducing task parallelism by requesting more CPUs per task. To adjust the kill threshold, set the environment variable `RAY_memory_usage_threshold` when starting Ray. To disable worker killing, set the environment variable `RAY_memory_monitor_refresh_ms` to zero.
+<span class="ansi-yellow-fg">(raylet)</span>
+<span class="ansi-yellow-fg">(raylet)</span> [2025-05-14 15:07:00,210 E 51192 51192] (raylet) node_manager.cc:3287: 1 Workers (tasks / actors) killed due to memory pressure (OOM), 0 Workers crashed due to other reasons at node (ID: cf1363e04f08183d8658c718b94e1a562fa325d34d4e6c70a68b7ed6, IP: 128.179.188.185) over the last time period. To see more information about the Workers killed on this node, use `ray logs raylet.out -ip 128.179.188.185`
+<span class="ansi-yellow-fg">(raylet)</span> Refer to the documentation on how to address the out of memory issue: https://docs.ray.io/en/latest/ray-core/scheduling/ray-oom-prevention.html. Consider provisioning more memory on this node or reducing task parallelism by requesting more CPUs per task. To adjust the kill threshold, set the environment variable `RAY_memory_usage_threshold` when starting Ray. To disable worker killing, set the environment variable `RAY_memory_monitor_refresh_ms` to zero.
+<span class="ansi-yellow-fg">(raylet)</span> [2025-05-14 15:17:00,228 E 51192 51192] (raylet) node_manager.cc:3287: 1 Workers (tasks / actors) killed due to memory pressure (OOM), 0 Workers crashed due to other reasons at node (ID: cf1363e04f08183d8658c718b94e1a562fa325d34d4e6c70a68b7ed6, IP: 128.179.188.185) over the last time period. To see more information about the Workers killed on this node, use `ray logs raylet.out -ip 128.179.188.185`
+<span class="ansi-yellow-fg">(raylet)</span>
+<span class="ansi-yellow-fg">(raylet)</span> Refer to the documentation on how to address the out of memory issue: https://docs.ray.io/en/latest/ray-core/scheduling/ray-oom-prevention.html. Consider provisioning more memory on this node or reducing task parallelism by requesting more CPUs per task. To adjust the kill threshold, set the environment variable `RAY_memory_usage_threshold` when starting Ray. To disable worker killing, set the environment variable `RAY_memory_monitor_refresh_ms` to zero.
+<span class="ansi-yellow-fg">(raylet)</span>
+<span class="ansi-yellow-fg">(raylet)</span> [2025-05-14 15:26:00,241 E 51192 51192] (raylet) node_manager.cc:3287: 1 Workers (tasks / actors) killed due to memory pressure (OOM), 0 Workers crashed due to other reasons at node (ID: cf1363e04f08183d8658c718b94e1a562fa325d34d4e6c70a68b7ed6, IP: 128.179.188.185) over the last time period. To see more information about the Workers killed on this node, use `ray logs raylet.out -ip 128.179.188.185`
+<span class="ansi-yellow-fg">(raylet)</span> Refer to the documentation on how to address the out of memory issue: https://docs.ray.io/en/latest/ray-core/scheduling/ray-oom-prevention.html. Consider provisioning more memory on this node or reducing task parallelism by requesting more CPUs per task. To adjust the kill threshold, set the environment variable `RAY_memory_usage_threshold` when starting Ray. To disable worker killing, set the environment variable `RAY_memory_monitor_refresh_ms` to zero.
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#read energy eigenvalue data of band 18 and 19 from results.
+band_Te_01 = bands_Te.get_data(quantity=&#39;Energy&#39;,iband=(0,1))
+band_Te_sym_01 = bands_Te_sym.get_data(quantity=&#39;Energy&#39;,iband=(0,1))
+#read k-path data
+band_k=path.getKline()
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#plot band structure with unsymmetrized system
+%matplotlib inline
+NK=len(band_k)
+colour = [&#39;r&#39;,&#39;y&#39;,&#39;b&#39;]
+NK_one = NK//3
+plt.figure()
+for i in range(3):
+    plt.plot(band_k[0:NK_one],band_Te_01[NK_one*i:NK_one*(i+1)],colour[i],linewidth=5)
+plt.ylabel(&#39;Energy (eV)&#39;)
+plt.xlabel(&#39;L -&gt; H -&gt; A&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Text(0.5, 0, &#39;L -&gt; H -&gt; A&#39;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_build/.doctrees/nbsphinx/tutorials_5_symmetrization_tutorial_symmetrization_13_1.png" src="../../_build/.doctrees/nbsphinx/tutorials_5_symmetrization_tutorial_symmetrization_13_1.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#plot band structure with symmetrized system
+plt.figure()
+for i in range(3):
+    plt.plot(band_k[0:NK_one],band_Te_sym_01[NK_one*i:NK_one*(i+1)],colour[i],linewidth=5)
+plt.ylabel(&#39;Energy (eV)&#39;)
+plt.xlabel(&#39;L -&gt; H -&gt; A&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Text(0.5, 0, &#39;L -&gt; H -&gt; A&#39;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_build/.doctrees/nbsphinx/tutorials_5_symmetrization_tutorial_symmetrization_14_1.png" src="../../_build/.doctrees/nbsphinx/tutorials_5_symmetrization_tutorial_symmetrization_14_1.png" />
+</div>
+</div>
+<p>Symmetrization fix the symmetries of Hamiltonian</p>
+<p>The Berry curvature is more sensitive to symmetry than energy eigenvalues.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># calculate Berry curvature alone a k-path.
+path_berry=wberri.Path(system_Te,
+                 nodes=[[0,0.5,0.5],[1./3,1./3,0.5],[1./3,1./3,0.]],
+                 labels=[&quot;L&quot;,&quot;H&quot;,&quot;K&quot;,],
+                 length=500)
+
+quantities = {&quot;Energy&quot;:wberri.calculators.tabulate.Energy(),
+              &quot;berry&quot;:wberri.calculators.tabulate.BerryCurvature(),}
+
+calculators={}
+calculators [&quot;tabulate&quot;] = wberri.calculators.TabulatorAll(quantities,ibands=[18,19],mode=&quot;path&quot;)
+
+berry_Te = wberri.evaluate_k_path(system=system_Te,
+        path=path_berry,
+        parallel=parallel,
+        quantities=[&quot;berry_curvature&quot;] )
+
+berry_Te_sym = wberri.evaluate_k_path(system=system_Te_sym_new,
+        path=path_berry,
+        parallel=parallel,
+        quantities=[&quot;berry_curvature&quot;] )
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-red-intense-fg ansi-bold">Starting run()</span>
+<span class="ansi-cyan-intense-fg ansi-bold">Using the follwing calculators :
+############################################################
+</span>
+<span class="ansi-magenta-intense-fg ansi-bold"> &#39;tabulate&#39; </span> : <span class="ansi-yellow-intense-fg ansi-bold"> &lt;wannierberri.calculators.tabulate.TabulatorAll object at 0x77f96271e3f0&gt; </span> :
+    TabulatorAll - a pack of all k-resolved calculators (Tabulators)
+
+ Includes the following tabulators :
+--------------------------------------------------
+ &#34;berry_curvature&#34; : &lt;wannierberri.calculators.tabulate.BerryCurvature object at 0x77f97a78dbb0&gt; : calculator not described
+
+ &#34;Energy&#34; : &lt;wannierberri.calculators.tabulate.Energy object at 0x77f96048a0f0&gt; : calculator not described
+
+--------------------------------------------------
+
+<span class="ansi-cyan-intense-fg ansi-bold">############################################################</span>
+Calculation along a path - checking calculators for compatibility
+tabulate &lt;wannierberri.calculators.tabulate.TabulatorAll object at 0x77f96271e3f0&gt;
+All calculators are compatible
+Symmetrization switched off for Path
+Grid is regular
+The set of k points is a Path() with 80 points and labels {0: &#39;L&#39;, 37: &#39;H&#39;, 79: &#39;K&#39;}
+generating K_list
+Done
+Done, sum of weights:80.0
+processing 80 K points : using  8 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)
+time for processing     80 K-points on   8 processes:     0.6866 ; per K-point          0.0086 ; proc-sec per K-point          0.0687
+time1 =  0.00231170654296875
+Totally processed 80 K-points
+run() finished
+<span class="ansi-red-intense-fg ansi-bold">Starting run()</span>
+<span class="ansi-cyan-intense-fg ansi-bold">Using the follwing calculators :
+############################################################
+</span>
+<span class="ansi-magenta-intense-fg ansi-bold"> &#39;tabulate&#39; </span> : <span class="ansi-yellow-intense-fg ansi-bold"> &lt;wannierberri.calculators.tabulate.TabulatorAll object at 0x77fa34a1a4b0&gt; </span> :
+    TabulatorAll - a pack of all k-resolved calculators (Tabulators)
+
+ Includes the following tabulators :
+--------------------------------------------------
+ &#34;berry_curvature&#34; : &lt;wannierberri.calculators.tabulate.BerryCurvature object at 0x77f97a78dbb0&gt; : calculator not described
+
+ &#34;Energy&#34; : &lt;wannierberri.calculators.tabulate.Energy object at 0x77f96271cf50&gt; : calculator not described
+
+--------------------------------------------------
+
+<span class="ansi-cyan-intense-fg ansi-bold">############################################################</span>
+Calculation along a path - checking calculators for compatibility
+tabulate &lt;wannierberri.calculators.tabulate.TabulatorAll object at 0x77fa34a1a4b0&gt;
+All calculators are compatible
+Symmetrization switched off for Path
+Grid is regular
+The set of k points is a Path() with 80 points and labels {0: &#39;L&#39;, 37: &#39;H&#39;, 79: &#39;K&#39;}
+generating K_list
+Done
+Done, sum of weights:80.0
+processing 80 K points : using  8 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)
+time for processing     80 K-points on   8 processes:     1.3970 ; per K-point          0.0175 ; proc-sec per K-point          0.1397
+time1 =  0.0016279220581054688
+Totally processed 80 K-points
+run() finished
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># use built-in plotting method to plot berry cuvature.
+# red means positive, blue means negative.
+# size of the dots shows the amplitude of the quantity.
+# unsymmetrized:
+import matplotlib
+# matplotlib.use(&#39;TkAgg&#39;)
+
+berry_Te.plot_path_fat(path_berry,
+              quantity=&#39;berry_curvature&#39;,
+              component=&#39;z&#39;, # only take z compoment
+              Emin=6.0,  Emax=6.8,
+              mode=&quot;fatband&quot;,
+              fatfactor=20,  # size of dots.
+              close_fig=False,
+              )
+plt.show()
+plt.close()
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/home/stepan/github/wannier-berri/wannierberri/result/tabresult.py:342: UserWarning: FigureCanvasAgg is non-interactive, and thus cannot be shown
+  fig.show()
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_build/.doctrees/nbsphinx/tutorials_5_symmetrization_tutorial_symmetrization_17_1.png" src="../../_build/.doctrees/nbsphinx/tutorials_5_symmetrization_tutorial_symmetrization_17_1.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># symmetrized:
+berry_Te_sym.plot_path_fat(path_berry,
+              quantity=&#39;berry_curvature&#39;,
+              component=&#39;z&#39;, # only take z compoment
+              Emin=6.0,  Emax=6.8,
+              mode=&quot;fatband&quot;,
+              fatfactor=20,  # size of dots.
+              close_fig=False,
+              )
+plt.show()
+plt.close()
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/home/stepan/github/wannier-berri/wannierberri/result/tabresult.py:342: UserWarning: FigureCanvasAgg is non-interactive, and thus cannot be shown
+  fig.show()
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_build/.doctrees/nbsphinx/tutorials_5_symmetrization_tutorial_symmetrization_18_1.png" src="../../_build/.doctrees/nbsphinx/tutorials_5_symmetrization_tutorial_symmetrization_18_1.png" />
+</div>
+</div>
+<p>z-component of Berry curvature alone L-H path should be zero because of symmetry. The loss of symmetry has a big impact to Berry curvature of single k-point. It is fixed by symmetrization.</p>
+</section>
+<section id="Magnetic-system-with-SOC-(bcc-Fe)">
+<h2>Magnetic system with SOC (bcc Fe)<a class="headerlink" href="#Magnetic-system-with-SOC-(bcc-Fe)" title="Link to this heading"></a></h2>
+<p>bcc Fe is a magnetic system with magnetic moment -2.31 <span class="math">\mu</span>_B point to -z direction of cartesian coordinate system of lattice. We need to set parameter ‘magmom’.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>system_Fe=wberri.System_tb(tb_file=&#39;./Fe_data/Fe_tb.dat&#39;,berry=True)
+system_Fe_sym_new=copy.deepcopy(system_Fe)
+spacegroup = SpaceGroup(cell=(system_Fe.real_lattice, [[0,0,0]], [1]), magmom=[[0,0,1]], include_TR=True, spinor=True)
+
+proj_sp3d2 = Projection(position_num=[[0,0,0]], orbital=&quot;sp3d2&quot;, spacegroup=spacegroup)
+proj_t2g = Projection(position_num=[[0,0,0]], orbital=&quot;t2g&quot;, spacegroup=spacegroup)
+
+symmetrizer = SymmetrizerSAWF().set_spacegroup(spacegroup).set_D_wann_from_projections(projections=[proj_sp3d2, proj_t2g])
+system_Fe_sym_new.symmetrize2(symmetrizer)
+<br/><br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-intense-fg ansi-bold">reading TB file ./Fe_data/Fe_tb.dat ( written on 13May2022 at 01:23:14 )</span>
+Real-space lattice:
+ [[ 1.4349963  1.4349963  1.4349963]
+ [-1.4349963  1.4349963  1.4349963]
+ [-1.4349963 -1.4349963  1.4349963]]
+Number of wannier functions: 18
+Number of R points: 27
+Recommended size of FFT grid [5 5 5]
+<span class="ansi-green-intense-fg ansi-bold">Reading the system from ./Fe_data/Fe_tb.dat finished successfully</span>
+orbitals = [&#39;sp3d2&#39;]
+orbitals = [&#39;t2g&#39;]
+calculating Wannier functions for sp3d2 at [[0 0 0]]
+calculating Wannier functions for t2g at [[0 0 0]]
+len(D_wann_list) = 2
+D.shape [(0, 16, 12, 12), (0, 16, 6, 6)]
+num_wann 18
+D_wann_block_indices [[ 0 12]
+ [12 18]]
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span>system_Fe_sym_old=copy.deepcopy(system_Fe)
+system_Fe_sym_old.symmetrize(
+             proj = [&#39;Fe:sp3d2;t2g&#39;],
+             atom_name = [&#39;Fe&#39;],
+             positions = [[0,0,0]],
+             #magmom: magnetic moment of each atoms.
+             magmom = [[0.,0.,-2]],
+             soc=True,
+             )
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+
+ ---------- CRYSTAL STRUCTURE ----------
+
+
+Cell vectors in angstroms:
+
+      Vectors of DFT cell
+a0 =  1.4350   1.4350   1.4350
+a1 = -1.4350   1.4350   1.4350
+a2 = -1.4350  -1.4350   1.4350
+
+
+
+ ---------- SPACE GROUP -----------
+
+
+Space group: I4/mm&#39;m&#39; (# 139.537)
+Number of symmetries: 16 (mod. lattice translations)
+
+ ### 1
+
+rotation : |  1   0   0 |
+           |  0   1   0 |
+           |  0   0   1 |
+
+
+ gk = [kx, ky, kz]
+
+spinor rot.         : | 1.000+0.000j  0.000+0.000j |
+                      | 0.000+0.000j  1.000+0.000j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [ 0.040875 -0.315963  0.94789 ] ; angle =  0 , inversion : False, time reversal: False
+
+ ### 2
+
+rotation : | -1   0   0 |
+           |  0  -1   0 |
+           |  0   0  -1 |
+
+
+ gk = [-kx, -ky, -kz]
+
+spinor rot.         : | 1.000+0.000j  0.000+0.000j |
+                      | 0.000+0.000j  1.000+0.000j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [-0.040875 -0.315963  0.94789 ] ; angle =  0 , inversion : True, time reversal: False
+
+ ### 3
+
+rotation : |  0   0   1 |
+           |  1   0  -1 |
+           |  0   1   1 |
+
+
+ gk = [kx-ky+kz, kx, ky]
+
+spinor rot.         : | 0.707-0.707j  0.000-0.000j |
+                      | 0.000-0.000j  0.707+0.707j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [0. 0. 1.] ; angle = 1/2 pi, inversion : False, time reversal: False
+
+ ### 4
+
+rotation : |  0   0  -1 |
+           | -1   0   1 |
+           |  0  -1  -1 |
+
+
+ gk = [-kx+ky-kz, -kx, -ky]
+
+spinor rot.         : | 0.707-0.707j  0.000-0.000j |
+                      | 0.000-0.000j  0.707+0.707j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [0. 0. 1.] ; angle = 1/2 pi, inversion : True, time reversal: False
+
+ ### 5
+
+rotation : |  0   1   1 |
+           |  0  -1   0 |
+           |  1   1   0 |
+
+
+ gk = [kz, kx-ky+kz, kx]
+
+spinor rot.         : | 0.000-1.000j -0.000-0.000j |
+                      | 0.000-0.000j  0.000+1.000j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [0. 0. 1.] ; angle = 1 pi, inversion : False, time reversal: False
+
+ ### 6
+
+rotation : |  0  -1  -1 |
+           |  0   1   0 |
+           | -1  -1   0 |
+
+
+ gk = [-kz, -kx+ky-kz, -kx]
+
+spinor rot.         : | 0.000+1.000j -0.000-0.000j |
+                      | 0.000-0.000j  0.000-1.000j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [ 0.  0. -1.] ; angle = 1 pi, inversion : True, time reversal: False
+
+ ### 7
+
+rotation : |  1   1   0 |
+           | -1   0   1 |
+           |  1   0   0 |
+
+
+ gk = [ky, kz, kx-ky+kz]
+
+spinor rot.         : | 0.707+0.707j  0.000+0.000j |
+                      |-0.000+0.000j  0.707-0.707j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [0. 0. 1.] ; angle = -1/2 pi, inversion : False, time reversal: False
+
+ ### 8
+
+rotation : | -1  -1   0 |
+           |  1   0  -1 |
+           | -1   0   0 |
+
+
+ gk = [-ky, -kz, -kx+ky-kz]
+
+spinor rot.         : | 0.707+0.707j  0.000+0.000j |
+                      |-0.000+0.000j  0.707-0.707j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [0. 0. 1.] ; angle = -1/2 pi, inversion : True, time reversal: False
+
+ ### 9
+
+rotation : |  0  -1  -1 |
+           | -1   0   1 |
+           |  0   0  -1 |
+
+
+ gk = [ky, kx, kx-ky+kz]
+
+spinor rot.         : | 0.000+0.000j  0.000-1.000j |
+                      | 0.000-1.000j  0.000+0.000j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [1. 0. 0.] ; angle = 1 pi, inversion : False, time reversal: True
+
+ ### 10
+
+rotation : |  0   1   1 |
+           |  1   0  -1 |
+           |  0   0   1 |
+
+
+ gk = [-ky, -kx, -kx+ky-kz]
+
+spinor rot.         : | 0.000+0.000j  0.000-1.000j |
+                      | 0.000-1.000j  0.000+0.000j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [1. 0. 0.] ; angle = 1 pi, inversion : True, time reversal: True
+
+ ### 11
+
+rotation : | -1  -1   0 |
+           |  0   1   0 |
+           |  0  -1  -1 |
+
+
+ gk = [kx, kx-ky+kz, kz]
+
+spinor rot.         : |-0.000+0.000j  0.707-0.707j |
+                      |-0.707-0.707j  0.000+0.000j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [ 0.707107 -0.707107  0.      ] ; angle = 1 pi, inversion : False, time reversal: True
+
+ ### 12
+
+rotation : |  1   1   0 |
+           |  0  -1   0 |
+           |  0   1   1 |
+
+
+ gk = [-kx, -kx+ky-kz, -kz]
+
+spinor rot.         : |-0.000+0.000j -0.707+0.707j |
+                      | 0.707+0.707j  0.000+0.000j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [-0.707107  0.707107 -0.      ] ; angle = 1 pi, inversion : True, time reversal: True
+
+ ### 13
+
+rotation : | -1   0   0 |
+           |  1   0  -1 |
+           | -1  -1   0 |
+
+
+ gk = [kx-ky+kz, kz, ky]
+
+spinor rot.         : | 0.000-0.000j -1.000+0.000j |
+                      | 1.000+0.000j  0.000+0.000j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [-0.  1.  0.] ; angle = 1 pi, inversion : False, time reversal: True
+
+ ### 14
+
+rotation : |  1   0   0 |
+           | -1   0   1 |
+           |  1   1   0 |
+
+
+ gk = [-kx+ky-kz, -kz, -ky]
+
+spinor rot.         : | 0.000+0.000j -1.000+0.000j |
+                      | 1.000+0.000j  0.000+0.000j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [0. 1. 0.] ; angle = 1 pi, inversion : True, time reversal: True
+
+ ### 15
+
+rotation : |  0   0  -1 |
+           |  0  -1   0 |
+           | -1   0   0 |
+
+
+ gk = [kz, ky, kx]
+
+spinor rot.         : |-0.000+0.000j -0.707-0.707j |
+                      | 0.707-0.707j  0.000+0.000j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [0.707107 0.707107 0.      ] ; angle = 1 pi, inversion : False, time reversal: True
+
+ ### 16
+
+rotation : |  0   0   1 |
+           |  0   1   0 |
+           |  1   0   0 |
+
+
+ gk = [-kz, -ky, -kx]
+
+spinor rot.         : |-0.000+0.000j  0.707+0.707j |
+                      |-0.707+0.707j  0.000+0.000j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [-0.707107 -0.707107 -0.      ] ; angle = 1 pi, inversion : True, time reversal: True
+pos_list: [[0]]
+proj: Projection 0, 0, 0:[&#39;sp3d2;t2g&#39;] with 9 Wannier functions on 1 points (9 per site)
+orbital = sp3d2;t2g, num wann per site = 18
+new_wann_indices: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+orbitals = [&#39;sp3d2;t2g&#39;]
+calculating Wannier functions for sp3d2;t2g at [[0 0 0]]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/home/stepan/github/wannier-berri/wannierberri/system/system_R.py:378: UserWarning: for effeciency of symmetrization, it is recommended to give orbitals separately, not combined by a &#39;;&#39; sign.But you need to do it consistently in wannier90
+  warnings.warn(&#34;for effeciency of symmetrization, it is recommended to give orbitals separately, not combined by a &#39;;&#39; sign.&#34;
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+len(D_wann_list) = 1
+D.shape [(0, 16, 18, 18)]
+num_wann 18
+D_wann_block_indices [[ 0 18]]
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;wannierberri.symmetry.sawf.SymmetrizerSAWF at 0x77f960353110&gt;
+</pre></div></div>
+</div>
+<p>Important explanations:</p>
+<ol class="arabic simple">
+<li><p>The projection card in wannier90.win of bcc Fe is <code class="docutils literal notranslate"><span class="pre">'Fe':sp3d2;dxz,dyz,dxy</span></code>. But in the symmetrization, orbitals must project to complete sets of coordinates after symmetry opration. So we must label orbitals which shares the same complete sets of coordinates. eg: <code class="docutils literal notranslate"><span class="pre">sp3d2,</span> <span class="pre">dxz,dyz,dxy</span> <span class="pre">-&gt;</span> <span class="pre">sp3d2,</span> <span class="pre">t2g</span></code> and <code class="docutils literal notranslate"><span class="pre">sp,px,py</span> <span class="pre">-&gt;</span> <span class="pre">sp,p2</span></code></p></li>
+<li><p>We print out all the symmetry operators in the space group. But magnetic moments break some of them. Afte line <code class="docutils literal notranslate"><span class="pre">Symmetrizing</span> <span class="pre">start</span></code>. You can find details about which operator belong to the magnetic group.</p></li>
+</ol>
+<p>bcc Fe have inversion symmetry, so the Berry curvature dipole should be zero. Ref: <a class="reference external" href="https://journals.aps.org/prl/pdf/10.1103/PhysRevLett.115.216806">https://journals.aps.org/prl/pdf/10.1103/PhysRevLett.115.216806</a></p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>system_Fe_sym = system_Fe_sym_new
+#calculate berry curvature dipole
+Efermi_Fe = np.linspace(15.5,16,301)
+NK = 10
+
+grid = wberri.Grid(system_Fe,NK=NK,NKFFT=1)
+
+result_Fe = wberri.run(system=system_Fe,
+            grid=grid,
+            calculators = {&quot;BerryDipole&quot;:wberri.calculators.static.BerryDipole_FermiSea(Efermi=Efermi_Fe,tetra=True)},
+            adpt_num_iter=0,
+            fout_name=&#39;Fe&#39;,
+            restart=False,
+            print_Kpoints=False
+            )
+
+result_Fe_sym = wberri.run(system=system_Fe_sym,
+            grid=grid,
+            calculators = {&quot;BerryDipole&quot;:wberri.calculators.static.BerryDipole_FermiSea(Efermi=Efermi_Fe,tetra=True)},
+            adpt_num_iter=0,
+            fout_name=&#39;Fe_sym&#39;,
+            restart=False,
+            print_Kpoints=False
+            )
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-red-intense-fg ansi-bold">Starting run()</span>
+<span class="ansi-cyan-intense-fg ansi-bold">Using the follwing calculators :
+############################################################
+</span>
+<span class="ansi-magenta-intense-fg ansi-bold"> &#39;BerryDipole&#39; </span> : <span class="ansi-yellow-intense-fg ansi-bold"> &lt;wannierberri.calculators.static.BerryDipole_FermiSea object at 0x77f960181eb0&gt; </span> : Berry curvature dipole (dimensionless)
+
+        | With Fermi sea integral. Eq(29) in `Ref &lt;https://www.nature.com/articles/s41524-021-00498-5&gt;`__
+        | Output: :math:`D_{\beta\delta} = \int [dk] \partial_\beta \Omega_\delta f`
+<span class="ansi-cyan-intense-fg ansi-bold">############################################################</span>
+Calculation on  grid - checking calculators for compatibility
+BerryDipole &lt;wannierberri.calculators.static.BerryDipole_FermiSea object at 0x77f960181eb0&gt;
+All calculators are compatible
+Grid is regular
+The set of k points is a Grid() with NKdiv=[10 10 10], NKFFT=[1 1 1], NKtot=[10 10 10]
+generating K_list
+Done in 0.0046138763427734375 s
+excluding symmetry-equivalent K-points from initial grid
+Done in 0.01673436164855957 s
+K_list contains 1000 Irreducible points(100.0%) out of initial 10x10x10=1000 grid
+Done, sum of weights:1.0000000000000007
+processing 1000 K points : in serial.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)
+time for processing   1000 K-points in serial:     7.7634 ; per K-point          0.0078 ; proc-sec per K-point          0.0078
+time1 =  0.018666744232177734
+Totally processed 1000 K-points
+run() finished
+<span class="ansi-red-intense-fg ansi-bold">Starting run()</span>
+<span class="ansi-cyan-intense-fg ansi-bold">Using the follwing calculators :
+############################################################
+</span>
+<span class="ansi-magenta-intense-fg ansi-bold"> &#39;BerryDipole&#39; </span> : <span class="ansi-yellow-intense-fg ansi-bold"> &lt;wannierberri.calculators.static.BerryDipole_FermiSea object at 0x77f96053c320&gt; </span> : Berry curvature dipole (dimensionless)
+
+        | With Fermi sea integral. Eq(29) in `Ref &lt;https://www.nature.com/articles/s41524-021-00498-5&gt;`__
+        | Output: :math:`D_{\beta\delta} = \int [dk] \partial_\beta \Omega_\delta f`
+<span class="ansi-cyan-intense-fg ansi-bold">############################################################</span>
+Calculation on  grid - checking calculators for compatibility
+BerryDipole &lt;wannierberri.calculators.static.BerryDipole_FermiSea object at 0x77f96053c320&gt;
+All calculators are compatible
+Grid is regular
+The set of k points is a Grid() with NKdiv=[10 10 10], NKFFT=[1 1 1], NKtot=[10 10 10]
+generating K_list
+Done in 0.0025255680084228516 s
+excluding symmetry-equivalent K-points from initial grid
+Done in 0.013127565383911133 s
+K_list contains 1000 Irreducible points(100.0%) out of initial 10x10x10=1000 grid
+Done, sum of weights:1.0000000000000007
+processing 1000 K points : in serial.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)
+time for processing   1000 K-points in serial:     6.6642 ; per K-point          0.0067 ; proc-sec per K-point          0.0067
+time1 =  0.018001794815063477
+Totally processed 1000 K-points
+run() finished
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#read data
+
+Fe_BCD = result_Fe.results[&quot;BerryDipole&quot;].data
+Fe_sym_BCD = result_Fe_sym.results[&quot;BerryDipole&quot;].data
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#unsymmetrized
+#print zz component of berry dipole
+# %matplotlib inline
+plt.plot(Efermi_Fe,Fe_BCD[:,2,2],&#39;r&#39;,label=&quot;Unsymmetrized&quot;)
+plt.plot(Efermi_Fe,Fe_sym_BCD[:,2,2],&#39;b:&#39;,label=&quot;Symmetrized&quot;)
+plt.legend()
+plt.xlabel(&#39;Energy (eV)&#39;)
+plt.ylabel(&#39;Berry curvature dipole&#39;)
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Text(0, 0.5, &#39;Berry curvature dipole&#39;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_build/.doctrees/nbsphinx/tutorials_5_symmetrization_tutorial_symmetrization_28_1.png" src="../../_build/.doctrees/nbsphinx/tutorials_5_symmetrization_tutorial_symmetrization_28_1.png" />
+</div>
+</div>
+<p>Symmetrized system gives us better results with low-density k-grid. But it still looks like not perfect zero. At some energy where have band intersections, we can see some little peaks come from digital error. There are very large Berry curvature and it’s divergent around band intersections. They may enlarge digital errors.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Stepan Tsirkin.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

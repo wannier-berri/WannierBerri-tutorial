@@ -1,0 +1,1659 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Basic tutorial: Interpolating bands, Berry curvatures, and integrating them &mdash; Wannier Berri 1.8.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/style.css?v=88c5e859" />
+      <link rel="stylesheet" type="text/css" href="../../_static/nbsphinx-code-cells.css?v=2aa19091" />
+
+  
+    <link rel="shortcut icon" href="../../_static/WB-logo.ico"/>
+    <link rel="canonical" href="https://tutorial.wannier-berri.org/tutorials/1_basic/tutorial-wb-basic-solution.html" />
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=b51e6972"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within Wannier Berri 1.8.0 documentation"
+          href="../../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="WannierBerri advanced tutorial - Fermi surface and Fermi sea calculation of the Berry curvature dipole" href="../2_fermi_sea_vs_fermi_surface/solution/tutorial_sea_vs_surface_solution.html" />
+    <link rel="prev" title="Wannier Berri Tutorial" href="../../index.html" />
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #009C46" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/tutorial.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+    
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Basic tutorial: Interpolating bands, Berry curvatures, and integrating them</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Preparation-of-a-calculation:">Preparation of a calculation:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Reading-the-system">Reading the system</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Interpolation-on-a-path">Interpolation on a path</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Running-a-calculation:-calculators-and-results">Running a calculation: calculators and results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Tabulating-Berry-curvature-and-spin">Tabulating Berry curvature and spin</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Running-a-calculation">Running a calculation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Alternative-shortcut:">Alternative shortcut:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Plotting-the-results">Plotting the results</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Problem-1:">Problem 1:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Get-the-data-and-do-whatever-you-want">Get the data and do whatever you want</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Calaculation-on-a-3D-grid">Calaculation on a 3D grid</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#We-can-use-the-same-tabulators,-but-now-we-pack-them-into-TabulatorAll-in-%22grid%22-mode">We can use the same tabulators, but now we pack them into TabulatorAll in “grid” mode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#And-we-run-the-calculation-in-the-same-way">And we run the calculation in the same way</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Writing-the-FermiSurfer-files">Writing the FermiSurfer files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Analyze-the-tabulated-data">Analyze the tabulated data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Problem-2-:">Problem 2 :</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fill-the-missing-parts-and-evaluate-the-Berry-curvature-summed-over-all-states-below-EF-=-12.6-eV.-Plot-in-on-a-plane-k3=const-(in-reduced-coordinates)">fill the missing parts and evaluate the Berry curvature summed over all states below EF = 12.6 eV. Plot in on a plane k3=const (in reduced coordinates)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Integration-on-a-grid:-anomalous-Hall-conductivity">Integration on a grid: anomalous Hall conductivity</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Problem-3-:">Problem 3 :</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Tetrahedron-method">Tetrahedron method</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Optical-conductivity">Optical conductivity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#All-in-one">All in one</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../2_fermi_sea_vs_fermi_surface/solution/tutorial_sea_vs_surface_solution.html">WannierBerri advanced tutorial - Fermi surface and Fermi sea calculation of the Berry curvature dipole</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3_spin_hall/solution/tutorial_spin_hall.html">Spin Hall conductivity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../4_DIY/tutorial-wb-DIY-solution.html">DIY tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../5_symmetrization/tutorial_symmetrization-solution.html">Symmetrization of Wannier Hamiltonian and matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../6_wannierisation/wannierise.html">Wannierisation (including SAWF)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../7_find_projections/find_projections.html">Finding initial projections based on symmetry indicators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../8_GPAW/1.diamond/diamond.html">GPAW + WannierBerri: spinless bandstructure (diamond)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../8_GPAW/2.Fe/bccFe.html">GPAW + WannierBerri: Magnetism and spin-orbit coupling (bcc Fe)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../8_GPAW/3.MnTe/mnte.html">GPAW + WannierBerri: Altermagnet MnTe</a></li>
+</ul>
+
+    <a href="genindex.html">Index</a>
+    <a href="http://wannier-berri.org">Back to Wannier-Berri.org</a>
+  
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #009C46" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Wannier Berri</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Basic tutorial: Interpolating bands, Berry curvatures, and integrating them</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="Basic-tutorial:-Interpolating-bands,-Berry-curvatures,-and-integrating-them">
+<h1>Basic tutorial: Interpolating bands, Berry curvatures, and integrating them<a class="headerlink" href="#Basic-tutorial:-Interpolating-bands,-Berry-curvatures,-and-integrating-them" title="Link to this heading"></a></h1>
+<p>In this tutorial we will see how to compute band energies, Berry curvature, spins and anomalous Hall conductivity using WannierBerri code and further integrate them over the Brillouin zone to obtain Anomalous Hall conductivity, and other quantities of interest.</p>
+<section id="Preparation-of-a-calculation:">
+<h2>Preparation of a calculation:<a class="headerlink" href="#Preparation-of-a-calculation:" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>import the needed modules</p></li>
+<li><p>initialize a <a class="reference external" href="https://wannier-berri.org/docs/parallel.html">Parallel() or Serial()</a> class</p></li>
+</ul>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Preliminary
+# Set environment variables - not mandatory but recommended if you use parallel with maximum number of CPUs
+#import os
+#os.environ[&#39;OPENBLAS_NUM_THREADS&#39;] = &#39;1&#39;
+#os.environ[&#39;MKL_NUM_THREADS&#39;] = &#39;1&#39;
+
+import ray
+ray.init(num_cpus=8)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+2025-11-20 05:16:31,151 INFO util.py:154 -- Missing packages: [&#39;ipywidgets&#39;]. Run `pip install -U ipywidgets`, then restart the notebook server for rich notebook output.
+2025-11-20 05:16:34,354 INFO worker.py:1918 -- Started a local Ray instance. View the dashboard at <span class="ansi-green-intense-fg ansi-bold">http://127.0.0.1:8265 </span>
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div class="lm-Widget p-Widget lm-Panel p-Panel jp-Cell-outputWrapper">
+    <div style="margin-left: 50px;display: flex;flex-direction: row;align-items: center">
+        <div class="jp-RenderedHTMLCommon" style="display: flex; flex-direction: row;">
+  <svg viewBox="0 0 567 224" fill="none" xmlns="http://www.w3.org/2000/svg" style="height: 3em;">
+    <g clip-path="url(#clip0_4338_178347)">
+        <path d="M341.29 165.561H355.29L330.13 129.051C345.63 123.991 354.21 112.051 354.21 94.2307C354.21 71.3707 338.72 58.1807 311.88 58.1807H271V165.561H283.27V131.661H311.8C314.25 131.661 316.71 131.501 319.01 131.351L341.25 165.561H341.29ZM283.29 119.851V70.0007H311.82C331.3 70.0007 342.34 78.2907 342.34 94.5507C342.34 111.271 331.34 119.861 311.82 119.861L283.29 119.851ZM451.4 138.411L463.4 165.561H476.74L428.74 58.1807H416L367.83 165.561H380.83L392.83 138.411H451.4ZM446.19 126.601H398L422 72.1407L446.24 126.601H446.19ZM526.11 128.741L566.91 58.1807H554.35L519.99 114.181L485.17 58.1807H472.44L514.01 129.181V165.541H526.13V128.741H526.11Z" fill="var(--jp-ui-font-color0)"/>
+        <path d="M82.35 104.44C84.0187 97.8827 87.8248 92.0678 93.1671 87.9146C98.5094 83.7614 105.083 81.5067 111.85 81.5067C118.617 81.5067 125.191 83.7614 130.533 87.9146C135.875 92.0678 139.681 97.8827 141.35 104.44H163.75C164.476 101.562 165.622 98.8057 167.15 96.2605L127.45 56.5605C121.071 60.3522 113.526 61.6823 106.235 60.3005C98.9443 58.9187 92.4094 54.9203 87.8602 49.0574C83.3109 43.1946 81.0609 35.8714 81.5332 28.4656C82.0056 21.0599 85.1679 14.0819 90.4252 8.8446C95.6824 3.60726 102.672 0.471508 110.08 0.0272655C117.487 -0.416977 124.802 1.86091 130.647 6.4324C136.493 11.0039 140.467 17.5539 141.821 24.8501C143.175 32.1463 141.816 39.6859 138 46.0505L177.69 85.7505C182.31 82.9877 187.58 81.4995 192.962 81.4375C198.345 81.3755 203.648 82.742 208.33 85.3976C213.012 88.0532 216.907 91.9029 219.616 96.5544C222.326 101.206 223.753 106.492 223.753 111.875C223.753 117.258 222.326 122.545 219.616 127.197C216.907 131.848 213.012 135.698 208.33 138.353C203.648 141.009 198.345 142.375 192.962 142.313C187.58 142.251 182.31 140.763 177.69 138L138 177.7C141.808 184.071 143.155 191.614 141.79 198.91C140.424 206.205 136.44 212.75 130.585 217.313C124.731 221.875 117.412 224.141 110.004 223.683C102.596 223.226 95.6103 220.077 90.3621 214.828C85.1139 209.58 81.9647 202.595 81.5072 195.187C81.0497 187.779 83.3154 180.459 87.878 174.605C92.4405 168.751 98.9853 164.766 106.281 163.401C113.576 162.035 121.119 163.383 127.49 167.19L167.19 127.49C165.664 124.941 164.518 122.182 163.79 119.3H141.39C139.721 125.858 135.915 131.673 130.573 135.826C125.231 139.98 118.657 142.234 111.89 142.234C105.123 142.234 98.5494 139.98 93.2071 135.826C87.8648 131.673 84.0587 125.858 82.39 119.3H60C58.1878 126.495 53.8086 132.78 47.6863 136.971C41.5641 141.163 34.1211 142.972 26.7579 142.059C19.3947 141.146 12.6191 137.574 7.70605 132.014C2.79302 126.454 0.0813599 119.29 0.0813599 111.87C0.0813599 104.451 2.79302 97.2871 7.70605 91.7272C12.6191 86.1673 19.3947 82.5947 26.7579 81.6817C34.1211 80.7686 41.5641 82.5781 47.6863 86.7696C53.8086 90.9611 58.1878 97.2456 60 104.44H82.35ZM100.86 204.32C103.407 206.868 106.759 208.453 110.345 208.806C113.93 209.159 117.527 208.258 120.522 206.256C123.517 204.254 125.725 201.276 126.771 197.828C127.816 194.38 127.633 190.677 126.253 187.349C124.874 184.021 122.383 181.274 119.205 179.577C116.027 177.88 112.359 177.337 108.826 178.042C105.293 178.746 102.113 180.654 99.8291 183.44C97.5451 186.226 96.2979 189.718 96.3 193.32C96.2985 195.364 96.7006 197.388 97.4831 199.275C98.2656 201.163 99.4132 202.877 100.86 204.32ZM204.32 122.88C206.868 120.333 208.453 116.981 208.806 113.396C209.159 109.811 208.258 106.214 206.256 103.219C204.254 100.223 201.275 98.0151 197.827 96.97C194.38 95.9249 190.676 96.1077 187.348 97.4873C184.02 98.8669 181.274 101.358 179.577 104.536C177.879 107.714 177.337 111.382 178.041 114.915C178.746 118.448 180.653 121.627 183.439 123.911C186.226 126.195 189.717 127.443 193.32 127.44C195.364 127.443 197.388 127.042 199.275 126.259C201.163 125.476 202.878 124.328 204.32 122.88ZM122.88 19.4205C120.333 16.8729 116.981 15.2876 113.395 14.9347C109.81 14.5817 106.213 15.483 103.218 17.4849C100.223 19.4868 98.0146 22.4654 96.9696 25.9131C95.9245 29.3608 96.1073 33.0642 97.4869 36.3922C98.8665 39.7202 101.358 42.4668 104.535 44.1639C107.713 45.861 111.381 46.4036 114.914 45.6992C118.447 44.9949 121.627 43.0871 123.911 40.301C126.195 37.515 127.442 34.0231 127.44 30.4205C127.44 28.3772 127.038 26.3539 126.255 24.4664C125.473 22.5788 124.326 20.8642 122.88 19.4205ZM19.42 100.86C16.8725 103.408 15.2872 106.76 14.9342 110.345C14.5813 113.93 15.4826 117.527 17.4844 120.522C19.4863 123.518 22.4649 125.726 25.9127 126.771C29.3604 127.816 33.0638 127.633 36.3918 126.254C39.7198 124.874 42.4664 122.383 44.1635 119.205C45.8606 116.027 46.4032 112.359 45.6988 108.826C44.9944 105.293 43.0866 102.114 40.3006 99.8296C37.5145 97.5455 34.0227 96.2983 30.42 96.3005C26.2938 96.3018 22.337 97.9421 19.42 100.86ZM100.86 100.86C98.3125 103.408 96.7272 106.76 96.3742 110.345C96.0213 113.93 96.9226 117.527 98.9244 120.522C100.926 123.518 103.905 125.726 107.353 126.771C110.8 127.816 114.504 127.633 117.832 126.254C121.16 124.874 123.906 122.383 125.604 119.205C127.301 116.027 127.843 112.359 127.139 108.826C126.434 105.293 124.527 102.114 121.741 99.8296C118.955 97.5455 115.463 96.2983 111.86 96.3005C109.817 96.299 107.793 96.701 105.905 97.4835C104.018 98.2661 102.303 99.4136 100.86 100.86Z" fill="#00AEEF"/>
+    </g>
+    <defs>
+        <clipPath id="clip0_4338_178347">
+            <rect width="566.93" height="223.75" fill="white"/>
+        </clipPath>
+    </defs>
+  </svg>
+</div>
+
+        <table class="jp-RenderedHTMLCommon" style="border-collapse: collapse;color: var(--jp-ui-font-color1);font-size: var(--jp-ui-font-size1);">
+    <tr>
+        <td style="text-align: left"><b>Python version:</b></td>
+        <td style="text-align: left"><b>3.12.12</b></td>
+    </tr>
+    <tr>
+        <td style="text-align: left"><b>Ray version:</b></td>
+        <td style="text-align: left"><b>2.48.0</b></td>
+    </tr>
+    <tr>
+    <td style="text-align: left"><b>Dashboard:</b></td>
+    <td style="text-align: left"><b><a href="http://127.0.0.1:8265" target="_blank">http://127.0.0.1:8265</a></b></td>
+</tr>
+
+</table>
+
+    </div>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span>import wannierberri as wberri
+print (f&quot;Using WannierBerri version {wberri.__version__}&quot;)
+import numpy as np
+import scipy
+import matplotlib.pyplot as plt
+%matplotlib inline
+<br/><br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Using WannierBerri version 1.6.1
+</pre></div></div>
+</div>
+</section>
+<section id="Reading-the-system">
+<h2>Reading the system<a class="headerlink" href="#Reading-the-system" title="Link to this heading"></a></h2>
+<p>Now we need to define the system that we are working on. Wannierberri can equally work with Wannier functions obtained by Wannier90 or other code (e.g. ASE or FPLO), as well as tight-binding models. This is done by constructing a <a class="reference external" href="https://wannier-berri.org/docs/system.html">System()</a> class or one of its subclasses. Below, an example for Wannier90 is given; in advanced tutorials, some tight-binding models are also used.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Importing data from wannier90
+system=wberri.System_w90(
+                        seedname=&#39;w90_files/Fe&#39;,
+                        berry=True,   # needed to calculate &quot;external terms&quot; of Berry connection or curvature , reads &quot;.mmn&quot; file
+                        spin = True , # needed for spin properties, reads &quot;.spn&quot; file
+                        )
+
+
+# Setting the pointgroup from the symmetry operations
+import irrep
+spacegroup = irrep.spacegroup.SpaceGroup.from_cell( real_lattice=system.real_lattice,
+                                                   positions=[[0,0,0]],   # only 1 Fe atoms at origin
+                                                   typat=[1],    # atomic number is not important here
+                                                   spinor=True,
+                                                   magmom=[[0,0,1]],   # magnetic moment along z
+                                                   include_TR=True,   # include symmetries that flip the spin
+                                                )
+
+system.set_pointgroup(spacegroup=spacegroup)
+
+# generators=[&quot;Inversion&quot;,&quot;C4z&quot;,&quot;TimeReversal*C2x&quot;]
+# system.set_pointgroup(symmetry_gen=generators)
+<br/><br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Reading restart information from file w90_files/Fe.chk :
+Time to read .chk : 0.014049530029296875
+----------
+ SPN
+---------
+
+reading w90_files/Fe.spn : Created on  7May2022 at 16: 2:47
+----------
+ SPN OK
+---------
+
+setting Rvec
+setting AA..
+setting AA - OK
+Real-space lattice:
+ [[ 1.4349963  1.4349963  1.4349963]
+ [-1.4349963  1.4349963  1.4349963]
+ [-1.4349963 -1.4349963  1.4349963]]
+Number of wannier functions: 18
+Number of R points: 113
+Recommended size of FFT grid [4 4 4]
+</pre></div></div>
+</div>
+</section>
+<section id="Interpolation-on-a-path">
+<h2>Interpolation on a path<a class="headerlink" href="#Interpolation-on-a-path" title="Link to this heading"></a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Evaluate bands, Berry curvature, and spin along a path GHPNG
+
+
+# all kpoints given in reduced coordinates
+path=wberri.Path(system,
+                 nodes=[
+        [0.0000, 0.0000, 0.0000 ],   #  G
+        [0.500 ,-0.5000, -0.5000],   #  H
+        [0.7500, 0.2500, -0.2500],   #  P
+        [0.5000, 0.0000, -0.5000],   #  N
+        [0.0000, 0.0000, 0.000  ] ] , #  G
+                 labels=[&quot;G&quot;,&quot;H&quot;,&quot;P&quot;,&quot;N&quot;,&quot;G&quot;],
+                 length=200 )   # length [ Ang] ~= 2*pi/dk
+
+# uncomment some of these lines to see what path you have generated
+
+#print (path)
+
+#print (path.getKline())
+
+#for K in path.get_K_list():
+#    print (K)
+
+#print (np.array([K.K for K in path.get_K_list()]))
+<br/><br/></pre></div>
+</div>
+</div>
+</section>
+<section id="Running-a-calculation:-calculators-and-results">
+<h2>Running a calculation: calculators and results<a class="headerlink" href="#Running-a-calculation:-calculators-and-results" title="Link to this heading"></a></h2>
+<p>The calculation is called using the function <code class="docutils literal notranslate"><span class="pre">`run()</span></code> &lt;<a class="reference external" href="https://wannier-berri.org/docs/run.html">https://wannier-berri.org/docs/run.html</a>&gt;`__ :</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>result=wberri.run(system,
+                  grid=path,
+                  calculators = {&quot;key&quot; : calculator},
+                  parallel = parallel,
+                  print_Kpoints = False)
+</pre></div>
+</div>
+<p>Here, apart from the already known ingredients, we need to define objects of some subclass of <code class="docutils literal notranslate"><span class="pre">`Calculator</span></code> &lt;<a class="reference external" href="https://wannier-berri.org/docs/calculators.html#wannierberri.calculators.Calculator">https://wannier-berri.org/docs/calculators.html#wannierberri.calculators.Calculator</a>&gt;`__. A Calculator is a callable object which returns some <code class="docutils literal notranslate"><span class="pre">`Result</span></code> &lt;<a class="reference external" href="https://wannier-berri.org/docs/result.html">https://wannier-berri.org/docs/result.html</a>&gt;`__. If you code another calculator, you can calculate other things using the machinery of WannierBerri, but that is not a part of this basic tutorial.</p>
+<p>Further, results are packed into <code class="docutils literal notranslate"><span class="pre">`ResultDict</span></code> &lt;<a class="reference external" href="https://wannier-berri.org/docs/result.html#wannierberri.result.ResultDict">https://wannier-berri.org/docs/result.html#wannierberri.result.ResultDict</a>&gt;`__ and returned.</p>
+</section>
+<section id="Tabulating-Berry-curvature-and-spin">
+<h2>Tabulating Berry curvature and spin<a class="headerlink" href="#Tabulating-Berry-curvature-and-spin" title="Link to this heading"></a></h2>
+<p>To run a tabulation one needs to compose a dictionary, where keys are any arbitrary strings to label further tabulation results, and the values are subclasses of <code class="docutils literal notranslate"><span class="pre">`Tabulator</span></code> &lt;<a class="reference external" href="https://wannier-berri.org/docs/calculators.html#wannierberri.calculators.tabulate.Tabulator">https://wannier-berri.org/docs/calculators.html#wannierberri.calculators.tabulate.Tabulator</a>&gt;`__</p>
+<p>Next, we pack them into another class called <code class="docutils literal notranslate"><span class="pre">`TabulatorAll</span></code> &lt;<a class="reference external" href="https://wannier-berri.org/docs/calculators.html#wannierberri.calculators.TabulatorAll">https://wannier-berri.org/docs/calculators.html#wannierberri.calculators.TabulatorAll</a>&gt;`__, which represents a complex <code class="docutils literal notranslate"><span class="pre">`Calculator</span></code> &lt;<a class="reference external" href="https://wannier-berri.org/docs/calculators.html#wannierberri.calculators.Calculator">https://wannier-berri.org/docs/calculators.html#wannierberri.calculators.Calculator</a>&gt;`__</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span>tabulators = { &quot;energy&quot;: wberri.calculators.tabulate.Energy(),
+               &quot;berry_curvature&quot; : wberri.calculators.tabulate.BerryCurvature(),
+               &quot;spin&quot; : wberri.calculators.tabulate.Spin(),
+             }
+
+tab_all_path = wberri.calculators.TabulatorAll(
+                    tabulators,
+                    ibands = np.arange(0,18),
+                    mode = &quot;path&quot;
+                        )
+</pre></div>
+</div>
+</div>
+<section id="Running-a-calculation">
+<h3>Running a calculation<a class="headerlink" href="#Running-a-calculation" title="Link to this heading"></a></h3>
+<p>Now run the calculation using the function <code class="docutils literal notranslate"><span class="pre">`run()</span></code> &lt;<a class="reference external" href="https://wannier-berri.org/docs/run.html">https://wannier-berri.org/docs/run.html</a>&gt;`__ . This will return an object of class <code class="docutils literal notranslate"><span class="pre">`ResultDict()</span></code> &lt;<a class="reference external" href="https://wannier-berri.org/docs/result.html#wannierberri.result.ResultDict">https://wannier-berri.org/docs/result.html#wannierberri.result.ResultDict</a>&gt;`__ This object contains all results of the calculations, but in this case we have only one, which is marked <code class="docutils literal notranslate"><span class="pre">&quot;tabulate&quot;</span></code></p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>result=wberri.run(system,
+                  grid=path,
+                  calculators = {&quot;tabulate&quot; : tab_all_path},
+                  print_Kpoints = False)
+
+print (result.results)
+path_result = result.results[&quot;tabulate&quot;]
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-red-intense-fg ansi-bold">Starting run()</span>
+<span class="ansi-cyan-intense-fg ansi-bold">Using the follwing calculators :
+############################################################
+</span>
+<span class="ansi-magenta-intense-fg ansi-bold"> &#39;tabulate&#39; </span> : <span class="ansi-yellow-intense-fg ansi-bold"> &lt;wannierberri.calculators.tabulate.TabulatorAll object at 0x7890a6f3fec0&gt; </span> :
+    TabulatorAll - a pack of all k-resolved calculators (Tabulators)
+
+ Includes the following tabulators :
+--------------------------------------------------
+ &#34;energy&#34; : &lt;wannierberri.calculators.tabulate.Energy object at 0x7890a6f1d610&gt; : calculator not described
+
+ &#34;berry_curvature&#34; : &lt;wannierberri.calculators.tabulate.BerryCurvature object at 0x7890a6f1dca0&gt; : calculator not described
+
+ &#34;spin&#34; : &lt;wannierberri.calculators.tabulate.Spin object at 0x7893d6cb0ec0&gt; :  Spin expectation :math:` \langle u | \mathbf{\sigma} | u \rangle`
+
+ &#34;Energy&#34; : &lt;wannierberri.calculators.tabulate.Energy object at 0x7890a6de7cb0&gt; : calculator not described
+
+--------------------------------------------------
+
+<span class="ansi-cyan-intense-fg ansi-bold">############################################################</span>
+Calculation along a path - checking calculators for compatibility
+tabulate &lt;wannierberri.calculators.tabulate.TabulatorAll object at 0x7890a6f3fec0&gt;
+All calculators are compatible
+Symmetrization switched off for Path
+Grid is regular
+The set of k points is a Path() with 215 points and labels {0: &#39;G&#39;, 70: &#39;H&#39;, 130: &#39;P&#39;, 165: &#39;N&#39;, 214: &#39;G&#39;}
+generating K_list
+Done
+Done, sum of weights:215.0
+
+############################################################
+Iteration 0 out of 0
+processing 215 K points : using  8 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/home/stepan/github/wannier-berri-work/wannier-berri-soc-nscf/wannierberri/grid/path.py:165: UserWarning: symmetry is not used for a tabulation along path
+  warnings.warn(&#34;symmetry is not used for a tabulation along path&#34;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+time for processing    215 K-points on   8 processes:     2.1204 ; per K-point          0.0099 ; proc-sec per K-point          0.0789
+time1 =  0.03000020980834961
+Totally processed 215 K-points
+run() finished
+{&#39;tabulate&#39;: &lt;wannierberri.result.tabresult.TABresult object at 0x7890a6d481d0&gt;}
+</pre></div></div>
+</div>
+</section>
+<section id="Alternative-shortcut:">
+<h3>Alternative shortcut:<a class="headerlink" href="#Alternative-shortcut:" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>path , path_result= wberri.evaluate_k_path(system=system,
+                                            nodes=[
+        [0.0000, 0.0000, 0.0000 ],   #  G
+        [0.500 ,-0.5000, -0.5000],   #  H
+        [0.7500, 0.2500, -0.2500],   #  P
+        [0.5000, 0.0000, -0.5000],   #  N
+        [0.0000, 0.0000, 0.000  ] ] , #  G
+                 labels=[&quot;G&quot;,&quot;H&quot;,&quot;P&quot;,&quot;N&quot;,&quot;G&quot;],
+                 length=200 ,
+                quantities=[&quot;berry_curvature&quot;,&quot;spin&quot;])
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-red-intense-fg ansi-bold">Starting run()</span>
+<span class="ansi-cyan-intense-fg ansi-bold">Using the follwing calculators :
+############################################################
+</span>
+<span class="ansi-magenta-intense-fg ansi-bold"> &#39;tabulate&#39; </span> : <span class="ansi-yellow-intense-fg ansi-bold"> &lt;wannierberri.calculators.tabulate.TabulatorAll object at 0x7890a41f02c0&gt; </span> :
+    TabulatorAll - a pack of all k-resolved calculators (Tabulators)
+
+ Includes the following tabulators :
+--------------------------------------------------
+ &#34;berry_curvature&#34; : &lt;wannierberri.calculators.tabulate.BerryCurvature object at 0x7890a83c3890&gt; : calculator not described
+
+ &#34;spin&#34; : &lt;wannierberri.calculators.tabulate.Spin object at 0x7890a83c3a40&gt; :  Spin expectation :math:` \langle u | \mathbf{\sigma} | u \rangle`
+
+ &#34;Energy&#34; : &lt;wannierberri.calculators.tabulate.Energy object at 0x7890a41f0ef0&gt; : calculator not described
+
+--------------------------------------------------
+
+<span class="ansi-cyan-intense-fg ansi-bold">############################################################</span>
+Calculation along a path - checking calculators for compatibility
+tabulate &lt;wannierberri.calculators.tabulate.TabulatorAll object at 0x7890a41f02c0&gt;
+All calculators are compatible
+Symmetrization switched off for Path
+Grid is regular
+The set of k points is a Path() with 215 points and labels {0: &#39;G&#39;, 70: &#39;H&#39;, 130: &#39;P&#39;, 165: &#39;N&#39;, 214: &#39;G&#39;}
+generating K_list
+Done
+Done, sum of weights:215.0
+
+############################################################
+Iteration 0 out of 0
+processing 215 K points : using  8 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing    215 K-points on   8 processes:     0.9623 ; per K-point          0.0045 ; proc-sec per K-point          0.0358
+time1 =  0.015091419219970703
+Totally processed 215 K-points
+run() finished
+</pre></div></div>
+</div>
+</section>
+<section id="Plotting-the-results">
+<h3>Plotting the results<a class="headerlink" href="#Plotting-the-results" title="Link to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">`TABresult</span></code> &lt;<a class="reference external" href="https://wannier-berri.org/docs/result.html#wannierberri.result.TABresult">https://wannier-berri.org/docs/result.html#wannierberri.result.TABresult</a>&gt;`__ object already provides methods to plot the results. (As well as one can extract the data and plot them by other means). Below let’s plot the interpolated bands and compare with those obtained in QE. (file “bands/Fe_bands_pw.dat” is already provided)</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># plot the bands and compare with QuantumEspresso
+EF = 12.6
+# Import the pre-computed bands from quantum espresso
+A = np.loadtxt(open(&quot;bands/Fe_bands_pw.dat&quot;,&quot;r&quot;))
+bohr_ang = scipy.constants.physical_constants[&#39;Bohr radius&#39;][0] / 1e-10
+alatt = 5.4235* bohr_ang
+A[:,0]*= 2*np.pi/alatt
+A[:,1]-=EF
+# plot it as dots
+plt.scatter (A[:,0],A[:,1],s=5,label = &quot;QE&quot;)
+
+
+path_result.plot_path_fat( path,
+              quantity=None,
+              save_file=&quot;Fe_bands+QE.pdf&quot;,
+              Eshift=EF,
+              Emin=-10,  Emax=50,
+              iband=None,
+              mode=&quot;fatband&quot;,
+              fatfactor=20,
+              cut_k=False,
+              close_fig=False,
+              show_fig=False,
+              label = &quot;WB&quot;
+              )
+
+
+plt.legend()
+plt.show()
+plt.close()
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_build/.doctrees/nbsphinx/tutorials_1_basic_tutorial-wb-basic-solution_14_0.png" src="../../_build/.doctrees/nbsphinx/tutorials_1_basic_tutorial-wb-basic-solution_14_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># plot the bands and compare with wannier90
+A = np.loadtxt(open(&quot;bands/Fe_bands_w90.dat&quot;,&quot;r&quot;))
+plt.scatter (A[:,0],A[:,1],s=5,label = &quot;W90&quot;)
+
+path_result.plot_path_fat( path,
+              quantity=None,
+              save_file=&quot;Fe_bands+w90.pdf&quot;,
+              Eshift=0,
+              Emin=4,  Emax=20,
+              iband=None,
+              mode=&quot;fatband&quot;,
+              fatfactor=20,
+              cut_k=False,
+              close_fig=False,
+              show_fig=False,
+              label = &quot;WB&quot;
+              )
+
+plt.legend()
+
+plt.show()
+plt.close()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_build/.doctrees/nbsphinx/tutorials_1_basic_tutorial-wb-basic-solution_15_0.png" src="../../_build/.doctrees/nbsphinx/tutorials_1_basic_tutorial-wb-basic-solution_15_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># plot the Berry curvature
+path_result.plot_path_fat( path,
+              quantity=&#39;berry_curvature&#39;,
+              component=&#39;z&#39;,
+              save_file=None, #&quot;Fe_bands+berry.pdf&quot;,
+              Eshift=0,
+              Emin=4,  Emax=25,
+              iband=None,
+              mode=&quot;fatband&quot;,
+              fatfactor=4,
+              cut_k=False,
+              close_fig=False,
+              show_fig=False,
+              )
+plt.show()
+plt.close()
+
+# The size of the dots corresponds to the magnitude of BC on a logarithmic scale
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_build/.doctrees/nbsphinx/tutorials_1_basic_tutorial-wb-basic-solution_16_0.png" src="../../_build/.doctrees/nbsphinx/tutorials_1_basic_tutorial-wb-basic-solution_16_0.png" />
+</div>
+</div>
+</section>
+<section id="Problem-1:">
+<h3>Problem 1:<a class="headerlink" href="#Problem-1:" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>modify the path</p></li>
+<li><p>plot the “z” component of spin along it (without .</p></li>
+<li><p>do <strong>not</strong> plot QE or W90 bands in this case</p></li>
+</ul>
+<p>Hint : look here for a proper Calculator <a class="reference external" href="https://wannier-berri.org/docs/calculators.html#tabulating">https://wannier-berri.org/docs/calculators.html#tabulating</a></p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># put the necessary code here
+<br/><br/><br/><br/><br/></pre></div>
+</div>
+</div>
+</section>
+<section id="Get-the-data-and-do-whatever-you-want">
+<h3>Get the data and do whatever you want<a class="headerlink" href="#Get-the-data-and-do-whatever-you-want" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>k=path.getKline()
+E=path_result.get_data(quantity=&#39;Energy&#39;,iband=(10,11))
+curv=path_result.get_data(quantity=&#39;berry_curvature&#39;,iband=(10,11),component=&quot;z&quot;)
+print (k.shape, E.shape, curv.shape)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(215,) (215, 2) (215, 2)
+</pre></div></div>
+</div>
+</section>
+</section>
+<section id="Calaculation-on-a-3D-grid">
+<h2>Calaculation on a 3D grid<a class="headerlink" href="#Calaculation-on-a-3D-grid" title="Link to this heading"></a></h2>
+<p>Now let’s investigate how Berry curvature behaves in the 3D Brillouin zone. For that we need to set a grid, which can be done in several ways, see input parameters <a class="reference external" href="file:///home/stepan/github/wannier-berri-org/html/docs/grid.html">here</a></p>
+<p>Most important to recall, is that in WB one sets two grids : the FFT grid and the K-grid (NKdiv). this is important for running the calculation. However, the final; result depends only on their product.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Set a grid
+grid = wberri.Grid(system, length=50 )   # length [ Ang] ~= 2*pi/dk
+#grid = wberri.Grid(system, NK=[24,24,24], NKFFT=4)
+#grid = wberri.Grid(system, NKdiv=6, NKFFT=4)
+<br/><br/><br/><br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Minimal symmetric FFT grid :  [4 4 4]
+</pre></div></div>
+</div>
+<section id="We-can-use-the-same-tabulators,-but-now-we-pack-them-into-TabulatorAll-in-%22grid%22-mode">
+<h3>We can use the same tabulators, but now we pack them into TabulatorAll in “grid” mode<a class="headerlink" href="#We-can-use-the-same-tabulators,-but-now-we-pack-them-into-TabulatorAll-in-%22grid%22-mode" title="Link to this heading"></a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>tabulators = { &quot;Energy&quot;: wberri.calculators.tabulate.Energy(),
+               &quot;berry_curvature&quot; : wberri.calculators.tabulate.BerryCurvature(),
+             }
+
+tab_all_grid = wberri.calculators.TabulatorAll(
+                    tabulators,
+                    ibands = np.arange(0,18),
+                    mode = &quot;grid&quot;
+                        )
+</pre></div>
+</div>
+</div>
+</section>
+<section id="And-we-run-the-calculation-in-the-same-way">
+<h3>And we run the calculation in the same way<a class="headerlink" href="#And-we-run-the-calculation-in-the-same-way" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>result=wberri.run(system,
+                  grid=grid,
+                  calculators = {&quot;tabulate&quot; : tab_all_grid},
+                  print_Kpoints = True)
+
+print (result.results)
+grid_result = result.results[&quot;tabulate&quot;]
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-red-intense-fg ansi-bold">Starting run()</span>
+<span class="ansi-cyan-intense-fg ansi-bold">Using the follwing calculators :
+############################################################
+</span>
+<span class="ansi-magenta-intense-fg ansi-bold"> &#39;tabulate&#39; </span> : <span class="ansi-yellow-intense-fg ansi-bold"> &lt;wannierberri.calculators.tabulate.TabulatorAll object at 0x789088618dd0&gt; </span> :
+    TabulatorAll - a pack of all k-resolved calculators (Tabulators)
+
+ Includes the following tabulators :
+--------------------------------------------------
+ &#34;Energy&#34; : &lt;wannierberri.calculators.tabulate.Energy object at 0x789090153560&gt; : calculator not described
+
+ &#34;berry_curvature&#34; : &lt;wannierberri.calculators.tabulate.BerryCurvature object at 0x7890886dfad0&gt; : calculator not described
+
+--------------------------------------------------
+
+<span class="ansi-cyan-intense-fg ansi-bold">############################################################</span>
+Calculation on  grid - checking calculators for compatibility
+tabulate &lt;wannierberri.calculators.tabulate.TabulatorAll object at 0x789088618dd0&gt;
+All calculators are compatible
+Grid is regular
+The set of k points is a Grid() with NKdiv=[5 5 5], NKFFT=[5 5 5], NKtot=[25 25 25]
+generating K_list
+Done in 0.0007793903350830078 s
+excluding symmetry-equivalent K-points from initial grid
+Done in 0.009445905685424805 s
+K_list contains 18 Irreducible points(14.4%) out of initial 5x5x5=125 grid
+Done, sum of weights:1.0000000000000004
+
+############################################################
+Iteration 0 out of 0
+iteration 0 - 18 points. New points are:
+ K-point 0 : coord in rec.lattice = [   0.000000 ,   0.000000 ,   0.000000 ], refinement level:0, factor = 0.008dK=[0.2 0.2 0.2]
+ K-point 1 : coord in rec.lattice = [   0.000000 ,   0.200000 ,   0.000000 ], refinement level:0, factor = 0.032dK=[0.2 0.2 0.2]
+ K-point 2 : coord in rec.lattice = [   0.000000 ,   0.400000 ,   0.000000 ], refinement level:0, factor = 0.032dK=[0.2 0.2 0.2]
+ K-point 3 : coord in rec.lattice = [   0.200000 ,   0.000000 ,   0.000000 ], refinement level:0, factor = 0.064dK=[0.2 0.2 0.2]
+ K-point 4 : coord in rec.lattice = [   0.200000 ,   0.200000 ,   0.200000 ], refinement level:0, factor = 0.016dK=[0.2 0.2 0.2]
+ K-point 5 : coord in rec.lattice = [   0.200000 ,   0.600000 ,   0.200000 ], refinement level:0, factor = 0.064dK=[0.2 0.2 0.2]
+ K-point 6 : coord in rec.lattice = [   0.400000 ,   0.000000 ,   0.000000 ], refinement level:0, factor = 0.064dK=[0.2 0.2 0.2]
+ K-point 7 : coord in rec.lattice = [   0.400000 ,   0.200000 ,   0.000000 ], refinement level:0, factor = 0.064dK=[0.2 0.2 0.2]
+ K-point 8 : coord in rec.lattice = [   0.400000 ,   0.200000 ,   0.200000 ], refinement level:0, factor = 0.064dK=[0.2 0.2 0.2]
+ K-point 9 : coord in rec.lattice = [   0.400000 ,   0.400000 ,   0.400000 ], refinement level:0, factor = 0.016dK=[0.2 0.2 0.2]
+ K-point 10 : coord in rec.lattice = [   0.600000 ,   0.200000 ,   0.000000 ], refinement level:0, factor = 0.12800000000000006dK=[0.2 0.2 0.2]
+ K-point 11 : coord in rec.lattice = [   0.600000 ,   0.200000 ,   0.200000 ], refinement level:0, factor = 0.064dK=[0.2 0.2 0.2]
+ K-point 12 : coord in rec.lattice = [   0.600000 ,   0.400000 ,   0.200000 ], refinement level:0, factor = 0.064dK=[0.2 0.2 0.2]
+ K-point 13 : coord in rec.lattice = [   0.600000 ,   0.400000 ,   0.400000 ], refinement level:0, factor = 0.032dK=[0.2 0.2 0.2]
+ K-point 14 : coord in rec.lattice = [   0.800000 ,   0.200000 ,   0.000000 ], refinement level:0, factor = 0.12800000000000006dK=[0.2 0.2 0.2]
+ K-point 15 : coord in rec.lattice = [   0.800000 ,   0.200000 ,   0.200000 ], refinement level:0, factor = 0.032dK=[0.2 0.2 0.2]
+ K-point 16 : coord in rec.lattice = [   0.800000 ,   0.400000 ,   0.000000 ], refinement level:0, factor = 0.064dK=[0.2 0.2 0.2]
+ K-point 17 : coord in rec.lattice = [   0.800000 ,   0.400000 ,   0.200000 ], refinement level:0, factor = 0.064dK=[0.2 0.2 0.2]
+processing 18 K points : using  8 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     18 K-points on   8 processes:     2.3408 ; per K-point          0.1300 ; proc-sec per K-point          1.0403
+time1 =  0.012772083282470703
+setting the grid
+setting new kpoints
+finding equivalent kpoints
+collecting
+collecting: to_grid  : 0.09140300750732422
+collecting: TABresult  : 0.0006492137908935547
+collecting - OK : 0.09207391738891602 (2.1696090698242188e-05)
+Totally processed 18 K-points
+run() finished
+{&#39;tabulate&#39;: &lt;wannierberri.result.tabresult.TABresult object at 0x789088618860&gt;}
+</pre></div></div>
+</div>
+</section>
+<section id="Writing-the-FermiSurfer-files">
+<h3>Writing the FermiSurfer files<a class="headerlink" href="#Writing-the-FermiSurfer-files" title="Link to this heading"></a></h3>
+<p>You may see that conversion to text format takes time. so convert only those components that you really need for plotting.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>grid_result.write_frmsf(name=&quot;Fe_grid&quot;, quantity=&quot;berry_curvature&quot;,
+                        components=&quot;z&quot;,
+                        )
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Enk (25, 25, 25, 18)
+using a pool of 32 processes to write txt frmsf of 489 points per process
+using a pool of 32 processes to write txt frmsf of 489 points per process
+using a pool of 32 processes to write txt frmsf of 489 points per process
+using a pool of 32 processes to write txt frmsf of 489 points per process
+using a pool of 32 processes to write txt frmsf of 489 points per process
+using a pool of 32 processes to write txt frmsf of 489 points per process
+using a pool of 32 processes to write txt frmsf of 489 points per process
+using a pool of 32 processes to write txt frmsf of 489 points per process
+using a pool of 32 processes to write txt frmsf of 489 points per process
+using a pool of 32 processes to write txt frmsf of 489 points per process
+using a pool of 32 processes to write txt frmsf of 489 points per process
+using a pool of 32 processes to write txt frmsf of 489 points per process
+using a pool of 32 processes to write txt frmsf of 489 points per process
+using a pool of 32 processes to write txt frmsf of 489 points per process
+using a pool of 32 processes to write txt frmsf of 489 points per process
+using a pool of 32 processes to write txt frmsf of 489 points per process
+using a pool of 32 processes to write txt frmsf of 489 points per process
+using a pool of 32 processes to write txt frmsf of 489 points per process
+Xnk (25, 25, 25, 18)
+using a pool of 32 processes to write txt frmsf of 489 points per process
+using a pool of 32 processes to write txt frmsf of 489 points per process
+using a pool of 32 processes to write txt frmsf of 489 points per process
+using a pool of 32 processes to write txt frmsf of 489 points per process
+using a pool of 32 processes to write txt frmsf of 489 points per process
+using a pool of 32 processes to write txt frmsf of 489 points per process
+using a pool of 32 processes to write txt frmsf of 489 points per process
+using a pool of 32 processes to write txt frmsf of 489 points per process
+using a pool of 32 processes to write txt frmsf of 489 points per process
+using a pool of 32 processes to write txt frmsf of 489 points per process
+using a pool of 32 processes to write txt frmsf of 489 points per process
+using a pool of 32 processes to write txt frmsf of 489 points per process
+using a pool of 32 processes to write txt frmsf of 489 points per process
+using a pool of 32 processes to write txt frmsf of 489 points per process
+using a pool of 32 processes to write txt frmsf of 489 points per process
+using a pool of 32 processes to write txt frmsf of 489 points per process
+using a pool of 32 processes to write txt frmsf of 489 points per process
+using a pool of 32 processes to write txt frmsf of 489 points per process
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(16.544941186904907, 0.01615738868713379)
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Now we got some .frmsf files
+!ls -al *.frmsf
+# !rm *.frmsf
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+-rw-rw-r-- 1 stepan stepan 6592280 Nov 20 05:17 Fe_grid_berry_curvature-z.frmsf
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># let&#39;s look at them using the Fermisurfer! (https://fermisurfer.osdn.jp/)
+!fermisurfer Fe_grid_berry_curvature-z.frmsf
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Analyze-the-tabulated-data">
+<h3>Analyze the tabulated data<a class="headerlink" href="#Analyze-the-tabulated-data" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># You may get the data as numpy arrays via:
+Energy = grid_result.get_data(iband=5, quantity=&#39;Energy&#39;)
+ahc  = grid_result.get_data(iband=5, quantity=&#39;berry_curvature&#39;,component=&#39;z&#39;)
+print(ahc.shape,Energy.shape)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(25, 25, 25) (25, 25, 25)
+</pre></div></div>
+</div>
+</section>
+<section id="Problem-2-:">
+<h3>Problem 2 :<a class="headerlink" href="#Problem-2-:" title="Link to this heading"></a></h3>
+</section>
+<section id="fill-the-missing-parts-and-evaluate-the-Berry-curvature-summed-over-all-states-below-EF-=-12.6-eV.-Plot-in-on-a-plane-k3=const-(in-reduced-coordinates)">
+<h3>fill the missing parts and evaluate the Berry curvature summed over all states below EF = 12.6 eV. Plot in on a plane k3=const (in reduced coordinates)<a class="headerlink" href="#fill-the-missing-parts-and-evaluate-the-Berry-curvature-summed-over-all-states-below-EF-=-12.6-eV.-Plot-in-on-a-plane-k3=const-(in-reduced-coordinates)" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># example : find the total Berry curvature of occupied states
+# on the plane (k1,k2), k3=const (in reduced coordinates)
+Berry_occ = 0
+k3 = 9
+EF=12.4
+for ib in range(18):
+    Energy = grid_result.get_data(iband=ib, quantity=&#39;Energy&#39;)[:,:,k3]
+    ahc  = grid_result.get_data(iband=ib, quantity=&#39;berry_curvature&#39;)[:,:,k3]
+    ahc [Energy&gt;EF] = 0
+    Berry_occ += ahc
+    plt.contour(Energy,levels = [EF],linewidths=0.5,colors=&#39;black&#39;)
+shw = plt.imshow(Berry_occ,vmin=-10,vmax=10,cmap=&quot;jet&quot;)
+bar = plt.colorbar(shw)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+Clipping input data to the valid range for imshow with RGB data ([0..1] for floats or [0..255] for integers). Got range [-6.647687113016109..51.15952635204786].
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_build/.doctrees/nbsphinx/tutorials_1_basic_tutorial-wb-basic-solution_35_1.png" src="../../_build/.doctrees/nbsphinx/tutorials_1_basic_tutorial-wb-basic-solution_35_1.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="Integration-on-a-grid:-anomalous-Hall-conductivity">
+<h2>Integration on a grid: anomalous Hall conductivity<a class="headerlink" href="#Integration-on-a-grid:-anomalous-Hall-conductivity" title="Link to this heading"></a></h2>
+<p>Now, after we saw that the Berry curvature changes rapidly in the k-space, we understand that to get the precise value of AHC (<span class="math">\ref{eq:ahc}</span>) defined as a Fermi-sea integral of Berry curvature</p>
+<p><span class="math">\begin{equation}
+\sigma^{\rm AHC}_{xy} = -\frac{e^2}{\hbar} \sum_n^{\rm occ} \int\frac{d\mathbf{k}}{(2\pi)^3} \Omega^n_\gamma
+\label{eq:ahc}\tag{1}
+\end{equation}</span></p>
+<p>we need a very dense grid. The calculation is done again, by using the calculators. AHC may be viewed as a function of the Fermi level. Such calculators are called <a class="reference external" href="https://wannier-berri.org/docs/calculators.html#static-dependent-only-on-fermi-level">StaticCalculator</a> , because the corresponding effects can be measured in static fields. (as opposed to dynamic calculators, see below).</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>calculators = {}
+Efermi = np.linspace(12,13,101)
+omega = np.linspace(0,1.,101)
+# Set a grid
+grid = wberri.Grid(system, length=50 )   # length [ Ang] ~= 2*pi/dk
+
+calculators [&quot;ahc&quot;] = wberri.calculators.static.AHC(Efermi=Efermi)
+
+result_run = wberri.run(system,
+            grid=grid,
+            calculators = calculators,
+            adpt_num_iter=5,
+            fout_name=&#39;Fe&#39;,
+            restart=False,
+            file_Klist=&quot;Klist_ahc.pickle&quot;  # needed to restart a calculation in future
+            )
+<br/><br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Minimal symmetric FFT grid :  [4 4 4]
+<span class="ansi-red-intense-fg ansi-bold">Starting run()</span>
+<span class="ansi-cyan-intense-fg ansi-bold">Using the follwing calculators :
+############################################################
+</span>
+<span class="ansi-magenta-intense-fg ansi-bold"> &#39;ahc&#39; </span> : <span class="ansi-yellow-intense-fg ansi-bold"> &lt;wannierberri.calculators.static.AHC object at 0x7890a409d430&gt; </span> : Anomalous Hall conductivity (:math:`s^3 \cdot A^2 / (kg \cdot m^3) = S/m`)
+
+        | With Fermi sea integral Eq(11) in `Ref &lt;https://www.nature.com/articles/s41524-021-00498-5&gt;`__
+        | Output: :math:`O = -e^2/\hbar \int [dk] \Omega f`
+        | Instruction: :math:`j_\alpha = \sigma_{\alpha\beta} E_\beta = \epsilon_{\alpha\beta\delta} O_\delta E_\beta`
+<span class="ansi-cyan-intense-fg ansi-bold">############################################################</span>
+Calculation on  grid - checking calculators for compatibility
+ahc &lt;wannierberri.calculators.static.AHC object at 0x7890a409d430&gt;
+All calculators are compatible
+Grid is regular
+The set of k points is a Grid() with NKdiv=[5 5 5], NKFFT=[5 5 5], NKtot=[25 25 25]
+generating K_list
+Done in 0.001283884048461914 s
+excluding symmetry-equivalent K-points from initial grid
+Done in 0.010955572128295898 s
+K_list contains 18 Irreducible points(14.4%) out of initial 5x5x5=125 grid
+Done, sum of weights:1.0000000000000004
+
+############################################################
+Iteration 0 out of 5
+processing 18 K points : using  8 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     18 K-points on   8 processes:     0.3678 ; per K-point          0.0204 ; proc-sec per K-point          0.1635
+time1 =  0.00035381317138671875
+time2 =  0.0018608570098876953
+sum of weights now :1.0000000000000004
+Writing file_Klist_factor_changed to Klist_ahc.changed_factors.txt
+
+############################################################
+Iteration 1 out of 5
+processing 3 K points : using  8 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing      3 K-points on   8 processes:     0.1449 ; per K-point          0.0483 ; proc-sec per K-point          0.3864
+time1 =  0.00015878677368164062
+time2 =  0.00185394287109375
+sum of weights now :1.0000000000000004
+Writing file_Klist_factor_changed to Klist_ahc.changed_factors.txt
+
+############################################################
+Iteration 2 out of 5
+processing 6 K points : using  8 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing      6 K-points on   8 processes:     0.1559 ; per K-point          0.0260 ; proc-sec per K-point          0.2079
+time1 =  0.0004096031188964844
+time2 =  0.0038251876831054688
+sum of weights now :1.0000000000000004
+Writing file_Klist_factor_changed to Klist_ahc.changed_factors.txt
+
+############################################################
+Iteration 3 out of 5
+processing 12 K points : using  8 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     12 K-points on   8 processes:     0.2884 ; per K-point          0.0240 ; proc-sec per K-point          0.1923
+time1 =  0.0006458759307861328
+time2 =  0.0040400028228759766
+sum of weights now :1.0000000000000004
+Writing file_Klist_factor_changed to Klist_ahc.changed_factors.txt
+
+############################################################
+Iteration 4 out of 5
+processing 11 K points : using  8 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     11 K-points on   8 processes:     0.3217 ; per K-point          0.0292 ; proc-sec per K-point          0.2339
+time1 =  0.0002465248107910156
+time2 =  0.0017385482788085938
+sum of weights now :1.0000000000000002
+Writing file_Klist_factor_changed to Klist_ahc.changed_factors.txt
+
+############################################################
+Iteration 5 out of 5
+processing 4 K points : using  8 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing      4 K-points on   8 processes:     0.1930 ; per K-point          0.0482 ; proc-sec per K-point          0.3859
+time1 =  0.0002067089080810547
+Totally processed 54 K-points
+run() finished
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>!ls
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#plot results from different iterations
+#plot results from different iterations
+for i in range(5):
+    res = np.load(f&quot;Fe-ahc_iter-{i:04d}.npz&quot;)
+    # print (list(res.keys()))
+    ef = res[&quot;Energies_0&quot;]
+    ahc_xy = res[&quot;data&quot;][:,2]
+    # alternatively from text files:
+    # a = np.loadtxt(f&quot;Fe-ahc_iter-{i:04d}.dat&quot;)
+    # ef = a[:,0]
+    # ahc_xy = a[:,3]
+    plt.plot(ef,ahc_xy,label = f&quot;iteration-{i}&quot;)
+#plt.ylim(-1000,1000)
+plt.xlabel(&quot;E [eV]&quot;)
+plt.ylabel(&quot;AHC (S/m)&quot;)
+plt.legend()
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_build/.doctrees/nbsphinx/tutorials_1_basic_tutorial-wb-basic-solution_39_0.png" src="../../_build/.doctrees/nbsphinx/tutorials_1_basic_tutorial-wb-basic-solution_39_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>result_run = wberri.run(system,
+            grid=grid,
+            calculators = calculators,
+            adpt_num_iter=10,
+            fout_name=&#39;Fe&#39;,
+            restart=True,
+            file_Klist=&quot;Klist_ahc.pickle&quot;  # needed to restart a calculation
+            )
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-red-intense-fg ansi-bold">Starting run()</span>
+<span class="ansi-cyan-intense-fg ansi-bold">Using the follwing calculators :
+############################################################
+</span>
+<span class="ansi-magenta-intense-fg ansi-bold"> &#39;ahc&#39; </span> : <span class="ansi-yellow-intense-fg ansi-bold"> &lt;wannierberri.calculators.static.AHC object at 0x7890a409d430&gt; </span> : Anomalous Hall conductivity (:math:`s^3 \cdot A^2 / (kg \cdot m^3) = S/m`)
+
+        | With Fermi sea integral Eq(11) in `Ref &lt;https://www.nature.com/articles/s41524-021-00498-5&gt;`__
+        | Output: :math:`O = -e^2/\hbar \int [dk] \Omega f`
+        | Instruction: :math:`j_\alpha = \sigma_{\alpha\beta} E_\beta = \epsilon_{\alpha\beta\delta} O_\delta E_\beta`
+<span class="ansi-cyan-intense-fg ansi-bold">############################################################</span>
+Calculation on  grid - checking calculators for compatibility
+ahc &lt;wannierberri.calculators.static.AHC object at 0x7890a409d430&gt;
+All calculators are compatible
+Grid is regular
+The set of k points is a Grid() with NKdiv=[5 5 5], NKFFT=[5 5 5], NKtot=[25 25 25]
+Finished reading Klist from file Klist_ahc.pickle
+54 K-points were read from Klist_ahc.pickle
+9 K-points were read from Klist_ahc.changed_factors.txt
+searching for start_iter
+start_iter = 0
+
+############################################################
+Iteration 0 out of 10
+nothing to process now
+time1 =  0.004565238952636719
+time2 =  0.0028028488159179688
+sum of weights now :1.0000000000000002
+Writing file_Klist_factor_changed to Klist_ahc.changed_factors.txt
+
+############################################################
+Iteration 1 out of 10
+processing 11 K points : using  8 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     11 K-points on   8 processes:     0.2864 ; per K-point          0.0260 ; proc-sec per K-point          0.2083
+time1 =  0.0009737014770507812
+time2 =  0.005987644195556641
+sum of weights now :1.0
+Writing file_Klist_factor_changed to Klist_ahc.changed_factors.txt
+
+############################################################
+Iteration 2 out of 10
+processing 6 K points : using  8 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing      6 K-points on   8 processes:     0.2343 ; per K-point          0.0390 ; proc-sec per K-point          0.3123
+time1 =  0.0004172325134277344
+time2 =  0.0036897659301757812
+sum of weights now :1.0
+Writing file_Klist_factor_changed to Klist_ahc.changed_factors.txt
+
+############################################################
+Iteration 3 out of 10
+processing 6 K points : using  8 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing      6 K-points on   8 processes:     0.2822 ; per K-point          0.0470 ; proc-sec per K-point          0.3763
+time1 =  0.0006368160247802734
+time2 =  0.005970001220703125
+sum of weights now :1.0
+Writing file_Klist_factor_changed to Klist_ahc.changed_factors.txt
+
+############################################################
+Iteration 4 out of 10
+processing 13 K points : using  8 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     13 K-points on   8 processes:     0.3156 ; per K-point          0.0243 ; proc-sec per K-point          0.1942
+time1 =  0.0008323192596435547
+time2 =  0.004408597946166992
+sum of weights now :1.0
+Writing file_Klist_factor_changed to Klist_ahc.changed_factors.txt
+
+############################################################
+Iteration 5 out of 10
+processing 11 K points : using  8 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     11 K-points on   8 processes:     0.3089 ; per K-point          0.0281 ; proc-sec per K-point          0.2246
+time1 =  0.00047397613525390625
+time2 =  0.003819704055786133
+sum of weights now :1.0
+Writing file_Klist_factor_changed to Klist_ahc.changed_factors.txt
+
+############################################################
+Iteration 6 out of 10
+processing 7 K points : using  8 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing      7 K-points on   8 processes:     0.2456 ; per K-point          0.0351 ; proc-sec per K-point          0.2807
+time1 =  0.0004699230194091797
+time2 =  0.003711700439453125
+sum of weights now :1.0
+Writing file_Klist_factor_changed to Klist_ahc.changed_factors.txt
+
+############################################################
+Iteration 7 out of 10
+processing 13 K points : using  8 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     13 K-points on   8 processes:     0.3091 ; per K-point          0.0238 ; proc-sec per K-point          0.1902
+time1 =  0.0003952980041503906
+time2 =  0.002221345901489258
+sum of weights now :1.0000000000000002
+Writing file_Klist_factor_changed to Klist_ahc.changed_factors.txt
+
+############################################################
+Iteration 8 out of 10
+processing 15 K points : using  8 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     15 K-points on   8 processes:     0.3476 ; per K-point          0.0232 ; proc-sec per K-point          0.1854
+time1 =  0.0007455348968505859
+time2 =  0.004282236099243164
+sum of weights now :1.0000000000000004
+Writing file_Klist_factor_changed to Klist_ahc.changed_factors.txt
+
+############################################################
+Iteration 9 out of 10
+processing 17 K points : using  8 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     17 K-points on   8 processes:     0.4693 ; per K-point          0.0276 ; proc-sec per K-point          0.2209
+time1 =  0.0008656978607177734
+time2 =  0.004148006439208984
+sum of weights now :1.0000000000000009
+Writing file_Klist_factor_changed to Klist_ahc.changed_factors.txt
+
+############################################################
+Iteration 10 out of 10
+processing 9 K points : using  8 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing      9 K-points on   8 processes:     0.3254 ; per K-point          0.0362 ; proc-sec per K-point          0.2892
+time1 =  0.0009763240814208984
+Totally processed 108 K-points
+run() finished
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#plot results from different iterations
+for i in range(10,15):
+    res = np.load(f&quot;Fe-ahc_iter-{i:04d}.npz&quot;)
+    # print (list(res.keys()))
+    ef = res[&quot;Energies_0&quot;]
+    ahc_xy = res[&quot;data&quot;][:,2]
+    # alternatively from text files:
+    # a = np.loadtxt(f&quot;Fe-ahc_iter-{i:04d}.dat&quot;)
+    # ef = a[:,0]
+    # ahc_xy = a[:,3]
+    plt.plot(ef,ahc_xy,label = f&quot;iteration-{i}&quot;)
+#plt.ylim(-1000,1000)
+plt.xlabel(&quot;E [eV]&quot;)
+plt.ylabel(&quot;AHC (S/m)&quot;)
+plt.legend()
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_build/.doctrees/nbsphinx/tutorials_1_basic_tutorial-wb-basic-solution_41_0.png" src="../../_build/.doctrees/nbsphinx/tutorials_1_basic_tutorial-wb-basic-solution_41_0.png" />
+</div>
+</div>
+<section id="Problem-3-:">
+<h3>Problem 3 :<a class="headerlink" href="#Problem-3-:" title="Link to this heading"></a></h3>
+<p>start from a denser grid (length=100 or 200) and do the integration again with 20 iterations. Plot the results</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># insert the needed code below
+<br/><br/><br/></pre></div>
+</div>
+</div>
+</section>
+</section>
+<section id="Tetrahedron-method">
+<h2>Tetrahedron method<a class="headerlink" href="#Tetrahedron-method" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>calculators = {}
+Efermi = np.linspace(12,13,101)
+omega = np.linspace(0,1.,101)
+# Set a grid
+grid = wberri.Grid(system, length=50 )   # length [ Ang] ~= 2*pi/dk
+
+calculators [&quot;dos_notetra&quot;] = wberri.calculators.static.DOS(Efermi=Efermi,tetra=False)
+calculators [&quot;dos_tetra&quot;] = wberri.calculators.static.DOS(Efermi=Efermi,tetra=True)
+
+result_run = wberri.run(system,
+            grid=grid,
+            calculators = calculators,
+            adpt_num_iter=0,
+            fout_name=&#39;Fe&#39;,
+            suffix = &quot;run2&quot;,
+            restart=False,
+            print_Kpoints=False
+            )
+
+a = np.loadtxt(f&quot;Fe-dos_notetra-run2_iter-0000.dat&quot;)
+plt.plot(a[:,0],a[:,1],label = f&quot;no tetra&quot;)
+a = np.loadtxt(f&quot;Fe-dos_tetra-run2_iter-0000.dat&quot;)
+plt.plot(a[:,0],a[:,1],label = f&quot;tetra&quot;)
+plt.legend()
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Minimal symmetric FFT grid :  [4 4 4]
+<span class="ansi-red-intense-fg ansi-bold">Starting run()</span>
+<span class="ansi-cyan-intense-fg ansi-bold">Using the follwing calculators :
+############################################################
+</span>
+<span class="ansi-magenta-intense-fg ansi-bold"> &#39;dos_notetra&#39; </span> : <span class="ansi-yellow-intense-fg ansi-bold"> &lt;wannierberri.calculators.static.DOS object at 0x78908857d7f0&gt; </span> : Density of states
+<span class="ansi-magenta-intense-fg ansi-bold"> &#39;dos_tetra&#39; </span> : <span class="ansi-yellow-intense-fg ansi-bold"> &lt;wannierberri.calculators.static.DOS object at 0x78908857ed20&gt; </span> : Density of states
+<span class="ansi-cyan-intense-fg ansi-bold">############################################################</span>
+Calculation on  grid - checking calculators for compatibility
+dos_notetra &lt;wannierberri.calculators.static.DOS object at 0x78908857d7f0&gt;
+dos_tetra &lt;wannierberri.calculators.static.DOS object at 0x78908857ed20&gt;
+All calculators are compatible
+Grid is regular
+The set of k points is a Grid() with NKdiv=[5 5 5], NKFFT=[5 5 5], NKtot=[25 25 25]
+generating K_list
+Done in 0.0017361640930175781 s
+excluding symmetry-equivalent K-points from initial grid
+Done in 0.010408401489257812 s
+K_list contains 18 Irreducible points(14.4%) out of initial 5x5x5=125 grid
+Done, sum of weights:1.0000000000000004
+
+############################################################
+Iteration 0 out of 0
+processing 18 K points : using  8 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+                   8              5.1                   6.4                  11.5
+time for processing     18 K-points on   8 processes:     5.4066 ; per K-point          0.3004 ; proc-sec per K-point          2.4029
+time1 =  0.0009217262268066406
+Totally processed 18 K-points
+run() finished
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;matplotlib.legend.Legend at 0x7890885d4fe0&gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_build/.doctrees/nbsphinx/tutorials_1_basic_tutorial-wb-basic-solution_45_2.png" src="../../_build/.doctrees/nbsphinx/tutorials_1_basic_tutorial-wb-basic-solution_45_2.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>!ls
+<br/></pre></div>
+</div>
+</div>
+</section>
+<section id="Optical-conductivity">
+<h2>Optical conductivity<a class="headerlink" href="#Optical-conductivity" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>calculators = {}
+Efermi = np.linspace(12,13,101)
+omega = np.linspace(0,1.,101)
+# Set a grid
+grid = wberri.Grid(system, length=50 )   # length [ Ang] ~= 2*pi/dk
+
+calculators[&quot;opt_conductivity&quot;] = wberri.calculators.dynamic.OpticalConductivity(
+                            Efermi=Efermi,omega=omega)
+
+
+result_run_opt = wberri.run(system,
+            grid=grid,
+            calculators = calculators,
+            adpt_num_iter=0,
+            fout_name=&#39;Fe&#39;,
+            suffix = &quot;run3&quot;,
+            restart=False,
+            )
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Minimal symmetric FFT grid :  [4 4 4]
+<span class="ansi-red-intense-fg ansi-bold">Starting run()</span>
+<span class="ansi-cyan-intense-fg ansi-bold">Using the follwing calculators :
+############################################################
+</span>
+<span class="ansi-magenta-intense-fg ansi-bold"> &#39;opt_conductivity&#39; </span> : <span class="ansi-yellow-intense-fg ansi-bold"> &lt;wannierberri.calculators.dynamic.OpticalConductivity object at 0x7890881efec0&gt; </span> : calculator not described
+<span class="ansi-cyan-intense-fg ansi-bold">############################################################</span>
+Calculation on  grid - checking calculators for compatibility
+opt_conductivity &lt;wannierberri.calculators.dynamic.OpticalConductivity object at 0x7890881efec0&gt;
+All calculators are compatible
+Grid is regular
+The set of k points is a Grid() with NKdiv=[5 5 5], NKFFT=[5 5 5], NKtot=[25 25 25]
+generating K_list
+Done in 0.0007431507110595703 s
+excluding symmetry-equivalent K-points from initial grid
+Done in 0.009906768798828125 s
+K_list contains 18 Irreducible points(14.4%) out of initial 5x5x5=125 grid
+Done, sum of weights:1.0000000000000004
+
+############################################################
+Iteration 0 out of 0
+processing 18 K points : using  8 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+                  16              5.9                   0.7                   6.6
+time for processing     18 K-points on   8 processes:     7.3230 ; per K-point          0.4068 ; proc-sec per K-point          3.2547
+time1 =  0.015322685241699219
+Totally processed 18 K-points
+run() finished
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#plot results from new iterations
+res = result_run_opt.results[&quot;opt_conductivity&quot;]
+print (res.data.shape)
+print (res.Energies[0]) # Efermi
+print (res.Energies[1]) # omega
+
+# plot at fixed omega
+iw = 10
+plt.plot(res.Energies[0], res.data[:,iw,2,2].imag)
+plt.show()
+
+# plot at fixed Efermi
+ief = 20
+plt.plot(res.Energies[1], res.data[ief,:,2,2].imag)
+plt.show()
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(101, 101, 3, 3)
+[12.   12.01 12.02 12.03 12.04 12.05 12.06 12.07 12.08 12.09 12.1  12.11
+ 12.12 12.13 12.14 12.15 12.16 12.17 12.18 12.19 12.2  12.21 12.22 12.23
+ 12.24 12.25 12.26 12.27 12.28 12.29 12.3  12.31 12.32 12.33 12.34 12.35
+ 12.36 12.37 12.38 12.39 12.4  12.41 12.42 12.43 12.44 12.45 12.46 12.47
+ 12.48 12.49 12.5  12.51 12.52 12.53 12.54 12.55 12.56 12.57 12.58 12.59
+ 12.6  12.61 12.62 12.63 12.64 12.65 12.66 12.67 12.68 12.69 12.7  12.71
+ 12.72 12.73 12.74 12.75 12.76 12.77 12.78 12.79 12.8  12.81 12.82 12.83
+ 12.84 12.85 12.86 12.87 12.88 12.89 12.9  12.91 12.92 12.93 12.94 12.95
+ 12.96 12.97 12.98 12.99 13.  ]
+[0.   0.01 0.02 0.03 0.04 0.05 0.06 0.07 0.08 0.09 0.1  0.11 0.12 0.13
+ 0.14 0.15 0.16 0.17 0.18 0.19 0.2  0.21 0.22 0.23 0.24 0.25 0.26 0.27
+ 0.28 0.29 0.3  0.31 0.32 0.33 0.34 0.35 0.36 0.37 0.38 0.39 0.4  0.41
+ 0.42 0.43 0.44 0.45 0.46 0.47 0.48 0.49 0.5  0.51 0.52 0.53 0.54 0.55
+ 0.56 0.57 0.58 0.59 0.6  0.61 0.62 0.63 0.64 0.65 0.66 0.67 0.68 0.69
+ 0.7  0.71 0.72 0.73 0.74 0.75 0.76 0.77 0.78 0.79 0.8  0.81 0.82 0.83
+ 0.84 0.85 0.86 0.87 0.88 0.89 0.9  0.91 0.92 0.93 0.94 0.95 0.96 0.97
+ 0.98 0.99 1.  ]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_build/.doctrees/nbsphinx/tutorials_1_basic_tutorial-wb-basic-solution_49_1.png" src="../../_build/.doctrees/nbsphinx/tutorials_1_basic_tutorial-wb-basic-solution_49_1.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_build/.doctrees/nbsphinx/tutorials_1_basic_tutorial-wb-basic-solution_49_2.png" src="../../_build/.doctrees/nbsphinx/tutorials_1_basic_tutorial-wb-basic-solution_49_2.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>!ls
+</pre></div>
+</div>
+</div>
+</section>
+<section id="All-in-one">
+<h2>All in one<a class="headerlink" href="#All-in-one" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>calculators = {}
+Efermi = np.linspace(12,13,101)
+omega = np.linspace(0,1.,101)
+# Set a grid
+grid = wberri.Grid(system, length=50 )   # length [ Ang] ~= 2*pi/dk
+
+calculators [&quot;ahc_notetra&quot;] = wberri.calculators.static.AHC(Efermi=Efermi,tetra=False)
+calculators [&quot;ahc_tetra&quot;] = wberri.calculators.static.AHC(Efermi=Efermi,tetra=True)
+calculators [&quot;tabulate&quot;] = wberri.calculators.TabulatorAll({
+                            &quot;Energy&quot;:wberri.calculators.tabulate.Energy(),
+                            &quot;berry&quot;:wberri.calculators.tabulate.BerryCurvature(),
+                                  },
+                            ibands = np.arange(4,10))
+calculators[&quot;opt_conductivity&quot;] = wberri.calculators.dynamic.OpticalConductivity(
+                            Efermi=Efermi,omega=omega)
+
+
+result_run = wberri.run(system,
+            grid=grid,
+            calculators = calculators,
+            adpt_num_iter=0,
+            fout_name=&#39;Fe&#39;,
+            suffix = &quot;run&quot;,
+            restart=False,
+            )
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Minimal symmetric FFT grid :  [4 4 4]
+<span class="ansi-red-intense-fg ansi-bold">Starting run()</span>
+<span class="ansi-cyan-intense-fg ansi-bold">Using the follwing calculators :
+############################################################
+</span>
+<span class="ansi-magenta-intense-fg ansi-bold"> &#39;ahc_notetra&#39; </span> : <span class="ansi-yellow-intense-fg ansi-bold"> &lt;wannierberri.calculators.static.AHC object at 0x78908857ed20&gt; </span> : Anomalous Hall conductivity (:math:`s^3 \cdot A^2 / (kg \cdot m^3) = S/m`)
+
+        | With Fermi sea integral Eq(11) in `Ref &lt;https://www.nature.com/articles/s41524-021-00498-5&gt;`__
+        | Output: :math:`O = -e^2/\hbar \int [dk] \Omega f`
+        | Instruction: :math:`j_\alpha = \sigma_{\alpha\beta} E_\beta = \epsilon_{\alpha\beta\delta} O_\delta E_\beta`
+<span class="ansi-magenta-intense-fg ansi-bold"> &#39;ahc_tetra&#39; </span> : <span class="ansi-yellow-intense-fg ansi-bold"> &lt;wannierberri.calculators.static.AHC object at 0x7890881ee210&gt; </span> : Anomalous Hall conductivity (:math:`s^3 \cdot A^2 / (kg \cdot m^3) = S/m`)
+
+        | With Fermi sea integral Eq(11) in `Ref &lt;https://www.nature.com/articles/s41524-021-00498-5&gt;`__
+        | Output: :math:`O = -e^2/\hbar \int [dk] \Omega f`
+        | Instruction: :math:`j_\alpha = \sigma_{\alpha\beta} E_\beta = \epsilon_{\alpha\beta\delta} O_\delta E_\beta`
+<span class="ansi-magenta-intense-fg ansi-bold"> &#39;tabulate&#39; </span> : <span class="ansi-yellow-intense-fg ansi-bold"> &lt;wannierberri.calculators.tabulate.TabulatorAll object at 0x78908813a0c0&gt; </span> :
+    TabulatorAll - a pack of all k-resolved calculators (Tabulators)
+
+ Includes the following tabulators :
+--------------------------------------------------
+ &#34;Energy&#34; : &lt;wannierberri.calculators.tabulate.Energy object at 0x78908857c7d0&gt; : calculator not described
+
+ &#34;berry&#34; : &lt;wannierberri.calculators.tabulate.BerryCurvature object at 0x7890884a9190&gt; : calculator not described
+
+--------------------------------------------------
+
+<span class="ansi-magenta-intense-fg ansi-bold"> &#39;opt_conductivity&#39; </span> : <span class="ansi-yellow-intense-fg ansi-bold"> &lt;wannierberri.calculators.dynamic.OpticalConductivity object at 0x789088428dd0&gt; </span> : calculator not described
+<span class="ansi-cyan-intense-fg ansi-bold">############################################################</span>
+Calculation on  grid - checking calculators for compatibility
+ahc_notetra &lt;wannierberri.calculators.static.AHC object at 0x78908857ed20&gt;
+ahc_tetra &lt;wannierberri.calculators.static.AHC object at 0x7890881ee210&gt;
+tabulate &lt;wannierberri.calculators.tabulate.TabulatorAll object at 0x78908813a0c0&gt;
+opt_conductivity &lt;wannierberri.calculators.dynamic.OpticalConductivity object at 0x789088428dd0&gt;
+All calculators are compatible
+Grid is regular
+The set of k points is a Grid() with NKdiv=[5 5 5], NKFFT=[5 5 5], NKtot=[25 25 25]
+generating K_list
+Done in 0.0007631778717041016 s
+excluding symmetry-equivalent K-points from initial grid
+Done in 0.009635448455810547 s
+K_list contains 18 Irreducible points(14.4%) out of initial 5x5x5=125 grid
+Done, sum of weights:1.0000000000000004
+
+############################################################
+Iteration 0 out of 0
+processing 18 K points : using  8 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+                  16              7.0                   0.9                   7.8
+time for processing     18 K-points on   8 processes:     9.2311 ; per K-point          0.5128 ; proc-sec per K-point          4.1027
+time1 =  0.018211841583251953
+setting the grid
+setting new kpoints
+finding equivalent kpoints
+collecting
+collecting: to_grid  : 0.07984185218811035
+collecting: TABresult  : 0.0006926059722900391
+collecting - OK : 0.08055663108825684 (2.2172927856445312e-05)
+Totally processed 18 K-points
+run() finished
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../../index.html" class="btn btn-neutral float-left" title="Wannier Berri Tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../2_fermi_sea_vs_fermi_surface/solution/tutorial_sea_vs_surface_solution.html" class="btn btn-neutral float-right" title="WannierBerri advanced tutorial - Fermi surface and Fermi sea calculation of the Berry curvature dipole" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Stepan Tsirkin.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,1513 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wannierisation (including SAWF) &mdash; Wannier Berri 1.8.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/style.css?v=88c5e859" />
+      <link rel="stylesheet" type="text/css" href="../../_static/nbsphinx-code-cells.css?v=2aa19091" />
+
+  
+    <link rel="shortcut icon" href="../../_static/WB-logo.ico"/>
+    <link rel="canonical" href="https://tutorial.wannier-berri.org/tutorials/6_wannierisation/wannierise-old.html" />
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=b51e6972"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within Wannier Berri 1.8.0 documentation"
+          href="../../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #009C46" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/tutorial.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+    
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../1_basic/tutorial-wb-basic-solution.html">Basic tutorial: Interpolating bands, Berry curvatures, and integrating them</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2_fermi_sea_vs_fermi_surface/solution/tutorial_sea_vs_surface_solution.html">WannierBerri advanced tutorial - Fermi surface and Fermi sea calculation of the Berry curvature dipole</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3_spin_hall/solution/tutorial_spin_hall.html">Spin Hall conductivity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../4_DIY/tutorial-wb-DIY-solution.html">DIY tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../5_symmetrization/tutorial_symmetrization-solution.html">Symmetrization of Wannier Hamiltonian and matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wannierise.html">Wannierisation (including SAWF)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../7_find_projections/find_projections.html">Finding initial projections based on symmetry indicators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../8_GPAW/1.diamond/diamond.html">GPAW + WannierBerri: spinless bandstructure (diamond)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../8_GPAW/2.Fe/bccFe.html">GPAW + WannierBerri: Magnetism and spin-orbit coupling (bcc Fe)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../8_GPAW/3.MnTe/mnte.html">GPAW + WannierBerri: Altermagnet MnTe</a></li>
+</ul>
+
+    <a href="genindex.html">Index</a>
+    <a href="http://wannier-berri.org">Back to Wannier-Berri.org</a>
+  
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #009C46" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Wannier Berri</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Wannierisation (including SAWF)</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="Wannierisation-(including-SAWF)">
+<h1>Wannierisation (including SAWF)<a class="headerlink" href="#Wannierisation-(including-SAWF)" title="Link to this heading"></a></h1>
+<p>This tutorial shows how to construct (Symmetry adapted) Wannier functions with WannierBerri, with magnetic symmetries. We will use the example of bcc Fe.</p>
+<section id="0.-Compute-QuantumEspresso-files">
+<h2>0. Compute QuantumEspresso files<a class="headerlink" href="#0.-Compute-QuantumEspresso-files" title="Link to this heading"></a></h2>
+<p>in tthe tutorial repository only the input files for Quantum ESPRESSO are provided to obtain the necessary files one needs to run</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>pw.x &lt; Fe_pw_scf_in &gt; Fe_pw_scf_out
+pw.x &lt; Fe_pw_nscf_in &gt; Fe_pw_nscf_out
+wannier90.x -pp Fe
+pw2wannier90.x &lt; Fe_pw2wan_in &gt; Fe_pw2wan_out
+</pre></div>
+</div>
+</section>
+<section id="1.-Setup">
+<h2>1. Setup<a class="headerlink" href="#1.-Setup" title="Link to this heading"></a></h2>
+<p>First import modules and set up the parallel environment</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import ray
+# Initialize Ray with 8 CPU cores
+# Do this only once at the beginning of your script. Initializing multiple times will lead to errors.
+ray.init(num_cpus=8)
+# If needed, you can do ray.shutdown() at the end of your script to clean up resources.
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+2025-11-20 05:21:54,622 INFO util.py:154 -- Missing packages: [&#39;ipywidgets&#39;]. Run `pip install -U ipywidgets`, then restart the notebook server for rich notebook output.
+2025-11-20 05:21:57,895 INFO worker.py:1918 -- Started a local Ray instance. View the dashboard at <span class="ansi-green-intense-fg ansi-bold">http://127.0.0.1:8266 </span>
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div class="lm-Widget p-Widget lm-Panel p-Panel jp-Cell-outputWrapper">
+    <div style="margin-left: 50px;display: flex;flex-direction: row;align-items: center">
+        <div class="jp-RenderedHTMLCommon" style="display: flex; flex-direction: row;">
+  <svg viewBox="0 0 567 224" fill="none" xmlns="http://www.w3.org/2000/svg" style="height: 3em;">
+    <g clip-path="url(#clip0_4338_178347)">
+        <path d="M341.29 165.561H355.29L330.13 129.051C345.63 123.991 354.21 112.051 354.21 94.2307C354.21 71.3707 338.72 58.1807 311.88 58.1807H271V165.561H283.27V131.661H311.8C314.25 131.661 316.71 131.501 319.01 131.351L341.25 165.561H341.29ZM283.29 119.851V70.0007H311.82C331.3 70.0007 342.34 78.2907 342.34 94.5507C342.34 111.271 331.34 119.861 311.82 119.861L283.29 119.851ZM451.4 138.411L463.4 165.561H476.74L428.74 58.1807H416L367.83 165.561H380.83L392.83 138.411H451.4ZM446.19 126.601H398L422 72.1407L446.24 126.601H446.19ZM526.11 128.741L566.91 58.1807H554.35L519.99 114.181L485.17 58.1807H472.44L514.01 129.181V165.541H526.13V128.741H526.11Z" fill="var(--jp-ui-font-color0)"/>
+        <path d="M82.35 104.44C84.0187 97.8827 87.8248 92.0678 93.1671 87.9146C98.5094 83.7614 105.083 81.5067 111.85 81.5067C118.617 81.5067 125.191 83.7614 130.533 87.9146C135.875 92.0678 139.681 97.8827 141.35 104.44H163.75C164.476 101.562 165.622 98.8057 167.15 96.2605L127.45 56.5605C121.071 60.3522 113.526 61.6823 106.235 60.3005C98.9443 58.9187 92.4094 54.9203 87.8602 49.0574C83.3109 43.1946 81.0609 35.8714 81.5332 28.4656C82.0056 21.0599 85.1679 14.0819 90.4252 8.8446C95.6824 3.60726 102.672 0.471508 110.08 0.0272655C117.487 -0.416977 124.802 1.86091 130.647 6.4324C136.493 11.0039 140.467 17.5539 141.821 24.8501C143.175 32.1463 141.816 39.6859 138 46.0505L177.69 85.7505C182.31 82.9877 187.58 81.4995 192.962 81.4375C198.345 81.3755 203.648 82.742 208.33 85.3976C213.012 88.0532 216.907 91.9029 219.616 96.5544C222.326 101.206 223.753 106.492 223.753 111.875C223.753 117.258 222.326 122.545 219.616 127.197C216.907 131.848 213.012 135.698 208.33 138.353C203.648 141.009 198.345 142.375 192.962 142.313C187.58 142.251 182.31 140.763 177.69 138L138 177.7C141.808 184.071 143.155 191.614 141.79 198.91C140.424 206.205 136.44 212.75 130.585 217.313C124.731 221.875 117.412 224.141 110.004 223.683C102.596 223.226 95.6103 220.077 90.3621 214.828C85.1139 209.58 81.9647 202.595 81.5072 195.187C81.0497 187.779 83.3154 180.459 87.878 174.605C92.4405 168.751 98.9853 164.766 106.281 163.401C113.576 162.035 121.119 163.383 127.49 167.19L167.19 127.49C165.664 124.941 164.518 122.182 163.79 119.3H141.39C139.721 125.858 135.915 131.673 130.573 135.826C125.231 139.98 118.657 142.234 111.89 142.234C105.123 142.234 98.5494 139.98 93.2071 135.826C87.8648 131.673 84.0587 125.858 82.39 119.3H60C58.1878 126.495 53.8086 132.78 47.6863 136.971C41.5641 141.163 34.1211 142.972 26.7579 142.059C19.3947 141.146 12.6191 137.574 7.70605 132.014C2.79302 126.454 0.0813599 119.29 0.0813599 111.87C0.0813599 104.451 2.79302 97.2871 7.70605 91.7272C12.6191 86.1673 19.3947 82.5947 26.7579 81.6817C34.1211 80.7686 41.5641 82.5781 47.6863 86.7696C53.8086 90.9611 58.1878 97.2456 60 104.44H82.35ZM100.86 204.32C103.407 206.868 106.759 208.453 110.345 208.806C113.93 209.159 117.527 208.258 120.522 206.256C123.517 204.254 125.725 201.276 126.771 197.828C127.816 194.38 127.633 190.677 126.253 187.349C124.874 184.021 122.383 181.274 119.205 179.577C116.027 177.88 112.359 177.337 108.826 178.042C105.293 178.746 102.113 180.654 99.8291 183.44C97.5451 186.226 96.2979 189.718 96.3 193.32C96.2985 195.364 96.7006 197.388 97.4831 199.275C98.2656 201.163 99.4132 202.877 100.86 204.32ZM204.32 122.88C206.868 120.333 208.453 116.981 208.806 113.396C209.159 109.811 208.258 106.214 206.256 103.219C204.254 100.223 201.275 98.0151 197.827 96.97C194.38 95.9249 190.676 96.1077 187.348 97.4873C184.02 98.8669 181.274 101.358 179.577 104.536C177.879 107.714 177.337 111.382 178.041 114.915C178.746 118.448 180.653 121.627 183.439 123.911C186.226 126.195 189.717 127.443 193.32 127.44C195.364 127.443 197.388 127.042 199.275 126.259C201.163 125.476 202.878 124.328 204.32 122.88ZM122.88 19.4205C120.333 16.8729 116.981 15.2876 113.395 14.9347C109.81 14.5817 106.213 15.483 103.218 17.4849C100.223 19.4868 98.0146 22.4654 96.9696 25.9131C95.9245 29.3608 96.1073 33.0642 97.4869 36.3922C98.8665 39.7202 101.358 42.4668 104.535 44.1639C107.713 45.861 111.381 46.4036 114.914 45.6992C118.447 44.9949 121.627 43.0871 123.911 40.301C126.195 37.515 127.442 34.0231 127.44 30.4205C127.44 28.3772 127.038 26.3539 126.255 24.4664C125.473 22.5788 124.326 20.8642 122.88 19.4205ZM19.42 100.86C16.8725 103.408 15.2872 106.76 14.9342 110.345C14.5813 113.93 15.4826 117.527 17.4844 120.522C19.4863 123.518 22.4649 125.726 25.9127 126.771C29.3604 127.816 33.0638 127.633 36.3918 126.254C39.7198 124.874 42.4664 122.383 44.1635 119.205C45.8606 116.027 46.4032 112.359 45.6988 108.826C44.9944 105.293 43.0866 102.114 40.3006 99.8296C37.5145 97.5455 34.0227 96.2983 30.42 96.3005C26.2938 96.3018 22.337 97.9421 19.42 100.86ZM100.86 100.86C98.3125 103.408 96.7272 106.76 96.3742 110.345C96.0213 113.93 96.9226 117.527 98.9244 120.522C100.926 123.518 103.905 125.726 107.353 126.771C110.8 127.816 114.504 127.633 117.832 126.254C121.16 124.874 123.906 122.383 125.604 119.205C127.301 116.027 127.843 112.359 127.139 108.826C126.434 105.293 124.527 102.114 121.741 99.8296C118.955 97.5455 115.463 96.2983 111.86 96.3005C109.817 96.299 107.793 96.701 105.905 97.4835C104.018 98.2661 102.303 99.4136 100.86 100.86Z" fill="#00AEEF"/>
+    </g>
+    <defs>
+        <clipPath id="clip0_4338_178347">
+            <rect width="566.93" height="223.75" fill="white"/>
+        </clipPath>
+    </defs>
+  </svg>
+</div>
+
+        <table class="jp-RenderedHTMLCommon" style="border-collapse: collapse;color: var(--jp-ui-font-color1);font-size: var(--jp-ui-font-size1);">
+    <tr>
+        <td style="text-align: left"><b>Python version:</b></td>
+        <td style="text-align: left"><b>3.12.12</b></td>
+    </tr>
+    <tr>
+        <td style="text-align: left"><b>Ray version:</b></td>
+        <td style="text-align: left"><b>2.48.0</b></td>
+    </tr>
+    <tr>
+    <td style="text-align: left"><b>Dashboard:</b></td>
+    <td style="text-align: left"><b><a href="http://127.0.0.1:8266" target="_blank">http://127.0.0.1:8266</a></b></td>
+</tr>
+
+</table>
+
+    </div>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span>import os
+
+from matplotlib import pyplot as plt
+import scipy
+import wannierberri as wb
+import numpy as np
+
+path_data = &quot;./pwscf/&quot;  # adjust path if needed to point to the data in the tests fo wannier-berri repository
+
+assert os.path.exists(path_data), f&quot;Path {path_data} does not exist&quot;
+
+import irrep, spglib
+
+print (f&quot;using wannier-berri version: {wb.__version__}&quot;)
+print (f&quot;using irrep version: {irrep.__version__}&quot;)
+print (f&quot;using spglib version: {spglib.__version__}&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+using wannier-berri version: 1.6.1
+using irrep version: 2.4.1
+using spglib version: 2.6.0
+</pre></div></div>
+</div>
+</section>
+<section id="2.-Read-the-bandstructure-from-Quantum-ESPRESSO">
+<h2>2. Read the bandstructure from Quantum ESPRESSO<a class="headerlink" href="#2.-Read-the-bandstructure-from-Quantum-ESPRESSO" title="Link to this heading"></a></h2>
+<p>we use the Bnadstructure object form irrep to read the bandstructure from Quantum ESPRESSO. It also can be used to read from VASP, ABINIT, etc. , see documentation of irrep for more details.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span>from irrep.bandstructure import BandStructure
+assert os.path.exists(path_data), f&quot;Path {path_data} does not exist&quot;
+  # adjust path if needed to point to the data in the tests fo wannier-berri repository
+bandstructure = BandStructure(code=&#39;espresso&#39;,   # to work with VASP or abinit please refer to the documentation of irrep
+                            prefix=os.path.join(path_data, &quot;Fe&quot;),
+                            Ecut=100,
+                            normalize=False,
+                            magmom=[[0,0,1]],  # set the magnetic moments for a magnetic system (units do not matter)
+                            include_TR=True)  # set include_TR=False if you do not want to include the symmetries involving time reversal (magnetic symmetries)
+spacegroup = bandstructure.spacegroup
+spacegroup.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+
+ ---------- CRYSTAL STRUCTURE ----------
+
+
+Cell vectors in angstroms:
+
+      Vectors of DFT cell
+a0 =  1.4350   1.4350   1.4350
+a1 = -1.4350   1.4350   1.4350
+a2 = -1.4350  -1.4350   1.4350
+
+
+
+ ---------- SPACE GROUP -----------
+
+
+Space group: I4/mm&#39;m&#39; (# 139.537)
+Number of symmetries: 16 (mod. lattice translations)
+
+ ### 1
+
+rotation : |  1   0   0 |
+           |  0   1   0 |
+           |  0   0   1 |
+
+
+ gk = [kx, ky, kz]
+
+spinor rot.         : | 1.000+0.000j  0.000+0.000j |
+                      | 0.000+0.000j  1.000+0.000j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [-0.109397 -0.702863  0.702863] ; angle =  0 , inversion: False, time reversal: False
+
+ ### 2
+
+rotation : | -1   0   0 |
+           |  0  -1   0 |
+           |  0   0  -1 |
+
+
+ gk = [-kx, -ky, -kz]
+
+spinor rot.         : | 1.000+0.000j  0.000+0.000j |
+                      | 0.000+0.000j  1.000+0.000j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [ 0.109397 -0.702863  0.702863] ; angle =  0 , inversion: True, time reversal: False
+
+ ### 3
+
+rotation : |  0   0   1 |
+           |  1   0  -1 |
+           |  0   1   1 |
+
+
+ gk = [kx-ky+kz, kx, ky]
+
+spinor rot.         : | 0.707-0.707j  0.000+0.000j |
+                      | 0.000+0.000j  0.707+0.707j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [-0.  0.  1.] ; angle = 1/2 pi, inversion: False, time reversal: False
+
+ ### 4
+
+rotation : |  0   0  -1 |
+           | -1   0   1 |
+           |  0  -1  -1 |
+
+
+ gk = [-kx+ky-kz, -kx, -ky]
+
+spinor rot.         : | 0.707-0.707j  0.000+0.000j |
+                      | 0.000+0.000j  0.707+0.707j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [-0.  0.  1.] ; angle = 1/2 pi, inversion: True, time reversal: False
+
+ ### 5
+
+rotation : |  0   1   1 |
+           |  0  -1   0 |
+           |  1   1   0 |
+
+
+ gk = [kz, kx-ky+kz, kx]
+
+spinor rot.         : | 0.000-1.000j -0.000+0.000j |
+                      | 0.000+0.000j  0.000+1.000j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [-0.  0.  1.] ; angle = 1 pi, inversion: False, time reversal: False
+
+ ### 6
+
+rotation : |  0  -1  -1 |
+           |  0   1   0 |
+           | -1  -1   0 |
+
+
+ gk = [-kz, -kx+ky-kz, -kx]
+
+spinor rot.         : | 0.000+1.000j  0.000-0.000j |
+                      |-0.000-0.000j  0.000-1.000j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [ 0. -0. -1.] ; angle = 1 pi, inversion: True, time reversal: False
+
+ ### 7
+
+rotation : |  1   1   0 |
+           | -1   0   1 |
+           |  1   0   0 |
+
+
+ gk = [ky, kz, kx-ky+kz]
+
+spinor rot.         : | 0.707+0.707j -0.000-0.000j |
+                      | 0.000+0.000j  0.707-0.707j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [ 0. -0.  1.] ; angle = -1/2 pi, inversion: False, time reversal: False
+
+ ### 8
+
+rotation : | -1  -1   0 |
+           |  1   0  -1 |
+           | -1   0   0 |
+
+
+ gk = [-ky, -kz, -kx+ky-kz]
+
+spinor rot.         : | 0.707+0.707j -0.000-0.000j |
+                      | 0.000+0.000j  0.707-0.707j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [ 0. -0.  1.] ; angle = -1/2 pi, inversion: True, time reversal: False
+
+ ### 9
+
+rotation : |  0  -1  -1 |
+           | -1   0   1 |
+           |  0   0  -1 |
+
+
+ gk = [ky, kx, kx-ky+kz]
+
+spinor rot.         : | 0.000+0.000j  0.000-1.000j |
+                      | 0.000-1.000j  0.000+0.000j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [1. 0. 0.] ; angle = 1 pi, inversion: False, time reversal: True
+
+ ### 10
+
+rotation : |  0   1   1 |
+           |  1   0  -1 |
+           |  0   0   1 |
+
+
+ gk = [-ky, -kx, -kx+ky-kz]
+
+spinor rot.         : | 0.000+0.000j  0.000-1.000j |
+                      | 0.000-1.000j  0.000+0.000j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [1. 0. 0.] ; angle = 1 pi, inversion: True, time reversal: True
+
+ ### 11
+
+rotation : | -1  -1   0 |
+           |  0   1   0 |
+           |  0  -1  -1 |
+
+
+ gk = [kx, kx-ky+kz, kz]
+
+spinor rot.         : |-0.000+0.000j -0.707+0.707j |
+                      | 0.707+0.707j  0.000+0.000j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [-0.707107  0.707107  0.      ] ; angle = 1 pi, inversion: False, time reversal: True
+
+ ### 12
+
+rotation : |  1   1   0 |
+           |  0  -1   0 |
+           |  0   1   1 |
+
+
+ gk = [-kx, -kx+ky-kz, -kz]
+
+spinor rot.         : |-0.000+0.000j  0.707-0.707j |
+                      |-0.707-0.707j  0.000+0.000j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [ 0.707107 -0.707107 -0.      ] ; angle = 1 pi, inversion: True, time reversal: True
+
+ ### 13
+
+rotation : | -1   0   0 |
+           |  1   0  -1 |
+           | -1  -1   0 |
+
+
+ gk = [kx-ky+kz, kz, ky]
+
+spinor rot.         : | 0.000-0.000j  1.000+0.000j |
+                      |-1.000+0.000j  0.000+0.000j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [-0. -1.  0.] ; angle = 1 pi, inversion: False, time reversal: True
+
+ ### 14
+
+rotation : |  1   0   0 |
+           | -1   0   1 |
+           |  1   1   0 |
+
+
+ gk = [-kx+ky-kz, -kz, -ky]
+
+spinor rot.         : | 0.000+0.000j -1.000-0.000j |
+                      | 1.000-0.000j  0.000-0.000j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [ 0.  1. -0.] ; angle = 1 pi, inversion: True, time reversal: True
+
+ ### 15
+
+rotation : |  0   0  -1 |
+           |  0  -1   0 |
+           | -1   0   0 |
+
+
+ gk = [kz, ky, kx]
+
+spinor rot.         : |-0.000+0.000j -0.707-0.707j |
+                      | 0.707-0.707j  0.000+0.000j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [ 0.707107  0.707107 -0.      ] ; angle = 1 pi, inversion: False, time reversal: True
+
+ ### 16
+
+rotation : |  0   0   1 |
+           |  0   1   0 |
+           |  1   0   0 |
+
+
+ gk = [-kz, -ky, -kx]
+
+spinor rot.         : |-0.000+0.000j  0.707+0.707j |
+                      |-0.707+0.707j  0.000+0.000j |
+
+translation         :  [   0.0000   0.0000   0.0000 ]
+
+axis: [-0.707107 -0.707107  0.      ] ; angle = 1 pi, inversion: True, time reversal: True
+</pre></div></div>
+</div>
+</section>
+<section id="3-Choose-projections">
+<h2>3 Choose projections<a class="headerlink" href="#3-Choose-projections" title="Link to this heading"></a></h2>
+<p>This is similar to wannier90. However, in this case the projections already include the symmetry information.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span>from wannierberri.symmetry.projections import Projection, ProjectionsSet
+# now set the transformations of WFs. Make sure, the projections are consistent with the amn file
+proj_s = Projection(position_num = [[0,0,0]], orbital=&#39;s&#39;, spacegroup=spacegroup)
+proj_p = Projection(position_num = [[0,0,0]], orbital=&#39;p&#39;, spacegroup=spacegroup)
+proj_d = Projection(position_num = [[0,0,0]], orbital=&#39;d&#39;, spacegroup=spacegroup)
+projections_set = ProjectionsSet(projections=[proj_s, proj_p, proj_d])
+<br/></pre></div>
+</div>
+</div>
+</section>
+<section id="4-create-the-SymmetrizerSAWF-object">
+<h2>4 create the SymmetrizerSAWF object<a class="headerlink" href="#4-create-the-SymmetrizerSAWF-object" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">wannierberri.symemtry.sawf.SymmetrizerSAWF</span></code> class is used to store the information on how the dft bands, and the Wannier functions transform under spac-group (ot magnetic group) symmetries. This information is used to construct the SAWF, to search for projections, and to symmetrize the system (using the System_R.symmetrize2 methos)</p>
+<p>In spirit it is similar to the dmn file of Wannier90, but more developed and optimized. Compared, to the wannier90.dmn file, the SytmmetrizerSAWF has the following advantages:</p>
+<ul class="simple">
+<li><p>The matrices D_wann and d_band are stored in block diagonal form, which saves memory and allows for faster calculations.</p>
+<ul>
+<li><p>for d_band the blocks correspond to (almost) degenerate bands</p></li>
+<li><p>for D_wann the blocks correspond to the same orbital at the same Wyckoff position</p></li>
+</ul>
+</li>
+<li><p>The information on magnetic symmeties (which symmetry operation includes time reversal)</p></li>
+<li><p>The spacegroup is stored as an irrep.spacegroup.Spacegroup object, which allows for easy manipulation of the symmetry operations</p></li>
+</ul>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>symmetrizer = wb.symmetry.sawf.SymmetrizerSAWF().from_irrep(bandstructure)
+symmetrizer.set_D_wann_from_projections(projections_set)
+
+# you can save it for later use
+symmetrizer.to_npz(&quot;Fe_spd.sawf.npz&quot;)
+# later can be read with
+symmetrizer_read_npz = wb.symmetry.sawf.SymmetrizerSAWF().from_npz(&quot;Fe_spd.sawf.npz&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+mpgrid = [4 4 4], 64
+orbitals = [&#39;s&#39;]
+orbitals = [&#39;p&#39;]
+orbitals = [&#39;d&#39;]
+calculating Wannier functions for s at [[0 0 0]]
+calculating Wannier functions for p at [[0 0 0]]
+calculating Wannier functions for d at [[0 0 0]]
+D.shape [(13, 16, 2, 2), (13, 16, 6, 6), (13, 16, 10, 10)]
+num_wann 18
+D_wann_block_indices [[ 0  2]
+ [ 2  8]
+ [ 8 18]]
+saving to Fe_spd.sawf.npz :
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/home/stepan/github/irrep/irrep/spacegroup.py:167: UserWarning: Negative space group number is not supported. Setting it to -1
+  warnings.warn(&#34;Negative space group number is not supported. Setting it to -1&#34;)
+</pre></div></div>
+</div>
+</section>
+<section id="5.-Create-the-amn-file">
+<h2>5. Create the amn file<a class="headerlink" href="#5.-Create-the-amn-file" title="Link to this heading"></a></h2>
+<p>Note, that projections can be calculated directly form bandstructure object, and no need to evaluate them in the pw2wannier90 code. Still, one can use the amn file from pw2wannier90, but in this case one needs to be careful with the ordering of projections. Therefore, it is recommended to generate the amn file directly.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from wannierberri.w90files.amn import AMN
+
+amn = AMN.from_bandstructure(bandstructure=bandstructure, projections=projections_set)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+finding num points from 3 projections
+Creating amn. Using projections_set
+ProjectionsSet with 9 Wannier functions and 0 free variables
+Projection 0, 0, 0:[&#39;s&#39;] with 1 Wannier functions on 1 points (1 per site)
+Projection 0, 0, 0:[&#39;p&#39;] with 3 Wannier functions on 1 points (3 per site)
+Projection 0, 0, 0:[&#39;d&#39;] with 5 Wannier functions on 1 points (5 per site)
+</pre></div></div>
+</div>
+</section>
+<section id="6.-Read-and-set-w90-files">
+<h2>6. Read and set w90 files<a class="headerlink" href="#6.-Read-and-set-w90-files" title="Link to this heading"></a></h2>
+<p>Read the files into w90data object, attach to it the created amn and symmetrizer objects.</p>
+<p>Then, one may check if the files eig and amn are consistent with the symmetrizer</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>w90data=wb.w90files.Wannier90data().from_w90_files(seedname=os.path.join(path_data,&quot;Fe&quot;),
+                                                   readfiles=[&quot;mmn&quot;,&quot;eig&quot;,&quot;win&quot;])
+# check the symmetries of the amn and eig files
+w90data.set_symmetrizer(symmetrizer)
+w90data.set_file(&quot;amn&quot;, amn)
+print (f&quot;eig is symmetric within the accuracy of : {symmetrizer.check_eig(w90data.eig)}&quot;)
+print (f&quot;amn is symmetric within the accuracy of : {symmetrizer.check_amn(w90data.amn, warning_precision=1e-4)}&quot;)
+print (f&quot;eigenvalues at ik=0 : {w90data.eig.data[0]}&quot;)
+# optionally - apply outer window, but do not set other files afterwards!
+w90data.select_bands(win_min=-8,win_max= 100 )
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+creating empty CheckPoint from Win file
+Shells found with weights [0.41728408] and tolerance 1.9406913487457526e-16
+Time for MMN.__init__() : 0.6594762802124023 , read : 0.6245167255401611 , headstring 0.03495955467224121
+saving to ./pwscf/Fe.mmn.npz :
+eig is symmetric within the accuracy of : 1.7352815281925281e-12
+ikirr=0, isym=2 kpt  0 -&gt; 0: 0.000230701308983471
+ikirr=0, isym=3 kpt  0 -&gt; 0: 0.00023070130898347014
+ikirr=0, isym=4 kpt  0 -&gt; 0: 0.00032626092373147037
+ikirr=0, isym=5 kpt  0 -&gt; 0: 0.00032626092373147037
+ikirr=0, isym=6 kpt  0 -&gt; 0: 0.00023070130898344987
+ikirr=0, isym=7 kpt  0 -&gt; 0: 0.00023070130898344895
+ikirr=0, isym=8 kpt  0 -&gt; 0: 0.0003232644746374151
+ikirr=0, isym=9 kpt  0 -&gt; 0: 0.00032326447463741555
+ikirr=0, isym=10 kpt  0 -&gt; 0: 0.0002597776060656813
+ikirr=0, isym=11 kpt  0 -&gt; 0: 0.0002597776060656823
+ikirr=0, isym=12 kpt  0 -&gt; 0: 0.00011208902885737723
+ikirr=0, isym=13 kpt  0 -&gt; 0: 0.0001120890288699225
+ikirr=0, isym=14 kpt  0 -&gt; 0: 0.00019738739446568566
+ikirr=0, isym=15 kpt  0 -&gt; 0: 0.00019738739446568626
+ikirr=11, isym=1 kpt  29 -&gt; 55: 0.00012789598633177848
+ikirr=11, isym=2 kpt  29 -&gt; 55: 0.00013646676080472997
+ikirr=11, isym=5 kpt  29 -&gt; 55: 0.00013284000713568216
+ikirr=11, isym=6 kpt  29 -&gt; 55: 0.00012401435135331584
+ikirr=11, isym=8 kpt  29 -&gt; 55: 0.00012365167537810662
+ikirr=11, isym=11 kpt  29 -&gt; 55: 0.00012886135751490903
+ikirr=11, isym=12 kpt  29 -&gt; 55: 0.00013679953944826145
+ikirr=11, isym=15 kpt  29 -&gt; 55: 0.0001318995325391732
+ikirr=12, isym=2 kpt  42 -&gt; 42: 0.00012643305086489068
+ikirr=12, isym=3 kpt  42 -&gt; 42: 0.00012643305086490383
+ikirr=12, isym=4 kpt  42 -&gt; 42: 0.0001788096787404178
+ikirr=12, isym=5 kpt  42 -&gt; 42: 0.00017880967874035875
+ikirr=12, isym=6 kpt  42 -&gt; 42: 0.00012643305094084338
+ikirr=12, isym=7 kpt  42 -&gt; 42: 0.00012643305094086463
+ikirr=12, isym=8 kpt  42 -&gt; 42: 0.00017164256537598798
+ikirr=12, isym=9 kpt  42 -&gt; 42: 0.0001716425653760176
+ikirr=12, isym=10 kpt  42 -&gt; 42: 0.00015679955267937335
+ikirr=12, isym=11 kpt  42 -&gt; 42: 0.00015679955267935159
+amn is symmetric within the accuracy of : 0.00032626092373147037
+eigenvalues at ik=0 : [ 4.42624609  4.56711725 10.59844101 10.62588822 10.65695316 11.64267206
+ 11.654173   12.2136333  12.23125238 12.26425051 14.39895102 14.40059647
+ 38.53322082 38.53322147 38.53328964 38.8336636  38.83366485 38.83383108
+ 44.30739027 44.36770869 44.44003016 44.57458079 44.57556868 44.62903705
+ 44.62936834 45.32707513 45.39326779 45.45218324 50.41547735 50.43472702
+ 50.45476162 50.76954857]
+selected_bands = [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23
+ 24 25 26 27 28 29 30 31]
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+array([ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16,
+       17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31])
+</pre></div></div>
+</div>
+</section>
+<section id="7.-Wannierise">
+<h2>7. Wannierise<a class="headerlink" href="#7.-Wannierise" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>froz_max=25
+w90data.wannierise( init = &quot;amn&quot;,
+                froz_min=4,
+                froz_max=froz_max,
+                print_progress_every=1,
+                num_iter=10,
+                conv_tol=1e-6,
+                mix_ratio_z=1.0,
+                localise=True,
+                sitesym=True,
+                )
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+####################################################################################################
+starting WFs
+----------------------------------------------------------------------------------------------------
+wannier centers and spreads
+----------------------------------------------------------------------------------------------------
+  0.000000000000    0.000000000000    0.000000000000   |     2.167979361966
+  0.000000000000    0.000000000000    0.000000000000   |     2.135060677808
+  0.000000000000    0.000000000000    0.000000000000   |     4.628058066037
+  0.000000000000    0.000000000000    0.000000000000   |     3.329571098344
+  0.000000000000    0.000000000000    0.000000000000   |     4.322487480489
+  0.000000000000    0.000000000000    0.000000000000   |     3.584574854550
+  0.000000000000    0.000000000000    0.000000000000   |     4.322487480489
+  0.000000000000    0.000000000000    0.000000000000   |     3.584574854550
+  0.000000000000    0.000000000000    0.000000000000   |     0.623926041361
+  0.000000000000    0.000000000000    0.000000000000   |     0.518521462142
+  0.000000000000    0.000000000000    0.000000000000   |     0.878829361456
+  0.000000000000    0.000000000000    0.000000000000   |     0.638700754293
+  0.000000000000    0.000000000000    0.000000000000   |     0.878829361456
+  0.000000000000    0.000000000000    0.000000000000   |     0.638700754293
+  0.000000000000    0.000000000000    0.000000000000   |     0.624821499201
+  0.000000000000    0.000000000000    0.000000000000   |     0.520666761458
+  0.000000000000    0.000000000000    0.000000000000   |     0.869282398928
+  0.000000000000    0.000000000000    0.000000000000   |     0.636283831530
+----------------------------------------------------------------------------------------------------
+  0.000000000000    0.000000000000    0.000000000000   |    34.903356100352 &lt;- sum
+                                          maximal spread =   4.628058066037
+####################################################################################################
+####################################################################################################
+Iteration 0 (from wannierizer)
+----------------------------------------------------------------------------------------------------
+wannier centers and spreads
+----------------------------------------------------------------------------------------------------
+  0.000000000000    0.000000000000    0.000000000000   |     2.203483691149
+  0.000000000000    0.000000000000    0.000000000000   |     2.509245933278
+  0.000000000000    0.000000000000    0.000000000000   |     3.382089018039
+  0.000000000000    0.000000000000    0.000000000000   |     2.406169529969
+  0.000000000000    0.000000000000    0.000000000000   |     3.744256641181
+  0.000000000000    0.000000000000    0.000000000000   |     2.411471074860
+  0.000000000000    0.000000000000    0.000000000000   |     3.744256641181
+  0.000000000000    0.000000000000    0.000000000000   |     2.411471074860
+  0.000000000000    0.000000000000    0.000000000000   |     0.558757852198
+  0.000000000000    0.000000000000    0.000000000000   |     0.479797415762
+  0.000000000000    0.000000000000    0.000000000000   |     0.691277486973
+  0.000000000000    0.000000000000    0.000000000000   |     0.545135294956
+  0.000000000000    0.000000000000    0.000000000000   |     0.691277486973
+  0.000000000000    0.000000000000    0.000000000000   |     0.545135294956
+  0.000000000000    0.000000000000    0.000000000000   |     0.558472848893
+  0.000000000000    0.000000000000    0.000000000000   |     0.481149710480
+  0.000000000000    0.000000000000    0.000000000000   |     0.688671666747
+  0.000000000000    0.000000000000    0.000000000000   |     0.543242041440
+----------------------------------------------------------------------------------------------------
+  0.000000000000    0.000000000000    0.000000000000   |    28.595360703893 &lt;- sum
+                                          maximal spread =   3.744256641181
+standard deviation = 0.0
+####################################################################################################
+####################################################################################################
+Iteration 1 (from wannierizer)
+----------------------------------------------------------------------------------------------------
+wannier centers and spreads
+----------------------------------------------------------------------------------------------------
+  0.000000000000    0.000000000000    0.000000000000   |     1.511383966230
+  0.000000000000    0.000000000000    0.000000000000   |     1.739820847832
+  0.000000000000    0.000000000000    0.000000000000   |     1.781447693629
+  0.000000000000    0.000000000000    0.000000000000   |     1.628533308207
+  0.000000000000    0.000000000000    0.000000000000   |     3.281631586711
+  0.000000000000    0.000000000000    0.000000000000   |     1.630267437212
+  0.000000000000    0.000000000000    0.000000000000   |     3.281631586711
+  0.000000000000    0.000000000000    0.000000000000   |     1.630267437212
+  0.000000000000    0.000000000000    0.000000000000   |     0.494709837537
+  0.000000000000    0.000000000000    0.000000000000   |     0.441239668807
+  0.000000000000    0.000000000000    0.000000000000   |     0.456060008475
+  0.000000000000    0.000000000000    0.000000000000   |     0.408575772261
+  0.000000000000    0.000000000000    0.000000000000   |     0.456060008475
+  0.000000000000    0.000000000000    0.000000000000   |     0.408575772261
+  0.000000000000    0.000000000000    0.000000000000   |     0.494907365274
+  0.000000000000    0.000000000000    0.000000000000   |     0.441316678429
+  0.000000000000    0.000000000000    0.000000000000   |     0.455229358533
+  0.000000000000    0.000000000000    0.000000000000   |     0.408542677890
+----------------------------------------------------------------------------------------------------
+  0.000000000000    0.000000000000    0.000000000000   |    20.950201011685 &lt;- sum
+                                          maximal spread =   3.281631586711
+standard deviation = 0.8003206622049709
+####################################################################################################
+####################################################################################################
+Iteration 2 (from wannierizer)
+----------------------------------------------------------------------------------------------------
+wannier centers and spreads
+----------------------------------------------------------------------------------------------------
+  0.000000000000    0.000000000000    0.000000000000   |     1.362224924211
+  0.000000000000    0.000000000000    0.000000000000   |     1.472937056154
+  0.000000000000    0.000000000000    0.000000000000   |     1.457718496520
+  0.000000000000    0.000000000000    0.000000000000   |     1.529840205816
+  0.000000000000    0.000000000000    0.000000000000   |     1.456723827207
+  0.000000000000    0.000000000000    0.000000000000   |     1.530956139597
+  0.000000000000    0.000000000000    0.000000000000   |     1.456723827207
+  0.000000000000    0.000000000000    0.000000000000   |     1.530956139597
+  0.000000000000    0.000000000000    0.000000000000   |     0.486936612531
+  0.000000000000    0.000000000000    0.000000000000   |     0.436039801139
+  0.000000000000    0.000000000000    0.000000000000   |     0.436247882006
+  0.000000000000    0.000000000000    0.000000000000   |     0.399300574167
+  0.000000000000    0.000000000000    0.000000000000   |     0.436247882006
+  0.000000000000    0.000000000000    0.000000000000   |     0.399300574167
+  0.000000000000    0.000000000000    0.000000000000   |     0.487029546924
+  0.000000000000    0.000000000000    0.000000000000   |     0.436032084548
+  0.000000000000    0.000000000000    0.000000000000   |     0.435685685976
+  0.000000000000    0.000000000000    0.000000000000   |     0.399337387750
+----------------------------------------------------------------------------------------------------
+  0.000000000000    0.000000000000    0.000000000000   |    16.150238647520 &lt;- sum
+                                          maximal spread =   1.530956139597
+standard deviation = 0.9875399652520943
+####################################################################################################
+####################################################################################################
+Iteration 3 (from wannierizer)
+----------------------------------------------------------------------------------------------------
+wannier centers and spreads
+----------------------------------------------------------------------------------------------------
+  0.000000000000    0.000000000000    0.000000000000   |     1.336689195847
+  0.000000000000    0.000000000000    0.000000000000   |     1.426135451568
+  0.000000000000    0.000000000000    0.000000000000   |     1.410144153450
+  0.000000000000    0.000000000000    0.000000000000   |     1.503583240111
+  0.000000000000    0.000000000000    0.000000000000   |     1.408845519952
+  0.000000000000    0.000000000000    0.000000000000   |     1.504093615635
+  0.000000000000    0.000000000000    0.000000000000   |     1.408845519952
+  0.000000000000    0.000000000000    0.000000000000   |     1.504093615635
+  0.000000000000    0.000000000000    0.000000000000   |     0.484805759054
+  0.000000000000    0.000000000000    0.000000000000   |     0.435004249546
+  0.000000000000    0.000000000000    0.000000000000   |     0.431288818695
+  0.000000000000    0.000000000000    0.000000000000   |     0.398518785968
+  0.000000000000    0.000000000000    0.000000000000   |     0.431288818695
+  0.000000000000    0.000000000000    0.000000000000   |     0.398518785968
+  0.000000000000    0.000000000000    0.000000000000   |     0.484821502521
+  0.000000000000    0.000000000000    0.000000000000   |     0.434993153711
+  0.000000000000    0.000000000000    0.000000000000   |     0.431033032291
+  0.000000000000    0.000000000000    0.000000000000   |     0.398529211104
+----------------------------------------------------------------------------------------------------
+  0.000000000000    0.000000000000    0.000000000000   |    15.831232429701 &lt;- sum
+                                          maximal spread =   1.504093615635
+standard deviation = 0.871773945906299
+####################################################################################################
+####################################################################################################
+Iteration 4 (from wannierizer)
+----------------------------------------------------------------------------------------------------
+wannier centers and spreads
+----------------------------------------------------------------------------------------------------
+  0.000000000000    0.000000000000    0.000000000000   |     1.336819736119
+  0.000000000000    0.000000000000    0.000000000000   |     1.410097209653
+  0.000000000000    0.000000000000    0.000000000000   |     1.397473248443
+  0.000000000000    0.000000000000    0.000000000000   |     1.497483855365
+  0.000000000000    0.000000000000    0.000000000000   |     1.396033305901
+  0.000000000000    0.000000000000    0.000000000000   |     1.497867807927
+  0.000000000000    0.000000000000    0.000000000000   |     1.396033305901
+  0.000000000000    0.000000000000    0.000000000000   |     1.497867807927
+  0.000000000000    0.000000000000    0.000000000000   |     0.483678254143
+  0.000000000000    0.000000000000    0.000000000000   |     0.434771219582
+  0.000000000000    0.000000000000    0.000000000000   |     0.428955919762
+  0.000000000000    0.000000000000    0.000000000000   |     0.398416845016
+  0.000000000000    0.000000000000    0.000000000000   |     0.428955919762
+  0.000000000000    0.000000000000    0.000000000000   |     0.398416845016
+  0.000000000000    0.000000000000    0.000000000000   |     0.483705102151
+  0.000000000000    0.000000000000    0.000000000000   |     0.434775693751
+  0.000000000000    0.000000000000    0.000000000000   |     0.428699151637
+  0.000000000000    0.000000000000    0.000000000000   |     0.398430635177
+----------------------------------------------------------------------------------------------------
+  0.000000000000    0.000000000000    0.000000000000   |    15.748481863232 &lt;- sum
+                                          maximal spread =   1.497867807927
+standard deviation = 0.0266592941968786
+####################################################################################################
+####################################################################################################
+Iteration 5 (from wannierizer)
+----------------------------------------------------------------------------------------------------
+wannier centers and spreads
+----------------------------------------------------------------------------------------------------
+  0.000000000000    0.000000000000    0.000000000000   |     1.340792946321
+  0.000000000000    0.000000000000    0.000000000000   |     1.404481684172
+  0.000000000000    0.000000000000    0.000000000000   |     1.394020734813
+  0.000000000000    0.000000000000    0.000000000000   |     1.496403738064
+  0.000000000000    0.000000000000    0.000000000000   |     1.392655975042
+  0.000000000000    0.000000000000    0.000000000000   |     1.496697394748
+  0.000000000000    0.000000000000    0.000000000000   |     1.392655975042
+  0.000000000000    0.000000000000    0.000000000000   |     1.496697394748
+  0.000000000000    0.000000000000    0.000000000000   |     0.483083373588
+  0.000000000000    0.000000000000    0.000000000000   |     0.434723507371
+  0.000000000000    0.000000000000    0.000000000000   |     0.427783949521
+  0.000000000000    0.000000000000    0.000000000000   |     0.398425290594
+  0.000000000000    0.000000000000    0.000000000000   |     0.427783949521
+  0.000000000000    0.000000000000    0.000000000000   |     0.398425290594
+  0.000000000000    0.000000000000    0.000000000000   |     0.483122681610
+  0.000000000000    0.000000000000    0.000000000000   |     0.434731279818
+  0.000000000000    0.000000000000    0.000000000000   |     0.427548819382
+  0.000000000000    0.000000000000    0.000000000000   |     0.398439740686
+----------------------------------------------------------------------------------------------------
+  0.000000000000    0.000000000000    0.000000000000   |    15.728473725637 &lt;- sum
+                                          maximal spread =   1.496697394748
+standard deviation = 0.00917511715090996
+####################################################################################################
+####################################################################################################
+Iteration 6 (from wannierizer)
+----------------------------------------------------------------------------------------------------
+wannier centers and spreads
+----------------------------------------------------------------------------------------------------
+  0.000000000000    0.000000000000    0.000000000000   |     1.344512020445
+  0.000000000000    0.000000000000    0.000000000000   |     1.402193767249
+  0.000000000000    0.000000000000    0.000000000000   |     1.393308993951
+  0.000000000000    0.000000000000    0.000000000000   |     1.496475141341
+  0.000000000000    0.000000000000    0.000000000000   |     1.392083893817
+  0.000000000000    0.000000000000    0.000000000000   |     1.496718346372
+  0.000000000000    0.000000000000    0.000000000000   |     1.392083893817
+  0.000000000000    0.000000000000    0.000000000000   |     1.496718346372
+  0.000000000000    0.000000000000    0.000000000000   |     0.482745852175
+  0.000000000000    0.000000000000    0.000000000000   |     0.434712906463
+  0.000000000000    0.000000000000    0.000000000000   |     0.427190396335
+  0.000000000000    0.000000000000    0.000000000000   |     0.398486542238
+  0.000000000000    0.000000000000    0.000000000000   |     0.427190396335
+  0.000000000000    0.000000000000    0.000000000000   |     0.398486542238
+  0.000000000000    0.000000000000    0.000000000000   |     0.482786100221
+  0.000000000000    0.000000000000    0.000000000000   |     0.434721412582
+  0.000000000000    0.000000000000    0.000000000000   |     0.426980331539
+  0.000000000000    0.000000000000    0.000000000000   |     0.398500729561
+----------------------------------------------------------------------------------------------------
+  0.000000000000    0.000000000000    0.000000000000   |    15.725895613051 &lt;- sum
+                                          maximal spread =   1.496718346372
+standard deviation = 0.003320526934782148
+####################################################################################################
+####################################################################################################
+Iteration 7 (from wannierizer)
+----------------------------------------------------------------------------------------------------
+wannier centers and spreads
+----------------------------------------------------------------------------------------------------
+  0.000000000000    0.000000000000    0.000000000000   |     1.347313343498
+  0.000000000000    0.000000000000    0.000000000000   |     1.401242434446
+  0.000000000000    0.000000000000    0.000000000000   |     1.393323810881
+  0.000000000000    0.000000000000    0.000000000000   |     1.496694572446
+  0.000000000000    0.000000000000    0.000000000000   |     1.392250090838
+  0.000000000000    0.000000000000    0.000000000000   |     1.496895935169
+  0.000000000000    0.000000000000    0.000000000000   |     1.392250090838
+  0.000000000000    0.000000000000    0.000000000000   |     1.496895935169
+  0.000000000000    0.000000000000    0.000000000000   |     0.482542648770
+  0.000000000000    0.000000000000    0.000000000000   |     0.434710215313
+  0.000000000000    0.000000000000    0.000000000000   |     0.426901684004
+  0.000000000000    0.000000000000    0.000000000000   |     0.398558407703
+  0.000000000000    0.000000000000    0.000000000000   |     0.426901684004
+  0.000000000000    0.000000000000    0.000000000000   |     0.398558407703
+  0.000000000000    0.000000000000    0.000000000000   |     0.482581762601
+  0.000000000000    0.000000000000    0.000000000000   |     0.434717885782
+  0.000000000000    0.000000000000    0.000000000000   |     0.426718296302
+  0.000000000000    0.000000000000    0.000000000000   |     0.398571712623
+----------------------------------------------------------------------------------------------------
+  0.000000000000    0.000000000000    0.000000000000   |    15.727628918091 &lt;- sum
+                                          maximal spread =   1.496895935169
+standard deviation = 0.002670715728483146
+####################################################################################################
+####################################################################################################
+Iteration 8 (from wannierizer)
+----------------------------------------------------------------------------------------------------
+wannier centers and spreads
+----------------------------------------------------------------------------------------------------
+  0.000000000000    0.000000000000    0.000000000000   |     1.349279441734
+  0.000000000000    0.000000000000    0.000000000000   |     1.400811780016
+  0.000000000000    0.000000000000    0.000000000000   |     1.393479174310
+  0.000000000000    0.000000000000    0.000000000000   |     1.496866989060
+  0.000000000000    0.000000000000    0.000000000000   |     1.392540866483
+  0.000000000000    0.000000000000    0.000000000000   |     1.497033294669
+  0.000000000000    0.000000000000    0.000000000000   |     1.392540866483
+  0.000000000000    0.000000000000    0.000000000000   |     1.497033294669
+  0.000000000000    0.000000000000    0.000000000000   |     0.482414983342
+  0.000000000000    0.000000000000    0.000000000000   |     0.434708233408
+  0.000000000000    0.000000000000    0.000000000000   |     0.426766064154
+  0.000000000000    0.000000000000    0.000000000000   |     0.398623282569
+  0.000000000000    0.000000000000    0.000000000000   |     0.426766064154
+  0.000000000000    0.000000000000    0.000000000000   |     0.398623282569
+  0.000000000000    0.000000000000    0.000000000000   |     0.482452304937
+  0.000000000000    0.000000000000    0.000000000000   |     0.434714966708
+  0.000000000000    0.000000000000    0.000000000000   |     0.426607426650
+  0.000000000000    0.000000000000    0.000000000000   |     0.398635780273
+----------------------------------------------------------------------------------------------------
+  0.000000000000    0.000000000000    0.000000000000   |    15.729898096187 &lt;- sum
+                                          maximal spread =   1.497033294669
+standard deviation = 0.0019562225180870824
+####################################################################################################
+####################################################################################################
+Iteration 9 (from wannierizer)
+----------------------------------------------------------------------------------------------------
+wannier centers and spreads
+----------------------------------------------------------------------------------------------------
+  0.000000000000    0.000000000000    0.000000000000   |     1.350617224491
+  0.000000000000    0.000000000000    0.000000000000   |     1.400610048647
+  0.000000000000    0.000000000000    0.000000000000   |     1.393612120407
+  0.000000000000    0.000000000000    0.000000000000   |     1.496976670894
+  0.000000000000    0.000000000000    0.000000000000   |     1.392792240369
+  0.000000000000    0.000000000000    0.000000000000   |     1.497112775284
+  0.000000000000    0.000000000000    0.000000000000   |     1.392792240369
+  0.000000000000    0.000000000000    0.000000000000   |     1.497112775284
+  0.000000000000    0.000000000000    0.000000000000   |     0.482332924427
+  0.000000000000    0.000000000000    0.000000000000   |     0.434706432629
+  0.000000000000    0.000000000000    0.000000000000   |     0.426705768816
+  0.000000000000    0.000000000000    0.000000000000   |     0.398674481755
+  0.000000000000    0.000000000000    0.000000000000   |     0.426705768816
+  0.000000000000    0.000000000000    0.000000000000   |     0.398674481755
+  0.000000000000    0.000000000000    0.000000000000   |     0.482368705362
+  0.000000000000    0.000000000000    0.000000000000   |     0.434712252824
+  0.000000000000    0.000000000000    0.000000000000   |     0.426568704167
+  0.000000000000    0.000000000000    0.000000000000   |     0.398686278371
+----------------------------------------------------------------------------------------------------
+  0.000000000000    0.000000000000    0.000000000000   |    15.731761894667 &lt;- sum
+                                          maximal spread =   1.497112775284
+standard deviation = 0.0013569096669656753
+####################################################################################################
+####################################################################################################
+Final state (from wannierizer)
+----------------------------------------------------------------------------------------------------
+wannier centers and spreads
+----------------------------------------------------------------------------------------------------
+  0.000000000000    0.000000000000    0.000000000000   |     1.350617224491
+  0.000000000000    0.000000000000    0.000000000000   |     1.400610048647
+  0.000000000000    0.000000000000    0.000000000000   |     1.393612120407
+  0.000000000000    0.000000000000    0.000000000000   |     1.496976670894
+  0.000000000000    0.000000000000    0.000000000000   |     1.392792240369
+  0.000000000000    0.000000000000    0.000000000000   |     1.497112775284
+  0.000000000000    0.000000000000    0.000000000000   |     1.392792240369
+  0.000000000000    0.000000000000    0.000000000000   |     1.497112775284
+  0.000000000000    0.000000000000    0.000000000000   |     0.482332924427
+  0.000000000000    0.000000000000    0.000000000000   |     0.434706432629
+  0.000000000000    0.000000000000    0.000000000000   |     0.426705768816
+  0.000000000000    0.000000000000    0.000000000000   |     0.398674481755
+  0.000000000000    0.000000000000    0.000000000000   |     0.426705768816
+  0.000000000000    0.000000000000    0.000000000000   |     0.398674481755
+  0.000000000000    0.000000000000    0.000000000000   |     0.482368705362
+  0.000000000000    0.000000000000    0.000000000000   |     0.434712252824
+  0.000000000000    0.000000000000    0.000000000000   |     0.426568704167
+  0.000000000000    0.000000000000    0.000000000000   |     0.398686278371
+----------------------------------------------------------------------------------------------------
+  0.000000000000    0.000000000000    0.000000000000   |    15.731761894667 &lt;- sum
+                                          maximal spread =   1.497112775284
+standard deviation = 0.0013569096669656753
+####################################################################################################
+####################################################################################################
+Final state (from chk)
+----------------------------------------------------------------------------------------------------
+wannier centers and spreads
+----------------------------------------------------------------------------------------------------
+ -0.000000000054    0.000000000318   -0.000000000190   |     1.351142720401
+  0.000000000052    0.000000000217   -0.000000000010   |     1.400541083688
+ -0.000000000215    0.000000003312   -0.000000000530   |     1.393657762055
+  0.000000000049    0.000000002885   -0.000000000026   |     1.497016529980
+ -0.000000000175    0.000000000866   -0.000000001458   |     1.392889669654
+  0.000000000205    0.000000002866   -0.000000000311   |     1.497138573376
+  0.000000000211    0.000000000183    0.000000000532   |     1.392889669378
+  0.000000000384    0.000000000091    0.000000000654   |     1.497138573775
+ -0.000000000006    0.000000000076   -0.000000000041   |     0.482300373174
+ -0.000000000006    0.000000000056    0.000000000006   |     0.434705551852
+ -0.000000000025    0.000000000253    0.000000000005   |     0.426685444150
+ -0.000000000012    0.000000000289   -0.000000000004   |     0.398695745674
+ -0.000000000002   -0.000000000001   -0.000000000024   |     0.426685444137
+  0.000000000004    0.000000000007    0.000000000001   |     0.398695745683
+  0.000000000022    0.000000000137   -0.000000000001   |     0.482335406015
+  0.000000000007    0.000000000180    0.000000000002   |     0.434710946105
+  0.000000000003    0.000000000011   -0.000000000061   |     0.426558526105
+ -0.000000000000   -0.000000000014    0.000000000009   |     0.398707218154
+----------------------------------------------------------------------------------------------------
+  0.000000000442    0.000000011733   -0.000000001450   |    15.732494983356 &lt;- sum
+                                          maximal spread =   1.497138573775
+####################################################################################################
+time for creating wannierizer 0.3021097183227539
+time for iterations 0.4940640926361084
+time for updating 0.3911716938018799
+total time for wannierization 4.156568288803101
+saving to ./pwscf/Fe.chk :
+</pre></div></div>
+</div>
+</section>
+<section id="9.-Create-System_w90-object">
+<h2>9. Create System_w90 object<a class="headerlink" href="#9.-Create-System_w90-object" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span>system = wb.system.System_w90(w90data= w90data, berry=True, transl_inv_JM=True,
+                                  symmetrize=True)
+
+# optionally - save it for later use
+system.save_npz(&quot;Fe_system&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+setting Rvec
+setting AA..
+setting AA - OK
+recentering JM - OK
+Real-space lattice:
+ [[ 1.4349963  1.4349963  1.4349963]
+ [-1.4349963  1.4349963  1.4349963]
+ [-1.4349963 -1.4349963  1.4349963]]
+Number of wannier functions: 18
+Number of R points: 89
+Recommended size of FFT grid [4 4 4]
+saving system of class System_w90 to Fe_system
+ properties: [&#39;num_wann&#39;, &#39;real_lattice&#39;, &#39;iRvec&#39;, &#39;periodic&#39;, &#39;is_phonon&#39;, &#39;wannier_centers_cart&#39;, &#39;pointgroup&#39;]
+saving num_wann
+saving num_wann to Fe_system/num_wann.npz
+ - Ok!
+saving real_lattice
+saving real_lattice to Fe_system/real_lattice.npz
+ - Ok!
+saving iRvec
+saving iRvec to Fe_system/iRvec.npz
+ - Ok!
+saving periodic
+saving periodic to Fe_system/periodic.npz
+ - Ok!
+saving is_phonon
+saving is_phonon to Fe_system/is_phonon.npz
+ - Ok!
+saving wannier_centers_cart
+saving wannier_centers_cart to Fe_system/wannier_centers_cart.npz
+ - Ok!
+saving pointgroup
+saving pointgroup to Fe_system/pointgroup.npz
+ - Ok!
+saving Ham - Ok!
+saving AA - Ok!
+</pre></div></div>
+</div>
+</section>
+<section id="8.-Bands-along-path">
+<h2>8. Bands along path<a class="headerlink" href="#8.-Bands-along-path" title="Link to this heading"></a></h2>
+<section id="8.1-calculate-bands">
+<h3>8.1 calculate bands<a class="headerlink" href="#8.1-calculate-bands" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># all kpoints given in reduced coordinates
+path=wb.Path(system,
+                nodes=[
+                    [0.0000, 0.0000, 0.0000 ],   #  G
+                    [0.500 ,-0.5000, -0.5000],   #  H
+                    [0.7500, 0.2500, -0.2500],   #  P
+                    [0.5000, 0.0000, -0.5000],   #  N
+                    [0.0000, 0.0000, 0.000  ]
+                        ] , #  G
+                labels=[&quot;G&quot;,&quot;H&quot;,&quot;P&quot;,&quot;N&quot;,&quot;G&quot;],
+                length=200 )   # length [ Ang] ~= 2*pi/dk
+
+bands_path=wb.evaluate_k_path(system, path=path)
+<br/><br/></pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-red-intense-fg ansi-bold">Starting run()</span>
+<span class="ansi-cyan-intense-fg ansi-bold">Using the follwing calculators :
+############################################################
+</span>
+<span class="ansi-magenta-intense-fg ansi-bold"> &#39;tabulate&#39; </span> : <span class="ansi-yellow-intense-fg ansi-bold"> &lt;wannierberri.calculators.tabulate.TabulatorAll object at 0x7799b64d3830&gt; </span> :
+    TabulatorAll - a pack of all k-resolved calculators (Tabulators)
+
+ Includes the following tabulators :
+--------------------------------------------------
+ &#34;Energy&#34; : &lt;wannierberri.calculators.tabulate.Energy object at 0x7796c49ab1d0&gt; : calculator not described
+
+--------------------------------------------------
+
+<span class="ansi-cyan-intense-fg ansi-bold">############################################################</span>
+Calculation along a path - checking calculators for compatibility
+tabulate &lt;wannierberri.calculators.tabulate.TabulatorAll object at 0x7799b64d3830&gt;
+All calculators are compatible
+Symmetrization switched off for Path
+Grid is regular
+The set of k points is a Path() with 215 points and labels {0: &#39;G&#39;, 70: &#39;H&#39;, 130: &#39;P&#39;, 165: &#39;N&#39;, 214: &#39;G&#39;}
+generating K_list
+Done
+Done, sum of weights:215.0
+
+############################################################
+Iteration 0 out of 0
+processing 215 K points : using  8 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/home/stepan/github/wannier-berri-work/wannier-berri-soc-nscf/wannierberri/grid/path.py:165: UserWarning: symmetry is not used for a tabulation along path
+  warnings.warn(&#34;symmetry is not used for a tabulation along path&#34;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+time for processing    215 K-points on   8 processes:     2.2960 ; per K-point          0.0107 ; proc-sec per K-point          0.0854
+time1 =  0.008922338485717773
+Totally processed 215 K-points
+run() finished
+</pre></div></div>
+</div>
+</section>
+<section id="8.2-plot-bands">
+<h3>8.2 plot bands<a class="headerlink" href="#8.2-plot-bands" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span># plot the bands and compare with pw
+# EF = 12
+
+A = np.loadtxt(&quot;./pwscf/Fe_bands_pw.dat&quot;)
+bohr_ang = scipy.constants.physical_constants[&#39;Bohr radius&#39;][0] / 1e-10
+alatt = 5.4235* bohr_ang
+A[:,0]*= 2*np.pi/alatt
+A[:,1] = A[:,1]
+plt.scatter(A[:,0], A[:,1], c=&quot;black&quot;, s=5)
+
+
+
+bands_path.plot_path_fat(path,
+                quantity=None,
+                # save_file=&quot;Fe_bands.pdf&quot;,
+                Eshift=0,
+                Emin=-10, Emax=50,
+                iband=None,
+                mode=&quot;fatband&quot;,
+                fatfactor=20,
+                cut_k=False,
+                linecolor=&quot;red&quot;,
+                close_fig=False,
+                show_fig=False,
+                label=f&quot;WB&quot;
+                )
+
+plt.ylim(4, 40)
+plt.hlines(froz_max, 0, A[-1,0], linestyles=&quot;dashed&quot;, label=&quot;frozen window&quot;, color=&quot;black&quot;)
+plt.hlines(12.6, 0, A[-1,0], linestyles=&quot;dashed&quot;, label=&quot;Fermi level&quot;, color=&quot;green&quot;)
+plt.legend()
+plt.savefig(&quot;Fe_bands.pdf&quot;)
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_build/.doctrees/nbsphinx/tutorials_6_wannierisation_wannierise-old_20_0.png" src="../../_build/.doctrees/nbsphinx/tutorials_6_wannierisation_wannierise-old_20_0.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="9.-AHC-and-Ohmic-conductivity">
+<h2>9. AHC and Ohmic conductivity<a class="headerlink" href="#9.-AHC-and-Ohmic-conductivity" title="Link to this heading"></a></h2>
+<section id="9.1-calculate">
+<h3>9.1 calculate<a class="headerlink" href="#9.1-calculate" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>results_grid = {}
+efermi = np.linspace(12.4,12.8,1001)
+param = dict(Efermi=efermi)
+calculators_grid = {
+     &quot;CDOS&quot;: wb.calculators.static.CumDOS(**param),
+                &quot;ohmic&quot;: wb.calculators.static.Ohmic_FermiSea(**param),
+                &quot;ahc_internal&quot;: wb.calculators.static.AHC(kwargs_formula={&quot;external_terms&quot;:False}, **param),
+            &quot;ahc_external&quot;: wb.calculators.static.AHC(kwargs_formula={&quot;internal_terms&quot;:False}, **param ),
+}
+
+grid =  wb.Grid(system, NKFFT=6, NK=48)
+
+result_grid = wb.run(system,
+                     grid,
+                     calculators_grid,
+                    fout_name=&quot;Fe_grid&quot;,
+                    adpt_num_iter=0,
+                    symmetrize=False,  # we do not symmetrize here so that we can chaeck how symmetric are the WFs
+                    use_irred_kpt=False,
+                    print_progress_step=1,
+                    print_Kpoints=False,
+                    )
+
+
+# plot the bands to compare with pw
+<br/><br/><br/><br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-red-intense-fg ansi-bold">Starting run()</span>
+<span class="ansi-cyan-intense-fg ansi-bold">Using the follwing calculators :
+############################################################
+</span>
+<span class="ansi-magenta-intense-fg ansi-bold"> &#39;CDOS&#39; </span> : <span class="ansi-yellow-intense-fg ansi-bold"> &lt;wannierberri.calculators.static.CumDOS object at 0x7797361b9820&gt; </span> : Cumulative density of states
+<span class="ansi-magenta-intense-fg ansi-bold"> &#39;ohmic&#39; </span> : <span class="ansi-yellow-intense-fg ansi-bold"> &lt;wannierberri.calculators.static.Ohmic_FermiSea object at 0x7797361ba6f0&gt; </span> : Ohmic conductivity (:math:`S/m`)
+
+        | With Fermi sea integral. Eq(31) in `Ref &lt;https://www.nature.com/articles/s41524-021-00498-5&gt;`__
+        | Output: :math:`\sigma_{\alpha\beta} = e^2/\hbar \tau \int [dk] \partial_\beta v_\alpha f`for \tau=1fs| Instruction: :math:`j_\alpha = \sigma_{\alpha\beta} E_\beta`
+<span class="ansi-magenta-intense-fg ansi-bold"> &#39;ahc_internal&#39; </span> : <span class="ansi-yellow-intense-fg ansi-bold"> &lt;wannierberri.calculators.static.AHC object at 0x7797361bbfb0&gt; </span> : Anomalous Hall conductivity (:math:`s^3 \cdot A^2 / (kg \cdot m^3) = S/m`)
+
+        | With Fermi sea integral Eq(11) in `Ref &lt;https://www.nature.com/articles/s41524-021-00498-5&gt;`__
+        | Output: :math:`O = -e^2/\hbar \int [dk] \Omega f`
+        | Instruction: :math:`j_\alpha = \sigma_{\alpha\beta} E_\beta = \epsilon_{\alpha\beta\delta} O_\delta E_\beta`
+<span class="ansi-magenta-intense-fg ansi-bold"> &#39;ahc_external&#39; </span> : <span class="ansi-yellow-intense-fg ansi-bold"> &lt;wannierberri.calculators.static.AHC object at 0x7797361bac60&gt; </span> : Anomalous Hall conductivity (:math:`s^3 \cdot A^2 / (kg \cdot m^3) = S/m`)
+
+        | With Fermi sea integral Eq(11) in `Ref &lt;https://www.nature.com/articles/s41524-021-00498-5&gt;`__
+        | Output: :math:`O = -e^2/\hbar \int [dk] \Omega f`
+        | Instruction: :math:`j_\alpha = \sigma_{\alpha\beta} E_\beta = \epsilon_{\alpha\beta\delta} O_\delta E_\beta`
+<span class="ansi-cyan-intense-fg ansi-bold">############################################################</span>
+Calculation on  grid - checking calculators for compatibility
+CDOS &lt;wannierberri.calculators.static.CumDOS object at 0x7797361b9820&gt;
+ohmic &lt;wannierberri.calculators.static.Ohmic_FermiSea object at 0x7797361ba6f0&gt;
+ahc_internal &lt;wannierberri.calculators.static.AHC object at 0x7797361bbfb0&gt;
+ahc_external &lt;wannierberri.calculators.static.AHC object at 0x7797361bac60&gt;
+All calculators are compatible
+Grid is regular
+The set of k points is a Grid() with NKdiv=[8 8 8], NKFFT=[6 6 6], NKtot=[48 48 48]
+generating K_list
+Done in 0.0033354759216308594 s
+K_list contains 512 Irreducible points(100.0%) out of initial 8x8x8=512 grid
+Done, sum of weights:1.0
+
+############################################################
+Iteration 0 out of 0
+processing 512 K points : using  8 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+                   8              1.1                  68.4                  69.5
+                  24              2.8                  56.2                  58.9
+                  40              4.0                  47.1                  51.1
+                  56              5.6                  45.8                  51.4
+                  72              7.2                  43.9                  51.1
+                  88              8.7                  42.1                  50.8
+                 104             10.4                  40.7                  51.1
+                 120             11.9                  38.9                  50.8
+                 136             13.4                  37.1                  50.5
+                 152             15.0                  35.6                  50.7
+                 168             16.6                  34.0                  50.6
+                 184             18.1                  32.3                  50.4
+                 200             20.0                  31.1                  51.1
+                 216             21.3                  29.2                  50.6
+                 232             23.2                  28.1                  51.3
+                 248             24.7                  26.3                  50.9
+                 264             26.2                  24.6                  50.8
+                 280             27.9                  23.1                  51.0
+                 296             29.5                  21.5                  51.0
+                 312             31.2                  20.0                  51.2
+                 328             32.7                  18.3                  51.0
+                 336             33.7                  17.6                  51.3
+                 344             34.7                  16.9                  51.7
+                 360             36.3                  15.3                  51.6
+                 376             37.8                  13.7                  51.5
+                 392             39.3                  12.0                  51.3
+                 408             41.0                  10.5                  51.5
+                 424             42.7                   8.9                  51.5
+                 440             44.2                   7.2                  51.4
+                 456             45.7                   5.6                  51.3
+                 472             47.6                   4.0                  51.7
+                 488             49.3                   2.4                  51.8
+                 504             50.7                   0.8                  51.5
+time for processing    512 K-points on   8 processes:    51.6142 ; per K-point          0.1008 ; proc-sec per K-point          0.8065
+time1 =  0.08094215393066406
+Totally processed 512 K-points
+run() finished
+</pre></div></div>
+</div>
+</section>
+<section id="5.2-Plot">
+<h3>5.2 Plot<a class="headerlink" href="#5.2-Plot" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def plotxyz(axes, x, data, pre = &quot;&quot;, label=&quot;&quot;,ls=&quot;-&quot;):
+    for i in range(3):
+        ax =axes[i]
+        ax.plot(x, data[:,i], ls, label=label)
+        ax.set_title(f&quot;{pre}{&#39;xyz&#39;[i]}&quot;)
+
+
+
+quantities =  [&quot;ahc_internal&quot;, &quot;ahc_external&quot;,&quot;ohmic&quot;]
+
+nfig = len(quantities)
+for quantity in quantities:
+    fig = None
+    res = result_grid.results[quantity]
+    data = res.data
+    E = res.Energies[0]
+    if fig is None:
+        if data.ndim == 2:
+            nfigx = 1
+            nfigy = data.shape[1]
+        elif data.ndim == 3:
+            nfigx = data.shape[1]
+            nfigy = data.shape[2]
+        fig, axes = plt.subplots(nfigx, nfigy, figsize=(5*nfigy,5*nfigx))
+    if nfigx ==1:
+        plotxyz(axes, E, data)
+    else:
+        for i in range(nfigx):
+            plotxyz(axes[i], E, data[:,i], pre=&quot;xyz&quot;[i], )
+    for ax in axes.flat:
+        ax.legend()
+    fig.suptitle(quantity)
+    plt.show()
+    plt.close()
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/tmp/ipykernel_144042/1474735278.py:31: UserWarning: No artists with labels found to put in legend.  Note that artists whose label start with an underscore are ignored when legend() is called with no argument.
+  ax.legend()
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_build/.doctrees/nbsphinx/tutorials_6_wannierisation_wannierise-old_24_1.png" src="../../_build/.doctrees/nbsphinx/tutorials_6_wannierisation_wannierise-old_24_1.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_build/.doctrees/nbsphinx/tutorials_6_wannierisation_wannierise-old_24_2.png" src="../../_build/.doctrees/nbsphinx/tutorials_6_wannierisation_wannierise-old_24_2.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_build/.doctrees/nbsphinx/tutorials_6_wannierisation_wannierise-old_24_3.png" src="../../_build/.doctrees/nbsphinx/tutorials_6_wannierisation_wannierise-old_24_3.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Stepan Tsirkin.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

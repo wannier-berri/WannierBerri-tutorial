@@ -1,0 +1,388 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DIY tutorial &mdash; Wannier Berri 1.8.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/style.css?v=88c5e859" />
+      <link rel="stylesheet" type="text/css" href="../../_static/nbsphinx-code-cells.css?v=2aa19091" />
+
+  
+    <link rel="shortcut icon" href="../../_static/WB-logo.ico"/>
+    <link rel="canonical" href="https://tutorial.wannier-berri.org/tutorials/4_DIY/tutorial-wb-DIY.html" />
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=b51e6972"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within Wannier Berri 1.8.0 documentation"
+          href="../../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #009C46" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/tutorial.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+    
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../1_basic/tutorial-wb-basic-solution.html">Basic tutorial: Interpolating bands, Berry curvatures, and integrating them</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2_fermi_sea_vs_fermi_surface/solution/tutorial_sea_vs_surface_solution.html">WannierBerri advanced tutorial - Fermi surface and Fermi sea calculation of the Berry curvature dipole</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3_spin_hall/solution/tutorial_spin_hall.html">Spin Hall conductivity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial-wb-DIY-solution.html">DIY tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../5_symmetrization/tutorial_symmetrization-solution.html">Symmetrization of Wannier Hamiltonian and matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../6_wannierisation/wannierise.html">Wannierisation (including SAWF)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../7_find_projections/find_projections.html">Finding initial projections based on symmetry indicators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../8_GPAW/1.diamond/diamond.html">GPAW + WannierBerri: spinless bandstructure (diamond)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../8_GPAW/2.Fe/bccFe.html">GPAW + WannierBerri: Magnetism and spin-orbit coupling (bcc Fe)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../8_GPAW/3.MnTe/mnte.html">GPAW + WannierBerri: Altermagnet MnTe</a></li>
+</ul>
+
+    <a href="genindex.html">Index</a>
+    <a href="http://wannier-berri.org">Back to Wannier-Berri.org</a>
+  
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #009C46" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Wannier Berri</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">DIY tutorial</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="DIY-tutorial">
+<h1>DIY tutorial<a class="headerlink" href="#DIY-tutorial" title="Link to this heading"></a></h1>
+<p>As we learned from the basic tutorial, in WannierBerri calculations are done by <code class="docutils literal notranslate"><span class="pre">`Calculator</span></code> &lt;<a class="reference external" href="https://wannier-berri.org/docs/calculators.html#wannierberri.calculators.Calculator">https://wannier-berri.org/docs/calculators.html#wannierberri.calculators.Calculator</a>&gt;`__s. In this tutorial we will se how to create our own calculators.</p>
+<p>As an example let’s consider anomalous Nernst conductivity (<a class="reference external" href="https://doi.org/10.1103/PhysRevLett.97.026603">Xiao et al. 2006</a> ). In the zero-temperature limit <span class="math notranslate nohighlight">\(\alpha_{\alpha\beta}^{\rm ANE}\)</span> may be obtained from AHC <span class="math notranslate nohighlight">\(\sigma_{\alpha\beta}(\epsilon)^{\rm AHE}\)</span> evaluated over a dense grid of Fermi levels <span class="math notranslate nohighlight">\(\epsilon\)</span></p>
+<div class="math notranslate nohighlight">
+\[\alpha_{\alpha\beta}^{\rm ANE}=-\frac{1}{e}\int d\varepsilon \frac{\partial f}{\partial\varepsilon}\sigma_{\alpha\beta}(\varepsilon)\frac{\varepsilon-\mu}{T}, \label{eq:ane} \tag{1}\]</div>
+<p>where <span class="math notranslate nohighlight">\(f(\varepsilon)=1/\left(1+e^\frac{\varepsilon-\mu}{k_{\rm B}T}\right)\)</span> and the AHC is defined as a Fermi-sea integral of Berry curvature</p>
+<p><span class="math">\begin{equation}
+\sigma^{\rm AHC}_{xy} = -\frac{e^2}{\hbar} \sum_n \int\frac{d\mathbf{k}}{(2\pi)^3} \Omega^n_\gamma f(\epsilon_n)
+\label{eq:ahc}\tag{2}
+\end{equation}</span></p>
+<p>In the zero-temperature limit it reduced to</p>
+<div class="math notranslate nohighlight">
+\[\alpha_{\alpha\beta}^{\rm ANE} \propto \frac{\partial \sigma_{\alpha\beta}(\varepsilon)}{\partial \varepsilon}
+\propto \int\frac{d\mathbf{k}}{(2\pi)^3} \Omega^n_\gamma f'(\epsilon_n) \tag{3}\label{eq:ane-ahc}\]</div>
+<p>Where we omit the dimensional factor for simplicity.</p>
+<p><strong>Thus, there are two ways of calculating ANE</strong> :</p>
+<ul class="simple">
+<li><p>via eq (<span class="math">\ref{eq:ane-ahc}</span>)</p></li>
+<li><p>via eq (<span class="math">\ref{eq:ane}</span>)</p></li>
+</ul>
+<p>let’s try eq (<span class="math">\ref{eq:ane-ahc}</span>) first, because AHC is already implemented</p>
+<p><strong>Warning</strong> : this is an advanced tutorial. You something may not work from first try, you need to work with documentation to resolve the problem, but do not hesitate to ask the TA if you cannot.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Preliminary
+
+# Set environment variables - not mandatory but recommended if you use Parallel()
+#import os
+#os.environ[&#39;OPENBLAS_NUM_THREADS&#39;] = &#39;1&#39;
+#os.environ[&#39;MKL_NUM_THREADS&#39;] = &#39;1&#39;
+
+
+import wannierberri as wberri
+import wannierberri.models
+print (f&quot;Using WannierBerri version {wberri.__version__}&quot;)
+import numpy as np
+import scipy
+import matplotlib.pyplot as plt
+from termcolor import cprint
+
+#  This block is needed if you run this cell for a second time
+#  because one cannot initiate two parallel environments at a time
+try:
+    parallel.shutdown()
+except NameError:
+    pass
+
+# Chiose one of the options:
+
+parallel = wberri.Parallel(num_cpus=2)
+#parallel = wberri.Parallel()  # automatic detection
+#parallel = wberri.Serial()
+<br/><br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-yellow-fg">(raylet)</span> [2025-05-14 15:05:13,707 E 19593 19593] (raylet) node_manager.cc:3287: 2 Workers (tasks / actors) killed due to memory pressure (OOM), 0 Workers crashed due to other reasons at node (ID: a50d1b0ff1cffb7b68998dce67d9b9b86395a84be7f266f77d774876, IP: 128.179.188.185) over the last time period. To see more information about the Workers killed on this node, use `ray logs raylet.out -ip 128.179.188.185`
+<span class="ansi-yellow-fg">(raylet)</span>
+<span class="ansi-yellow-fg">(raylet)</span> Refer to the documentation on how to address the out of memory issue: https://docs.ray.io/en/latest/ray-core/scheduling/ray-oom-prevention.html. Consider provisioning more memory on this node or reducing task parallelism by requesting more CPUs per task. To adjust the kill threshold, set the environment variable `RAY_memory_usage_threshold` when starting Ray. To disable worker killing, set the environment variable `RAY_memory_monitor_refresh_ms` to zero.
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Instead of Wannier functions, we work with a Hlldane model here https://wannier-berri.org/docs/models.html
+
+model=wberri.models.Haldane_ptb()
+system = wberri.System_PythTB(model)
+<br/></pre></div>
+</div>
+</div>
+<section id="anomalous-Hall-conductivity">
+<h2>anomalous Hall conductivity<a class="headerlink" href="#anomalous-Hall-conductivity" title="Link to this heading"></a></h2>
+<p>Now, let’s evaluate the AHC on a grid of Ef-points, and then take a derivtive</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>calculators = {}
+Efermi = np.linspace(-3,3,21)
+# Set a grid
+grid = wberri.Grid(system, length=30 )   # length [ Ang] ~= 2*pi/dk
+
+calculators [&quot;ahc&quot;] = wberri.calculators.static.AHC(Efermi=Efermi,
+                                                    tetra=True,
+                                                    constant_factor=1,
+                                                    kwargs_formula={&quot;external_terms&quot;:False})
+
+result_run_ahc = wberri.run(system,
+            grid=grid,
+            calculators = calculators,
+            parallel=parallel,
+            adpt_num_iter=0,
+            fout_name=&#39;Fe&#39;,
+            restart=False,
+            file_Klist=&quot;Klist_ahc.pickle&quot;,  # needed to restart a calculation in future
+            print_Kpoints=False
+            )
+<br/><br/><br/></pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>!ls
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># taking derivative and plotting
+
+ef = result_run_ahc.results[&quot;ahc&quot;].Energies[0]
+ahc_z = result_run_ahc.results[&quot;ahc&quot;].data[:,2]
+
+# take the derivative
+d_ef=ef[1]-ef[0]
+d_ahc_z = (ahc_z[1:]-ahc_z[:-1])/d_ef
+efnew = (ef[1:]+ef[:-1])/2
+
+plt.plot(efnew, d_ahc_z)
+<br/><br/><br/><br/><br/></pre></div>
+</div>
+</div>
+</section>
+<section id="Look-into-documentation">
+<h2>Look into documentation<a class="headerlink" href="#Look-into-documentation" title="Link to this heading"></a></h2>
+<p>Look into documentation to see how the AHC calculator is defined : look for “Calculator” on <a class="reference external" href="https://docs.wannier-berri.org">https://docs.wannier-berri.org</a> and press the “source” link.</p>
+<p>One can see that it is based on the StaticCalculator, and only redefines the <code class="docutils literal notranslate"><span class="pre">__init__</span></code> method. Namely, it redefines formula that stands under the integral (Berry curvature) and <code class="docutils literal notranslate"><span class="pre">fder=0</span></code> meaning that the formula is weighted by the 0th derivative of the Fermi distribution.</p>
+<p>copy the definition of AHC calculator and redefine the and below and define the <strong>init</strong> class</p>
+<p>(hint : leave the factor the same, for simplicity) (hint : formula shouldbe imported from wannierberri.formula.covariant.DerOmega )</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from wannierberri.calculators.static import StaticCalculator
+from wannierberri.formula.covariant import Omega
+from wannierberri import factors
+
+
+class ANC(StaticCalculator):
+    r&quot;&quot;&quot;Anomalous Nernst conductivity
+
+        | Output: :math:`O = \int [dk] \Omega f&#39; `
+        &quot;&quot;&quot;
+
+    def __init__(self,
+                 constant_factor=1, # Figure out the pre-factor yourself
+                 **kwargs):
+    ...
+</pre></div>
+</div>
+</div>
+<section id="Evaluate-ANE-using-the-new-calculator-and-plot-the-result">
+<h3>Evaluate ANE using the new calculator and plot the result<a class="headerlink" href="#Evaluate-ANE-using-the-new-calculator-and-plot-the-result" title="Link to this heading"></a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># insert the needed code below
+
+calculators = {}
+# Set a grid
+grid = wberri.Grid(system, length=50 )   # length [ Ang] ~= 2*pi/dk
+
+calculators [&quot;ane&quot;] = ANC(Efermi=Efermi,tetra=True)
+
+result_run_ane = wberri.run(system,
+            grid=grid,
+            calculators = calculators,
+            parallel=parallel,
+            adpt_num_iter=0,
+            fout_name=&#39;Fe&#39;,
+            restart=False,
+           # file_Klist=&quot;Klist_ahc.pickle&quot;  # needed to restart a calculation in future
+            )
+<br/><br/></pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span>ef = result_run_ane.results[&quot;ane&quot;].Energies[0]
+ane_z = result_run_ane.results[&quot;ane&quot;].dataSmooth[:,2]
+
+
+plt.scatter(efnew,d_ahc_z)
+plt.plot(ef, ane_z)
+plt.show()
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+<section id="Questions:">
+<h2>Questions:<a class="headerlink" href="#Questions:" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>Make the k-points or Efermi denser. Will the agreement improve?</p></li>
+<li><p>we calculated the AHC and ANE with zero refinement iterations, and the results matched well (or at least they should). If we calculate them separately, but with some refinement iterations, will the results match?</p></li>
+<li><p>What if we use refinement itrations and run the two calculations together, in one <code class="docutils literal notranslate"><span class="pre">run()</span></code> call ?</p></li>
+</ol>
+</section>
+<section id="FormulaProduct">
+<h2>FormulaProduct<a class="headerlink" href="#FormulaProduct" title="Link to this heading"></a></h2>
+<p>Look at the definition of erryDipole_FermiSurf</p>
+<p><a class="reference external" href="https://wannier-berri.org/_modules/wannierberri/calculators/static.html">https://wannier-berri.org/_modules/wannierberri/calculators/static.html</a></p>
+<p>It evaluates</p>
+<p><span class="math">\begin{equation}
+D_{ab} =\sum_n \int\frac{d\mathbf{k}}{(2\pi)^3} v_a\Omega^n_b f(\epsilon_n)
+\label{eq:ahc}\tag{2}
+\end{equation}</span></p>
+<p>also look at definition of the Feormula <a class="reference external" href="https://wannier-berri.org/docs/formula.html">https://wannier-berri.org/docs/formula.html</a></p>
+<p>you can see that it is base on a FormulaProduct. Essentially, by analogy you may define any tensor, e.g.</p>
+<div class="math notranslate nohighlight">
+\[\sum_n \int\frac{d\mathbf{k}}{(2\pi)^3} v_a\Omega^n_b v_c f''(\epsilon_n)\]</div>
+<p>i.e. product of several quantities weighted by rge second derivative of Fermi distribution. You may write any analogous formula, if you want. Try to define corresponding FormulaProduct and StaticCalculator classes, and try to evaluate them.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Problem-:">
+<h2>Problem :<a class="headerlink" href="#Problem-:" title="Link to this heading"></a></h2>
+<p>try to prove (analytically and numerically) that</p>
+<div class="math notranslate nohighlight">
+\[\sum_n \int\frac{d\mathbf{k}}{(2\pi)^3} \partial_a \partial_b \partial_c \epsilon_{n\mathbf{k}} f(\epsilon_{n\mathbf{k}}) \propto \sum_n \int\frac{d\mathbf{k}}{(2\pi)^3} \partial_a \epsilon_{n\mathbf{k}}  \partial_b \epsilon_{n\mathbf{k}}  \partial_c \epsilon_{n\mathbf{k}} f''(\epsilon_{n\mathbf{k}})\]</div>
+<p>and tell me what is the factor missing?</p>
+<p>** Have fun ! **</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Stepan Tsirkin.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

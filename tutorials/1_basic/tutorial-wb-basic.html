@@ -1,0 +1,813 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Basic tutorial: Interpolating bands, Berry curvatures, and integrating them &mdash; Wannier Berri 1.8.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/style.css?v=88c5e859" />
+      <link rel="stylesheet" type="text/css" href="../../_static/nbsphinx-code-cells.css?v=2aa19091" />
+
+  
+    <link rel="shortcut icon" href="../../_static/WB-logo.ico"/>
+    <link rel="canonical" href="https://tutorial.wannier-berri.org/tutorials/1_basic/tutorial-wb-basic.html" />
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=b51e6972"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within Wannier Berri 1.8.0 documentation"
+          href="../../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #009C46" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/tutorial.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+    
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorial-wb-basic-solution.html">Basic tutorial: Interpolating bands, Berry curvatures, and integrating them</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2_fermi_sea_vs_fermi_surface/solution/tutorial_sea_vs_surface_solution.html">WannierBerri advanced tutorial - Fermi surface and Fermi sea calculation of the Berry curvature dipole</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3_spin_hall/solution/tutorial_spin_hall.html">Spin Hall conductivity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../4_DIY/tutorial-wb-DIY-solution.html">DIY tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../5_symmetrization/tutorial_symmetrization-solution.html">Symmetrization of Wannier Hamiltonian and matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../6_wannierisation/wannierise.html">Wannierisation (including SAWF)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../7_find_projections/find_projections.html">Finding initial projections based on symmetry indicators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../8_GPAW/1.diamond/diamond.html">GPAW + WannierBerri: spinless bandstructure (diamond)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../8_GPAW/2.Fe/bccFe.html">GPAW + WannierBerri: Magnetism and spin-orbit coupling (bcc Fe)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../8_GPAW/3.MnTe/mnte.html">GPAW + WannierBerri: Altermagnet MnTe</a></li>
+</ul>
+
+    <a href="genindex.html">Index</a>
+    <a href="http://wannier-berri.org">Back to Wannier-Berri.org</a>
+  
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #009C46" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Wannier Berri</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Basic tutorial: Interpolating bands, Berry curvatures, and integrating them</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="Basic-tutorial:-Interpolating-bands,-Berry-curvatures,-and-integrating-them">
+<h1>Basic tutorial: Interpolating bands, Berry curvatures, and integrating them<a class="headerlink" href="#Basic-tutorial:-Interpolating-bands,-Berry-curvatures,-and-integrating-them" title="Link to this heading"></a></h1>
+<p>In this tutorial we will see how to compute band energies, Berry curvature, spins and anomalous Hall conductivity using WannierBerri code and further integrate them over the Brillouin zone to obtain Anomalous Hall conductivity, and other quantities of interest.</p>
+<section id="Preparation-of-a-calculation:">
+<h2>Preparation of a calculation:<a class="headerlink" href="#Preparation-of-a-calculation:" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>import the needed modules</p></li>
+<li><p>initialize a <a class="reference external" href="https://wannier-berri.org/docs/parallel.html">Parallel() or Serial()</a> class</p></li>
+</ul>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Preliminary
+# Set environment variables - not mandatory but recommended if you use parallel with maximum number of CPUs
+#import os
+#os.environ[&#39;OPENBLAS_NUM_THREADS&#39;] = &#39;1&#39;
+#os.environ[&#39;MKL_NUM_THREADS&#39;] = &#39;1&#39;
+
+import ray
+ray.init(num_cpus=8)
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span>import wannierberri as wberri
+print (f&quot;Using WannierBerri version {wberri.__version__}&quot;)
+import numpy as np
+import scipy
+import matplotlib.pyplot as plt
+%matplotlib inline
+<br/><br/></pre></div>
+</div>
+</div>
+</section>
+<section id="Reading-the-system">
+<h2>Reading the system<a class="headerlink" href="#Reading-the-system" title="Link to this heading"></a></h2>
+<p>Now we need to define the system that we are working on. Wannierberri can equally work with Wannier functions obtained by Wannier90 or other code (e.g. ASE or FPLO), as well as tight-binding models. This is done by constructing a <a class="reference external" href="https://wannier-berri.org/docs/system.html">System()</a> class or one of its subclasses. Below, an example for Wannier90 is given; in advanced tutorials, some tight-binding models are also used.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Importing data from wannier90
+system=wberri.System_w90(
+                        seedname=&#39;w90_files/Fe&#39;,
+                        berry=True,   # needed to calculate &quot;external terms&quot; of Berry connection or curvature , reads &quot;.mmn&quot; file
+                        spin = True , # needed for spin properties, reads &quot;.spn&quot; file
+                        )
+
+
+# Setting the pointgroup from the symmetry operations
+import irrep
+spacegroup = irrep.spacegroup.SpaceGroup.from_cell( real_lattice=system.real_lattice,
+                                                   positions=[[0,0,0]],   # only 1 Fe atoms at origin
+                                                   typat=[1],    # atomic number is not important here
+                                                   spinor=True,
+                                                   magmom=[[0,0,1]],   # magnetic moment along z
+                                                   include_TR=True,   # include symmetries that flip the spin
+                                                )
+
+system.set_pointgroup(spacegroup=spacegroup)
+
+# generators=[&quot;Inversion&quot;,&quot;C4z&quot;,&quot;TimeReversal*C2x&quot;]
+# system.set_pointgroup(symmetry_gen=generators)
+<br/><br/></pre></div>
+</div>
+</div>
+</section>
+<section id="Interpolation-on-a-path">
+<h2>Interpolation on a path<a class="headerlink" href="#Interpolation-on-a-path" title="Link to this heading"></a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Evaluate bands, Berry curvature, and spin along a path GHPNG
+
+
+# all kpoints given in reduced coordinates
+path=wberri.Path(system,
+                 nodes=[
+        [0.0000, 0.0000, 0.0000 ],   #  G
+        [0.500 ,-0.5000, -0.5000],   #  H
+        [0.7500, 0.2500, -0.2500],   #  P
+        [0.5000, 0.0000, -0.5000],   #  N
+        [0.0000, 0.0000, 0.000  ] ] , #  G
+                 labels=[&quot;G&quot;,&quot;H&quot;,&quot;P&quot;,&quot;N&quot;,&quot;G&quot;],
+                 length=200 )   # length [ Ang] ~= 2*pi/dk
+
+# uncomment some of these lines to see what path you have generated
+
+#print (path)
+
+#print (path.getKline())
+
+#for K in path.get_K_list():
+#    print (K)
+
+#print (np.array([K.K for K in path.get_K_list()]))
+<br/><br/></pre></div>
+</div>
+</div>
+</section>
+<section id="Running-a-calculation:-calculators-and-results">
+<h2>Running a calculation: calculators and results<a class="headerlink" href="#Running-a-calculation:-calculators-and-results" title="Link to this heading"></a></h2>
+<p>The calculation is called using the function <code class="docutils literal notranslate"><span class="pre">`run()</span></code> &lt;<a class="reference external" href="https://wannier-berri.org/docs/run.html">https://wannier-berri.org/docs/run.html</a>&gt;`__ :</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>result=wberri.run(system,
+                  grid=path,
+                  calculators = {&quot;key&quot; : calculator},
+                  parallel = parallel,
+                  print_Kpoints = False)
+</pre></div>
+</div>
+<p>Here, apart from the already known ingredients, we need to define objects of some subclass of <code class="docutils literal notranslate"><span class="pre">`Calculator</span></code> &lt;<a class="reference external" href="https://wannier-berri.org/docs/calculators.html#wannierberri.calculators.Calculator">https://wannier-berri.org/docs/calculators.html#wannierberri.calculators.Calculator</a>&gt;`__. A Calculator is a callable object which returns some <code class="docutils literal notranslate"><span class="pre">`Result</span></code> &lt;<a class="reference external" href="https://wannier-berri.org/docs/result.html">https://wannier-berri.org/docs/result.html</a>&gt;`__. If you code another calculator, you can calculate other things using the machinery of WannierBerri, but that is not a part of this basic tutorial.</p>
+<p>Further, results are packed into <code class="docutils literal notranslate"><span class="pre">`ResultDict</span></code> &lt;<a class="reference external" href="https://wannier-berri.org/docs/result.html#wannierberri.result.ResultDict">https://wannier-berri.org/docs/result.html#wannierberri.result.ResultDict</a>&gt;`__ and returned.</p>
+</section>
+<section id="Tabulating-Berry-curvature-and-spin">
+<h2>Tabulating Berry curvature and spin<a class="headerlink" href="#Tabulating-Berry-curvature-and-spin" title="Link to this heading"></a></h2>
+<p>To run a tabulation one needs to compose a dictionary, where keys are any arbitrary strings to label further tabulation results, and the values are subclasses of <code class="docutils literal notranslate"><span class="pre">`Tabulator</span></code> &lt;<a class="reference external" href="https://wannier-berri.org/docs/calculators.html#wannierberri.calculators.tabulate.Tabulator">https://wannier-berri.org/docs/calculators.html#wannierberri.calculators.tabulate.Tabulator</a>&gt;`__</p>
+<p>Next, we pack them into another class called <code class="docutils literal notranslate"><span class="pre">`TabulatorAll</span></code> &lt;<a class="reference external" href="https://wannier-berri.org/docs/calculators.html#wannierberri.calculators.TabulatorAll">https://wannier-berri.org/docs/calculators.html#wannierberri.calculators.TabulatorAll</a>&gt;`__, which represents a complex <code class="docutils literal notranslate"><span class="pre">`Calculator</span></code> &lt;<a class="reference external" href="https://wannier-berri.org/docs/calculators.html#wannierberri.calculators.Calculator">https://wannier-berri.org/docs/calculators.html#wannierberri.calculators.Calculator</a>&gt;`__</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span>tabulators = { &quot;energy&quot;: wberri.calculators.tabulate.Energy(),
+               &quot;berry_curvature&quot; : wberri.calculators.tabulate.BerryCurvature(),
+               &quot;spin&quot; : wberri.calculators.tabulate.Spin(),
+             }
+
+tab_all_path = wberri.calculators.TabulatorAll(
+                    tabulators,
+                    ibands = np.arange(0,18),
+                    mode = &quot;path&quot;
+                        )
+</pre></div>
+</div>
+</div>
+<section id="Running-a-calculation">
+<h3>Running a calculation<a class="headerlink" href="#Running-a-calculation" title="Link to this heading"></a></h3>
+<p>Now run the calculation using the function <code class="docutils literal notranslate"><span class="pre">`run()</span></code> &lt;<a class="reference external" href="https://wannier-berri.org/docs/run.html">https://wannier-berri.org/docs/run.html</a>&gt;`__ . This will return an object of class <code class="docutils literal notranslate"><span class="pre">`ResultDict()</span></code> &lt;<a class="reference external" href="https://wannier-berri.org/docs/result.html#wannierberri.result.ResultDict">https://wannier-berri.org/docs/result.html#wannierberri.result.ResultDict</a>&gt;`__ This object contains all results of the calculations, but in this case we have only one, which is marked <code class="docutils literal notranslate"><span class="pre">&quot;tabulate&quot;</span></code></p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>result=wberri.run(system,
+                  grid=path,
+                  calculators = {&quot;tabulate&quot; : tab_all_path},
+                  print_Kpoints = False)
+
+print (result.results)
+path_result = result.results[&quot;tabulate&quot;]
+<br/></pre></div>
+</div>
+</div>
+</section>
+<section id="Alternative-shortcut:">
+<h3>Alternative shortcut:<a class="headerlink" href="#Alternative-shortcut:" title="Link to this heading"></a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>path , path_result= wberri.evaluate_k_path(system=system,
+                                            nodes=[
+        [0.0000, 0.0000, 0.0000 ],   #  G
+        [0.500 ,-0.5000, -0.5000],   #  H
+        [0.7500, 0.2500, -0.2500],   #  P
+        [0.5000, 0.0000, -0.5000],   #  N
+        [0.0000, 0.0000, 0.000  ] ] , #  G
+                 labels=[&quot;G&quot;,&quot;H&quot;,&quot;P&quot;,&quot;N&quot;,&quot;G&quot;],
+                 length=200 ,
+                quantities=[&quot;berry_curvature&quot;,&quot;spin&quot;])
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Plotting-the-results">
+<h3>Plotting the results<a class="headerlink" href="#Plotting-the-results" title="Link to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">`TABresult</span></code> &lt;<a class="reference external" href="https://wannier-berri.org/docs/result.html#wannierberri.result.TABresult">https://wannier-berri.org/docs/result.html#wannierberri.result.TABresult</a>&gt;`__ object already provides methods to plot the results. (As well as one can extract the data and plot them by other means). Below let’s plot the interpolated bands and compare with those obtained in QE. (file “bands/Fe_bands_pw.dat” is already provided)</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># plot the bands and compare with QuantumEspresso
+EF = 12.6
+# Import the pre-computed bands from quantum espresso
+A = np.loadtxt(open(&quot;bands/Fe_bands_pw.dat&quot;,&quot;r&quot;))
+bohr_ang = scipy.constants.physical_constants[&#39;Bohr radius&#39;][0] / 1e-10
+alatt = 5.4235* bohr_ang
+A[:,0]*= 2*np.pi/alatt
+A[:,1]-=EF
+# plot it as dots
+plt.scatter (A[:,0],A[:,1],s=5,label = &quot;QE&quot;)
+
+
+path_result.plot_path_fat( path,
+              quantity=None,
+              save_file=&quot;Fe_bands+QE.pdf&quot;,
+              Eshift=EF,
+              Emin=-10,  Emax=50,
+              iband=None,
+              mode=&quot;fatband&quot;,
+              fatfactor=20,
+              cut_k=False,
+              close_fig=False,
+              show_fig=False,
+              label = &quot;WB&quot;
+              )
+
+
+plt.legend()
+plt.show()
+plt.close()
+<br/></pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># plot the bands and compare with wannier90
+A = np.loadtxt(open(&quot;bands/Fe_bands_w90.dat&quot;,&quot;r&quot;))
+plt.scatter (A[:,0],A[:,1],s=5,label = &quot;W90&quot;)
+
+path_result.plot_path_fat( path,
+              quantity=None,
+              save_file=&quot;Fe_bands+w90.pdf&quot;,
+              Eshift=0,
+              Emin=4,  Emax=20,
+              iband=None,
+              mode=&quot;fatband&quot;,
+              fatfactor=20,
+              cut_k=False,
+              close_fig=False,
+              show_fig=False,
+              label = &quot;WB&quot;
+              )
+
+plt.legend()
+
+plt.show()
+plt.close()
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># plot the Berry curvature
+path_result.plot_path_fat( path,
+              quantity=&#39;berry_curvature&#39;,
+              component=&#39;z&#39;,
+              save_file=None, #&quot;Fe_bands+berry.pdf&quot;,
+              Eshift=0,
+              Emin=4,  Emax=25,
+              iband=None,
+              mode=&quot;fatband&quot;,
+              fatfactor=4,
+              cut_k=False,
+              close_fig=False,
+              show_fig=False,
+              )
+plt.show()
+plt.close()
+
+# The size of the dots corresponds to the magnitude of BC on a logarithmic scale
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Problem-1:">
+<h3>Problem 1:<a class="headerlink" href="#Problem-1:" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>modify the path</p></li>
+<li><p>plot the “z” component of spin along it (without .</p></li>
+<li><p>do <strong>not</strong> plot QE or W90 bands in this case</p></li>
+</ul>
+<p>Hint : look here for a proper Calculator <a class="reference external" href="https://wannier-berri.org/docs/calculators.html#tabulating">https://wannier-berri.org/docs/calculators.html#tabulating</a></p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># put the necessary code here
+<br/><br/><br/><br/><br/></pre></div>
+</div>
+</div>
+</section>
+<section id="Get-the-data-and-do-whatever-you-want">
+<h3>Get the data and do whatever you want<a class="headerlink" href="#Get-the-data-and-do-whatever-you-want" title="Link to this heading"></a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>k=path.getKline()
+E=path_result.get_data(quantity=&#39;Energy&#39;,iband=(10,11))
+curv=path_result.get_data(quantity=&#39;berry_curvature&#39;,iband=(10,11),component=&quot;z&quot;)
+print (k.shape, E.shape, curv.shape)
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+<section id="Calaculation-on-a-3D-grid">
+<h2>Calaculation on a 3D grid<a class="headerlink" href="#Calaculation-on-a-3D-grid" title="Link to this heading"></a></h2>
+<p>Now let’s investigate how Berry curvature behaves in the 3D Brillouin zone. For that we need to set a grid, which can be done in several ways, see input parameters <a class="reference external" href="file:///home/stepan/github/wannier-berri-org/html/docs/grid.html">here</a></p>
+<p>Most important to recall, is that in WB one sets two grids : the FFT grid and the K-grid (NKdiv). this is important for running the calculation. However, the final; result depends only on their product.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Set a grid
+grid = wberri.Grid(system, length=50 )   # length [ Ang] ~= 2*pi/dk
+#grid = wberri.Grid(system, NK=[24,24,24], NKFFT=4)
+#grid = wberri.Grid(system, NKdiv=6, NKFFT=4)
+<br/><br/><br/><br/></pre></div>
+</div>
+</div>
+<section id="We-can-use-the-same-tabulators,-but-now-we-pack-them-into-TabulatorAll-in-%22grid%22-mode">
+<h3>We can use the same tabulators, but now we pack them into TabulatorAll in “grid” mode<a class="headerlink" href="#We-can-use-the-same-tabulators,-but-now-we-pack-them-into-TabulatorAll-in-%22grid%22-mode" title="Link to this heading"></a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>tabulators = { &quot;Energy&quot;: wberri.calculators.tabulate.Energy(),
+               &quot;berry_curvature&quot; : wberri.calculators.tabulate.BerryCurvature(),
+             }
+
+tab_all_grid = wberri.calculators.TabulatorAll(
+                    tabulators,
+                    ibands = np.arange(0,18),
+                    mode = &quot;grid&quot;
+                        )
+</pre></div>
+</div>
+</div>
+</section>
+<section id="And-we-run-the-calculation-in-the-same-way">
+<h3>And we run the calculation in the same way<a class="headerlink" href="#And-we-run-the-calculation-in-the-same-way" title="Link to this heading"></a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>result=wberri.run(system,
+                  grid=grid,
+                  calculators = {&quot;tabulate&quot; : tab_all_grid},
+                  print_Kpoints = True)
+
+print (result.results)
+grid_result = result.results[&quot;tabulate&quot;]
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Writing-the-FermiSurfer-files">
+<h3>Writing the FermiSurfer files<a class="headerlink" href="#Writing-the-FermiSurfer-files" title="Link to this heading"></a></h3>
+<p>You may see that conversion to text format takes time. so convert only those components that you really need for plotting.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>grid_result.write_frmsf(name=&quot;Fe_grid&quot;, quantity=&quot;berry_curvature&quot;,
+                        components=&quot;z&quot;,
+                        )
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Now we got some .frmsf files
+!ls -al *.frmsf
+# !rm *.frmsf
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># let&#39;s look at them using the Fermisurfer! (https://fermisurfer.osdn.jp/)
+!fermisurfer Fe_grid_berry_curvature-z.frmsf
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Analyze-the-tabulated-data">
+<h3>Analyze the tabulated data<a class="headerlink" href="#Analyze-the-tabulated-data" title="Link to this heading"></a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># You may get the data as numpy arrays via:
+Energy = grid_result.get_data(iband=5, quantity=&#39;Energy&#39;)
+ahc  = grid_result.get_data(iband=5, quantity=&#39;berry_curvature&#39;,component=&#39;z&#39;)
+print(ahc.shape,Energy.shape)
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Problem-2-:">
+<h3>Problem 2 :<a class="headerlink" href="#Problem-2-:" title="Link to this heading"></a></h3>
+</section>
+<section id="fill-the-missing-parts-and-evaluate-the-Berry-curvature-summed-over-all-states-below-EF-=-12.6-eV.-Plot-in-on-a-plane-k3=const-(in-reduced-coordinates)">
+<h3>fill the missing parts and evaluate the Berry curvature summed over all states below EF = 12.6 eV. Plot in on a plane k3=const (in reduced coordinates)<a class="headerlink" href="#fill-the-missing-parts-and-evaluate-the-Berry-curvature-summed-over-all-states-below-EF-=-12.6-eV.-Plot-in-on-a-plane-k3=const-(in-reduced-coordinates)" title="Link to this heading"></a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># example : find the total Berry curvature of occupied states
+# on the plane (k1,k2), k3=const (in reduced coordinates)
+Berry_occ = 0
+k3 = 9
+EF=12.4
+for ib in range(18):
+    Energy =
+    ahc  =
+    ahc [Energy&gt;EF] = 0
+    Berry_occ += ahc
+    plt.contour(Energy,levels = [EF],linewidths=0.5,colors=&#39;black&#39;)
+shw = plt.imshow(Berry_occ,vmin=-10,vmax=10,cmap=&quot;jet&quot;)
+bar = plt.colorbar(shw)
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+<section id="Integration-on-a-grid:-anomalous-Hall-conductivity">
+<h2>Integration on a grid: anomalous Hall conductivity<a class="headerlink" href="#Integration-on-a-grid:-anomalous-Hall-conductivity" title="Link to this heading"></a></h2>
+<p>Now, after we saw that the Berry curvature changes rapidly in the k-space, we understand that to get the precise value of AHC (<span class="math">\ref{eq:ahc}</span>) defined as a Fermi-sea integral of Berry curvature</p>
+<p><span class="math">\begin{equation}
+\sigma^{\rm AHC}_{xy} = -\frac{e^2}{\hbar} \sum_n^{\rm occ} \int\frac{d\mathbf{k}}{(2\pi)^3} \Omega^n_\gamma
+\label{eq:ahc}\tag{1}
+\end{equation}</span></p>
+<p>we need a very dense grid. The calculation is done again, by using the calculators. AHC may be viewed as a function of the Fermi level. Such calculators are called <a class="reference external" href="https://wannier-berri.org/docs/calculators.html#static-dependent-only-on-fermi-level">StaticCalculator</a> , because the corresponding effects can be measured in static fields. (as opposed to dynamic calculators, see below).</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>calculators = {}
+Efermi = np.linspace(12,13,101)
+omega = np.linspace(0,1.,101)
+# Set a grid
+grid = wberri.Grid(system, length=50 )   # length [ Ang] ~= 2*pi/dk
+
+calculators [&quot;ahc&quot;] = wberri.calculators.static.AHC(Efermi=Efermi)
+
+result_run = wberri.run(system,
+            grid=grid,
+            calculators = calculators,
+            adpt_num_iter=5,
+            fout_name=&#39;Fe&#39;,
+            restart=False,
+            file_Klist=&quot;Klist_ahc.pickle&quot;  # needed to restart a calculation in future
+            )
+<br/><br/></pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>!ls
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#plot results from different iterations
+#plot results from different iterations
+for i in range(5):
+    res = np.load(f&quot;Fe-ahc_iter-{i:04d}.npz&quot;)
+    # print (list(res.keys()))
+    ef = res[&quot;Energies_0&quot;]
+    ahc_xy = res[&quot;data&quot;][:,2]
+    # alternatively from text files:
+    # a = np.loadtxt(f&quot;Fe-ahc_iter-{i:04d}.dat&quot;)
+    # ef = a[:,0]
+    # ahc_xy = a[:,3]
+    plt.plot(ef,ahc_xy,label = f&quot;iteration-{i}&quot;)
+#plt.ylim(-1000,1000)
+plt.xlabel(&quot;E [eV]&quot;)
+plt.ylabel(&quot;AHC (S/m)&quot;)
+plt.legend()
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>result_run = wberri.run(system,
+            grid=grid,
+            calculators = calculators,
+            adpt_num_iter=10,
+            fout_name=&#39;Fe&#39;,
+            restart=True,
+            file_Klist=&quot;Klist_ahc.pickle&quot;  # needed to restart a calculation
+            )
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#plot results from different iterations
+for i in range(10,15):
+    res = np.load(f&quot;Fe-ahc_iter-{i:04d}.npz&quot;)
+    # print (list(res.keys()))
+    ef = res[&quot;Energies_0&quot;]
+    ahc_xy = res[&quot;data&quot;][:,2]
+    # alternatively from text files:
+    # a = np.loadtxt(f&quot;Fe-ahc_iter-{i:04d}.dat&quot;)
+    # ef = a[:,0]
+    # ahc_xy = a[:,3]
+    plt.plot(ef,ahc_xy,label = f&quot;iteration-{i}&quot;)
+#plt.ylim(-1000,1000)
+plt.xlabel(&quot;E [eV]&quot;)
+plt.ylabel(&quot;AHC (S/m)&quot;)
+plt.legend()
+plt.show()
+</pre></div>
+</div>
+</div>
+<section id="Problem-3-:">
+<h3>Problem 3 :<a class="headerlink" href="#Problem-3-:" title="Link to this heading"></a></h3>
+<p>start from a denser grid (length=100 or 200) and do the integration again with 20 iterations. Plot the results</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># insert the needed code below
+<br/><br/><br/></pre></div>
+</div>
+</div>
+</section>
+</section>
+<section id="Tetrahedron-method">
+<h2>Tetrahedron method<a class="headerlink" href="#Tetrahedron-method" title="Link to this heading"></a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>calculators = {}
+Efermi = np.linspace(12,13,101)
+omega = np.linspace(0,1.,101)
+# Set a grid
+grid = wberri.Grid(system, length=50 )   # length [ Ang] ~= 2*pi/dk
+
+calculators [&quot;dos_notetra&quot;] = wberri.calculators.static.DOS(Efermi=Efermi,tetra=False)
+calculators [&quot;dos_tetra&quot;] = wberri.calculators.static.DOS(Efermi=Efermi,tetra=True)
+
+result_run = wberri.run(system,
+            grid=grid,
+            calculators = calculators,
+            adpt_num_iter=0,
+            fout_name=&#39;Fe&#39;,
+            suffix = &quot;run2&quot;,
+            restart=False,
+            print_Kpoints=False
+            )
+
+a = np.loadtxt(f&quot;Fe-dos_notetra-run2_iter-0000.dat&quot;)
+plt.plot(a[:,0],a[:,1],label = f&quot;no tetra&quot;)
+a = np.loadtxt(f&quot;Fe-dos_tetra-run2_iter-0000.dat&quot;)
+plt.plot(a[:,0],a[:,1],label = f&quot;tetra&quot;)
+plt.legend()
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>!ls
+<br/></pre></div>
+</div>
+</div>
+</section>
+<section id="Optical-conductivity">
+<h2>Optical conductivity<a class="headerlink" href="#Optical-conductivity" title="Link to this heading"></a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>calculators = {}
+Efermi = np.linspace(12,13,101)
+omega = np.linspace(0,1.,101)
+# Set a grid
+grid = wberri.Grid(system, length=50 )   # length [ Ang] ~= 2*pi/dk
+
+calculators[&quot;opt_conductivity&quot;] = wberri.calculators.dynamic.OpticalConductivity(
+                            Efermi=Efermi,omega=omega)
+
+
+result_run_opt = wberri.run(system,
+            grid=grid,
+            calculators = calculators,
+            adpt_num_iter=0,
+            fout_name=&#39;Fe&#39;,
+            suffix = &quot;run3&quot;,
+            restart=False,
+            )
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#plot results from new iterations
+res = result_run_opt.results[&quot;opt_conductivity&quot;]
+print (res.data.shape)
+print (res.Energies[0]) # Efermi
+print (res.Energies[1]) # omega
+
+# plot at fixed omega
+iw = 10
+plt.plot(res.Energies[0], res.data[:,iw,2,2].imag)
+plt.show()
+
+# plot at fixed Efermi
+ief = 20
+plt.plot(res.Energies[1], res.data[ief,:,2,2].imag)
+plt.show()
+<br/></pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>!ls
+</pre></div>
+</div>
+</div>
+</section>
+<section id="All-in-one">
+<h2>All in one<a class="headerlink" href="#All-in-one" title="Link to this heading"></a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>calculators = {}
+Efermi = np.linspace(12,13,101)
+omega = np.linspace(0,1.,101)
+# Set a grid
+grid = wberri.Grid(system, length=50 )   # length [ Ang] ~= 2*pi/dk
+
+calculators [&quot;ahc_notetra&quot;] = wberri.calculators.static.AHC(Efermi=Efermi,tetra=False)
+calculators [&quot;ahc_tetra&quot;] = wberri.calculators.static.AHC(Efermi=Efermi,tetra=True)
+calculators [&quot;tabulate&quot;] = wberri.calculators.TabulatorAll({
+                            &quot;Energy&quot;:wberri.calculators.tabulate.Energy(),
+                            &quot;berry&quot;:wberri.calculators.tabulate.BerryCurvature(),
+                                  },
+                            ibands = np.arange(4,10))
+calculators[&quot;opt_conductivity&quot;] = wberri.calculators.dynamic.OpticalConductivity(
+                            Efermi=Efermi,omega=omega)
+
+
+result_run = wberri.run(system,
+            grid=grid,
+            calculators = calculators,
+            adpt_num_iter=0,
+            fout_name=&#39;Fe&#39;,
+            suffix = &quot;run&quot;,
+            restart=False,
+            )
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Stepan Tsirkin.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

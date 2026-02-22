@@ -1,0 +1,486 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Finding initial projections based on symmetry indicators &mdash; Wannier Berri 1.8.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/style.css?v=88c5e859" />
+      <link rel="stylesheet" type="text/css" href="../../_static/nbsphinx-code-cells.css?v=2aa19091" />
+
+  
+    <link rel="shortcut icon" href="../../_static/WB-logo.ico"/>
+    <link rel="canonical" href="https://tutorial.wannier-berri.org/tutorials/7_find_projections/find_projections.html" />
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=b51e6972"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within Wannier Berri 1.8.0 documentation"
+          href="../../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="GPAW + WannierBerri: spinless bandstructure (diamond)" href="../8_GPAW/1.diamond/diamond.html" />
+    <link rel="prev" title="Wannierisation (including SAWF)" href="../6_wannierisation/wannierise.html" />
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #009C46" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/tutorial.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+    
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../1_basic/tutorial-wb-basic-solution.html">Basic tutorial: Interpolating bands, Berry curvatures, and integrating them</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2_fermi_sea_vs_fermi_surface/solution/tutorial_sea_vs_surface_solution.html">WannierBerri advanced tutorial - Fermi surface and Fermi sea calculation of the Berry curvature dipole</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3_spin_hall/solution/tutorial_spin_hall.html">Spin Hall conductivity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../4_DIY/tutorial-wb-DIY-solution.html">DIY tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../5_symmetrization/tutorial_symmetrization-solution.html">Symmetrization of Wannier Hamiltonian and matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../6_wannierisation/wannierise.html">Wannierisation (including SAWF)</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Finding initial projections based on symmetry indicators</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Theory-and-background">Theory and background</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Import-some-modules-and-classes">Import some modules and classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#generate-the-symmetrizer">generate the symmetrizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Define-the-trial-projections">Define the trial projections</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Create-the-EBRsearcher-object">Create the EBRsearcher object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Find-combinations-of-EBRs">Find combinations of EBRs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../8_GPAW/1.diamond/diamond.html">GPAW + WannierBerri: spinless bandstructure (diamond)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../8_GPAW/2.Fe/bccFe.html">GPAW + WannierBerri: Magnetism and spin-orbit coupling (bcc Fe)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../8_GPAW/3.MnTe/mnte.html">GPAW + WannierBerri: Altermagnet MnTe</a></li>
+</ul>
+
+    <a href="genindex.html">Index</a>
+    <a href="http://wannier-berri.org">Back to Wannier-Berri.org</a>
+  
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #009C46" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Wannier Berri</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Finding initial projections based on symmetry indicators</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="Finding-initial-projections-based-on-symmetry-indicators">
+<h1>Finding initial projections based on symmetry indicators<a class="headerlink" href="#Finding-initial-projections-based-on-symmetry-indicators" title="Link to this heading"></a></h1>
+<p>This tutorial explains how to find suitable projections for a given DFT bandstructure and specified frozen window.</p>
+<section id="Theory-and-background">
+<h2>Theory and background<a class="headerlink" href="#Theory-and-background" title="Link to this heading"></a></h2>
+<p>Automating Wannier Functions Inspired by Topological Quantum Chemistry</p>
+<p>Wannier functions (WFs) have become a popular and powerful technique for studying the diverse electronic properties of materials. However, the construction of high-quality WFs remains a non-trivial task, often requiring manual intervention and expertise, which obstructs high-throughput calculations using WF-based methods. A crucial aspect of WF construction is the selection of initial projections, which serve as an initial guess for the WFs. Traditionally, these projections are chosen based on
+knowledge of the orbital character of the bands under study (within a frozen window), which requires visual inspection of the bands, and hence quite some expertise and time.</p>
+<p>In this tutorial, I present an alternative approach for selecting initial projections based on the symmetry indicators (irreducible representations) of DFT Bloch bands. The method is inspired by Topological Quantum Chemistry (TQC) [Nature 547, 298 (2017)]. Briefly, from TCS, we know the following :</p>
+<ul class="simple">
+<li><p>If we take an isolated set of bands, and compute the irreducible representations (irreps) of the bands at high-symmetry points in the Brillouin zone, we can determine the topological properties of the bands.</p></li>
+<li><p>If the same set of irreps can be generated by placing Wannier functions at certain Wyckoff positions in the unit cell, then the bands are either topologically trivial (if all WFs are on atomic sites) or an obstructed atomic limit (if some WFs are on empty Wyckoff positions).</p></li>
+<li><p>If the irreps cannot be generated by placing WFs at Wyckoff positions, then the bands are topologically non-trivial.</p></li>
+</ul>
+<p>In practice we are interested to describe precisely the bands in a certain energy range (frozen window), and we may include some more states to the outer window to ensure that the WFs are well-localized. The method presented here is based on the following steps:</p>
+<ol class="arabic simple">
+<li><p>Compute the irreps of the bands in the frozen window at <strong>all</strong> irreducible k-points in the Brillouin zone.</p></li>
+<li><p>Define a set of trial wyckoff positions (WP) and trial orbitals for the WFs. (as a maximum one can include all Wyckoff positions and all orbitals (s,p,d,f) for each WP, but to speed up the calculations, one can include only the most relevant ones). each pair (WP, orbital) defines a set of trial projections, or an elementary band representation (EBR).</p></li>
+<li><p>Compute the irreps of the trial WFs at all irreducible k-points in the Brillouin zone. (the symmetry indicators of each EBR)</p></li>
+<li><p>Find such integer (non-negative) coefficients for the EBRs that for each k-point the sum of the EBRs yields at least all the irreps of the bands in the frozen window, and at the same time the sum of the EBRs fits into irreps of the bands in the outer window.</p></li>
+<li><p>If some of EBRs are generated by WPs with free parameters (like (x,x,1/2) or (x,y,z)), then the free parameters can be optimized to maximize the minimal distance between different WPs.</p></li>
+<li><p>The resulting trial positions are printed in the order of increasing number of Wannier functions. The input for wannier90.win file is also printed for the user’s convenience.</p></li>
+</ol>
+<p>Furhter user can try different sets of trial projections, generate the wannier90.amn file and construct the wannier functions, either using Wannier90, or WannierBerri. It is preferred to use Symmetry adapted wannier functions (SAWFs) [Sakuma, PRB 87, 235109 (2013)] in this case.</p>
+<p>In complicated cases some of the projections sets may result WFs that are not well localized, and do not provide good wannierisation. But there will be a number of sets, so by try-and-error one can find the best set of projections. Further, this try-and-error can be automated (work in progress).</p>
+<p>This method does not require manual inspection of the orbital character of the bands, which makes it suitable for high-throughput calculations.</p>
+</section>
+<section id="Import-some-modules-and-classes">
+<h2>Import some modules and classes<a class="headerlink" href="#Import-some-modules-and-classes" title="Link to this heading"></a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import warnings
+from irrep.bandstructure import BandStructure
+from fractions import Fraction
+import sympy
+import wannierberri as wb
+tested_version = &#39;1.3.0&#39;
+if wb.__version__ != tested_version:
+    warnings.warn(f&#39;This tutorial was tested with version {tested_version} of wannierberri&#39;)
+
+
+from wannierberri.symmetry.projections_searcher import EBRsearcher
+from wannierberri.symmetry.projections import Projection, ProjectionsSet
+</pre></div>
+</div>
+</div>
+</section>
+<section id="generate-the-symmetrizer">
+<h2>generate the symmetrizer<a class="headerlink" href="#generate-the-symmetrizer" title="Link to this heading"></a></h2>
+<p>We will need the dmn file, which can be generated by pw2wannier90.x</p>
+<p>However, if you do not have one, e.g. if you are using a code different from Quantum ESPRESSO, you can generate the file with the following code, using the irrep interface.</p>
+<p><strong>Notes</strong>:</p>
+<ul class="simple">
+<li><p>actually the method is not propelly tested with the original dmn files, so it is anyway better to generate the dmn file with the code below.</p></li>
+<li><p>the dmn file created now does not contain any information on the Wannier functions, but at this moment we do not need it. Later, when we know the projections, we can generate the amn file with the correct information.</p></li>
+</ul>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%ls
+from wannierberri.symmetry.sawf import SymmetrizerSAWF
+
+
+print(&quot;calculating DMN&quot;)
+
+path = &quot;../../../wannier-berri/tests/data/diamond/&quot; # path to the data
+
+bandstructure = BandStructure(prefix=path + &quot;di&quot;, code=&quot;espresso&quot;,
+                            Ecut=100, include_TR=False)
+spacegroup = bandstructure.spacegroup
+# spacegroup.show()
+
+try:
+    symmetrizer = SymmetrizerSAWF().from_npz(&quot;diamond.sawf.npz&quot;)
+except FileNotFoundError:
+    symmetrizer = SymmetrizerSAWF().from_irrep(bandstructure)
+    symmetrizer.to_npz(&quot;diamond.sawf.npz&quot;)
+<br/><br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+diamond.sawf.npz  find_projections.ipynb
+calculating DMN
+</pre></div></div>
+</div>
+<p>We will also need the eig and win files, so let’s load them.</p>
+</section>
+<section id="Define-the-trial-projections">
+<h2>Define the trial projections<a class="headerlink" href="#Define-the-trial-projections" title="Link to this heading"></a></h2>
+<p>Of course we know which are the good projections for diamond (from examples of Wannier90), but let’s pretend we do not know, and we want to find them. Let’s put some trial orbitals on some trial Wyckoff positions. In the complete case we should use all Wyckoff positions and all orbitals, but for the sake of simplicity we will use only a few.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>trial_projections = ProjectionsSet()
+
+x, y, z = sympy.symbols(&#39;x y z&#39;)
+F12 = Fraction(1, 2)
+F14 = Fraction(1, 4)
+F18 = Fraction(1, 8)
+WP = [[0, 0, 0], [x, 0, 0], [F12, F12, F12], [F14, F14, F14], [F18, F18, F18], [0, x, z]]
+# in principle, those should be all wyckoff position for the spacegroup
+# but we will only consider a few random positions
+positions = [&quot;,&quot;.join(str(y) for y in x) for x in WP]
+print(positions)
+
+
+for p in positions:
+    for o in [&#39;s&#39;,&#39;sp3&#39;]:
+        proj = Projection(position_sym=p, orbital=o, spacegroup=spacegroup)
+        trial_projections.add(proj)
+
+print(&quot;trial_projections&quot;)
+print(trial_projections.write_with_multiplicities(orbit=False))
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[&#39;0,0,0&#39;, &#39;x,0,0&#39;, &#39;1/2,1/2,1/2&#39;, &#39;1/4,1/4,1/4&#39;, &#39;1/8,1/8,1/8&#39;, &#39;0,x,z&#39;]
+trial_projections
+--------------------------------------------------------------------------------
+1  X  | 0,0,0:[&#39;s&#39;]
+1  X  | 0,0,0:[&#39;sp3&#39;]
+1  X  | x,0,0:[&#39;s&#39;]
+1  X  | x,0,0:[&#39;sp3&#39;]
+1  X  | 1/2,1/2,1/2:[&#39;s&#39;]
+1  X  | 1/2,1/2,1/2:[&#39;sp3&#39;]
+1  X  | 1/4,1/4,1/4:[&#39;s&#39;]
+1  X  | 1/4,1/4,1/4:[&#39;sp3&#39;]
+1  X  | 1/8,1/8,1/8:[&#39;s&#39;]
+1  X  | 1/8,1/8,1/8:[&#39;sp3&#39;]
+1  X  | 0,x,z:[&#39;s&#39;]
+1  X  | 0,x,z:[&#39;sp3&#39;]
+total number of Wannier functions = 450
+--------------------------------------------------------------------------------
+
+</pre></div></div>
+</div>
+<p>the “total number of Wannier functions” is the number of Wannier functions if we include all projections once (which we will not do), so this number is meaningless here.</p>
+</section>
+<section id="Create-the-EBRsearcher-object">
+<h2>Create the EBRsearcher object<a class="headerlink" href="#Create-the-EBRsearcher-object" title="Link to this heading"></a></h2>
+<p>this object combines the needed data (the dmn, eig, win files ) and the energies of the frozen and outer window)</p>
+<p>In the example the frozen window covers the valence bands, and the outer window includes also some conduction bands. )</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ebrsearcher = EBRsearcher(
+    symmetrizer=symmetrizer,
+    trial_projections_set=trial_projections,
+    froz_min=-10,
+    froz_max=20,
+    outer_min=-20,
+    outer_max=50,
+    debug=False # set to True to see more printed information
+)
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Find-combinations-of-EBRs">
+<h2>Find combinations of EBRs<a class="headerlink" href="#Find-combinations-of-EBRs" title="Link to this heading"></a></h2>
+<p>the combinations are just arrays of integers, where each integer is the number of times the corresponding EBR is used in the combination.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>combinations = ebrsearcher.find_combinations(num_wann_max=20)
+print (combinations)
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[array([1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]), array([1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0]), array([0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0]), array([0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0])]
+</pre></div></div>
+</div>
+<p>for more information let’s print them in a more readable way, including the input for wannier90.win file.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>for c in combinations:
+    print((&quot;+&quot; * 80 + &quot;\n&quot;) * 2)
+    print(trial_projections.write_with_multiplicities(c))
+    newset = trial_projections.get_combination(c)
+    newset.join_same_wyckoff()
+    newset.maximize_distance()
+    print(newset.write_wannier90(mod1=True))
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+--------------------------------------------------------------------------------
+1  X  | 0,0,0:[&#39;s&#39;]
+total number of Wannier functions = 4
+--------------------------------------------------------------------------------
+
+finding num points from 1 projections
+finding num points from 1 projections
+minimal distance 1.1412636217763823
+positions
+ [[0.  0.  0. ]
+ [0.5 0.  0. ]
+ [0.  0.  0.5]
+ [0.  0.5 0. ]]
+distances
+ [[2.28 1.14 1.14 1.14]
+ [1.14 2.28 1.14 1.14]
+ [1.14 1.14 2.28 1.14]
+ [1.14 1.14 1.14 2.28]]
+num_wann = 4
+begin projections
+f=0.000000000000, 0.000000000000, 0.000000000000: s
+f=0.500000000000, 0.000000000000, 0.000000000000: s
+f=0.000000000000, 0.000000000000, 0.500000000000: s
+f=0.000000000000, 0.500000000000, 0.000000000000: s
+end projections
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+--------------------------------------------------------------------------------
+1  X  | 0,0,0:[&#39;s&#39;]
+1  X  | 1/8,1/8,1/8:[&#39;s&#39;]
+total number of Wannier functions = 6
+--------------------------------------------------------------------------------
+
+finding num points from 2 projections
+finding num points from 2 projections
+minimal distance 0.6988783838382076
+positions
+ [[ 0.     0.     0.   ]
+ [ 0.5    0.     0.   ]
+ [ 0.     0.     0.5  ]
+ [ 0.     0.5    0.   ]
+ [ 0.125  0.125  0.125]
+ [ 0.875 -0.125 -0.125]]
+distances
+ [[2.28 1.14 1.14 1.14 0.7  0.7 ]
+ [1.14 2.28 1.14 1.14 0.7  0.7 ]
+ [1.14 1.14 2.28 1.14 0.7  0.7 ]
+ [1.14 1.14 1.14 2.28 0.7  0.7 ]
+ [0.7  0.7  0.7  0.7  2.28 1.4 ]
+ [0.7  0.7  0.7  0.7  1.4  2.28]]
+num_wann = 6
+begin projections
+f=0.000000000000, 0.000000000000, 0.000000000000: s
+f=0.500000000000, 0.000000000000, 0.000000000000: s
+f=0.000000000000, 0.000000000000, 0.500000000000: s
+f=0.000000000000, 0.500000000000, 0.000000000000: s
+f=0.125000000000, 0.125000000000, 0.125000000000: s
+f=0.875000000000, 0.875000000000, 0.875000000000: s
+end projections
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+--------------------------------------------------------------------------------
+1  X  | 1/4,1/4,1/4:[&#39;s&#39;]
+total number of Wannier functions = 8
+--------------------------------------------------------------------------------
+
+finding num points from 1 projections
+finding num points from 1 projections
+minimal distance 1.141263621776382
+positions
+ [[ 0.25  0.25  0.25]
+ [ 1.25 -0.25 -0.25]
+ [ 0.25  0.25 -0.25]
+ [-0.25  1.25 -0.25]
+ [ 0.25 -0.25  0.25]
+ [-0.25 -0.25  1.25]
+ [-0.25  0.25  0.25]
+ [-0.25 -0.25 -0.25]]
+distances
+ [[2.28 1.14 1.14 1.14 1.14 1.14 1.14 1.61]
+ [1.14 2.28 1.14 1.14 1.14 1.14 1.61 1.14]
+ [1.14 1.14 2.28 1.14 1.14 1.61 1.14 1.14]
+ [1.14 1.14 1.14 2.28 1.61 1.14 1.14 1.14]
+ [1.14 1.14 1.14 1.61 2.28 1.14 1.14 1.14]
+ [1.14 1.14 1.61 1.14 1.14 2.28 1.14 1.14]
+ [1.14 1.61 1.14 1.14 1.14 1.14 2.28 1.14]
+ [1.61 1.14 1.14 1.14 1.14 1.14 1.14 2.28]]
+num_wann = 8
+begin projections
+f=0.250000000000, 0.250000000000, 0.250000000000: s
+f=0.250000000000, 0.750000000000, 0.750000000000: s
+f=0.250000000000, 0.250000000000, 0.750000000000: s
+f=0.750000000000, 0.250000000000, 0.750000000000: s
+f=0.250000000000, 0.750000000000, 0.250000000000: s
+f=0.750000000000, 0.750000000000, 0.250000000000: s
+f=0.750000000000, 0.250000000000, 0.250000000000: s
+f=0.750000000000, 0.750000000000, 0.750000000000: s
+end projections
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+--------------------------------------------------------------------------------
+1  X  | 1/8,1/8,1/8:[&#39;sp3&#39;]
+total number of Wannier functions = 8
+--------------------------------------------------------------------------------
+
+finding num points from 1 projections
+finding num points from 1 projections
+minimal distance 1.3977567676764153
+positions
+ [[ 0.125  0.125  0.125]
+ [ 0.875 -0.125 -0.125]]
+distances
+ [[2.28 1.4 ]
+ [1.4  2.28]]
+num_wann = 8
+begin projections
+f=0.125000000000, 0.125000000000, 0.125000000000: sp3
+f=0.875000000000, 0.875000000000, 0.875000000000: sp3
+end projections
+
+</pre></div></div>
+</div>
+<p>So, we get the known result that we can put s orbitals on the bonds to get the Wannier functions for valence bands only (4 WFs), and we can put sp3 orbitals on the atoms to the Wannier functions for the valence and conduction bands (8 WFs).</p>
+<p>But we also get some other combinations, which are one also may try to use.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../6_wannierisation/wannierise.html" class="btn btn-neutral float-left" title="Wannierisation (including SAWF)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../8_GPAW/1.diamond/diamond.html" class="btn btn-neutral float-right" title="GPAW + WannierBerri: spinless bandstructure (diamond)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Stepan Tsirkin.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

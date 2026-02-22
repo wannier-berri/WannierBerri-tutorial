@@ -1,0 +1,2893 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GPAW + WannierBerri: Magnetism and spin-orbit coupling (bcc Fe) &mdash; Wannier Berri 1.8.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/style.css?v=88c5e859" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/nbsphinx-code-cells.css?v=2aa19091" />
+
+  
+    <link rel="shortcut icon" href="../../../_static/WB-logo.ico"/>
+    <link rel="canonical" href="https://tutorial.wannier-berri.org/tutorials/8_GPAW/2.Fe/bccFe.html" />
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=b51e6972"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within Wannier Berri 1.8.0 documentation"
+          href="../../../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="GPAW + WannierBerri: Altermagnet MnTe" href="../3.MnTe/mnte.html" />
+    <link rel="prev" title="GPAW + WannierBerri: spinless bandstructure (diamond)" href="../1.diamond/diamond.html" />
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #009C46" >
+
+          
+          
+          <a href="../../../index.html">
+            
+              <img src="../../../_static/tutorial.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+    
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../1_basic/tutorial-wb-basic-solution.html">Basic tutorial: Interpolating bands, Berry curvatures, and integrating them</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../2_fermi_sea_vs_fermi_surface/solution/tutorial_sea_vs_surface_solution.html">WannierBerri advanced tutorial - Fermi surface and Fermi sea calculation of the Berry curvature dipole</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../3_spin_hall/solution/tutorial_spin_hall.html">Spin Hall conductivity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../4_DIY/tutorial-wb-DIY-solution.html">DIY tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../5_symmetrization/tutorial_symmetrization-solution.html">Symmetrization of Wannier Hamiltonian and matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../6_wannierisation/wannierise.html">Wannierisation (including SAWF)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../7_find_projections/find_projections.html">Finding initial projections based on symmetry indicators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../1.diamond/diamond.html">GPAW + WannierBerri: spinless bandstructure (diamond)</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">GPAW + WannierBerri: Magnetism and spin-orbit coupling (bcc Fe)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Setup-the-parallelization">Setup the parallelization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Step-1:-Gpaw-calculation">Step 1: Gpaw calculation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#loading-the-GPAW-calculators">loading the GPAW calculators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#self-consistent-calculation">self-consistent calculation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Non-self-consistent-calculation-in-the-irreducible-Brillouin-zone">Non-self-consistent calculation in the irreducible Brillouin zone</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Compute-the-dft-bandstructure-along-a-high-symmetry-path">Compute the dft bandstructure along a high-symmetry path</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Step-2:-Wannierization">Step 2: Wannierization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#create-the-%22w90-files%22">create the “w90 files”</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Do-the-wannierization">Do the wannierization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Create-the-System-object-to-be-used-in-WannierBerri-calculations">Create the System object to be used in WannierBerri calculations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Compute-the-wannierized-bandstructure-with-SOC-along-the-high-symmetry-path">Compute the wannierized bandstructure with SOC along the high-symmetry path</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Plot-the-Bandstructure-with-and-without-SOC">Plot the Bandstructure with and without SOC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#AHC">AHC</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#magnetization-along-[001]-direction">magnetization along [001] direction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#plot-AHC-vs-energy">plot AHC vs energy</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#compare-directions-of-magnetization">compare directions of magnetization</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../3.MnTe/mnte.html">GPAW + WannierBerri: Altermagnet MnTe</a></li>
+</ul>
+
+    <a href="genindex.html">Index</a>
+    <a href="http://wannier-berri.org">Back to Wannier-Berri.org</a>
+  
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #009C46" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Wannier Berri</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">GPAW + WannierBerri: Magnetism and spin-orbit coupling (bcc Fe)</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="GPAW-+-WannierBerri:-Magnetism-and-spin-orbit-coupling-(bcc-Fe)">
+<h1>GPAW + WannierBerri: Magnetism and spin-orbit coupling (bcc Fe)<a class="headerlink" href="#GPAW-+-WannierBerri:-Magnetism-and-spin-orbit-coupling-(bcc-Fe)" title="Link to this heading"></a></h1>
+<p>In GPAW the spin-orbit coupling (SOC) is treated non-self-consistently. Therefore, there is no need to add it before wannierization. Instead, we can wannierised the collinear magnetic calculation and then add SOC in the wannierized Hamiltonian. Only after that we can specify the spin axis and compute the bandstructure and other properties (like AHC)</p>
+<p>This also has the advantage that the Wannier functions are real (since they respect the time-reversal symmetry which is present in each spin channel separately) and respect all symmetries of the crystal structure, even those which are broken by the magnetization direction.</p>
+<section id="Prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#Prerequisites" title="Link to this heading"></a></h2>
+<p>Make sure you have installed the following packages:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>pip install wannierberri gpaw ase irrep
+</pre></div>
+</div>
+</section>
+<section id="Setup-the-parallelization">
+<h2>Setup the parallelization<a class="headerlink" href="#Setup-the-parallelization" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import numpy as np
+from ase import Atoms
+from gpaw import GPAW, PW, FermiDirac, MixerSum
+from wannierberri.parallel import Parallel, Serial
+
+parallel_env= Parallel(num_cpus=16)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+2025-10-22 19:13:54,127 INFO util.py:154 -- Missing packages: [&#39;ipywidgets&#39;]. Run `pip install -U ipywidgets`, then restart the notebook server for rich notebook output.
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+initializing ray with  {&#39;num_cpus&#39;: 16}
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+2025-10-22 19:13:56,144 INFO worker.py:1918 -- Started a local Ray instance. View the dashboard at <span class="ansi-green-intense-fg ansi-bold">http://127.0.0.1:8265 </span>
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-cyan-fg">(Kpoint_and_neighbours_ray pid=606049)</span> Warning: symmetrization did not converge in 100 iterations, final changes 0.38537401482960104, 0.3853737656757285
+<span class="ansi-cyan-fg">(Kpoint_and_neighbours_ray pid=606049)</span> Warning: symmetrization did not converge in 100 iterations, final changes 0.3882069376449266, 0.3882068906892813
+<span class="ansi-cyan-fg">(Kpoint_and_neighbours_ray pid=606049)</span> Warning: symmetrization did not converge in 100 iterations, final changes 0.3898311038547878, 0.389830759573306
+<span class="ansi-cyan-fg">(Kpoint_and_neighbours_ray pid=606049)</span> Warning: symmetrization did not converge in 100 iterations, final changes 0.3909326094039763, 0.39093216408953
+<span class="ansi-cyan-fg">(Kpoint_and_neighbours_ray pid=606049)</span> Warning: symmetrization did not converge in 100 iterations, final changes 0.39205905922021406, 0.3920583550825143
+<span class="ansi-cyan-fg">(Kpoint_and_neighbours_ray pid=606049)</span> Warning: symmetrization did not converge in 100 iterations, final changes 0.39308362371275407, 0.3930835425809099
+</pre></div></div>
+</div>
+</section>
+<section id="Step-1:-Gpaw-calculation">
+<h2>Step 1: Gpaw calculation<a class="headerlink" href="#Step-1:-Gpaw-calculation" title="Link to this heading"></a></h2>
+<section id="loading-the-GPAW-calculators">
+<h3>loading the GPAW calculators<a class="headerlink" href="#loading-the-GPAW-calculators" title="Link to this heading"></a></h3>
+<p>If you want to skip the GPAW calculation, you can just load the pre-calculated calculators</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># calc_scf = GPAW(&quot;gpaw/Fe-scf.gpw&quot;)
+# calc_nscf = GPAW(&quot;gpaw/Fe-nscf-irred-444.gpw&quot;)
+# calc_bands = GPAW(&quot;gpaw/Fe-bands-path.gpw&quot;)
+
+calc_scf = GPAW(&quot;gpaw/Fe-scf.gpw&quot;)
+calc_nscf = GPAW(&quot;./Fe-nscf-irred-444.gpw&quot;)
+calc_bands = GPAW(&quot;./Fe-bands-path.gpw&quot;)
+</pre></div>
+</div>
+</div>
+</section>
+<section id="self-consistent-calculation">
+<h3>self-consistent calculation<a class="headerlink" href="#self-consistent-calculation" title="Link to this heading"></a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span>a = 2.87 # Angstrom - lattice constant for bcc Fe
+m = 2.2 # Bohr magneton - spin magnetic moment per atom
+
+seed = &quot;Fe&quot;
+lattice = a * np.array([[1, 1, 1], [-1, 1, 1], [-1, -1, 1]]) / 2
+
+fe = Atoms(&#39;Fe&#39;,
+           scaled_positions=[(0, 0, 0)],
+           magmoms=[m],
+           cell=lattice,
+           pbc=True)
+
+calc_scf = GPAW(mode=PW(600),
+            xc=&#39;PBE&#39;,
+            occupations=FermiDirac(width=0.01),
+            kpts={&#39;size&#39;: (8,8,8),},
+            txt=f&#39;Fe_scf.txt&#39;)
+fe.calc = calc_scf
+e = fe.get_potential_energy()
+calc_scf.write(f&#39;{seed}-scf.gpw&#39;)
+<br/><br/></pre></div>
+</div>
+</div>
+</section>
+<section id="Non-self-consistent-calculation-in-the-irreducible-Brillouin-zone">
+<h3>Non-self-consistent calculation in the irreducible Brillouin zone<a class="headerlink" href="#Non-self-consistent-calculation-in-the-irreducible-Brillouin-zone" title="Link to this heading"></a></h3>
+<p>Now we get the list of irreducible k-points (using irrep.SpaceGroup object) and perform a non-self-consistent calculation only on these k-points. Note, that here we use all symmetries of the crystal structure, even those which are broken by the magnetization direction, because they are still symmetries for each spin channel separately (including the time-reversal symmetry).</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from irrep.spacegroup import SpaceGroup
+sg = SpaceGroup.from_gpaw(calc_scf)
+kpoints_irred = sg.get_irreducible_kpoints_grid([4, 4, 4])
+calc_nscf = calc_scf.fixed_density(
+    kpts=kpoints_irred,
+    nbands=30,
+    convergence={&#39;bands&#39;: 24},
+    txt=f&#39;{seed}-nscf.txt&#39;)
+calc_nscf.write(f&#39;{seed}-nscf-irred-444.gpw&#39;, mode=&#39;all&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+typat used for spacegroup detection (accounting magmoms): [26]
+</pre></div></div>
+</div>
+</section>
+<section id="Compute-the-dft-bandstructure-along-a-high-symmetry-path">
+<h3>Compute the dft bandstructure along a high-symmetry path<a class="headerlink" href="#Compute-the-dft-bandstructure-along-a-high-symmetry-path" title="Link to this heading"></a></h3>
+<p>This is done to compare with the wannierized bandstructure later.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>path_str = &quot;GHPNGP&quot;
+calc_bands = calc_scf.fixed_density(
+    nbands=30,
+    symmetry=&#39;off&#39;,
+    random=True,
+    kpts={&#39;path&#39;: path_str, &#39;npoints&#39;: 100},
+    txt=f&#39;{seed}-bands-path.txt&#39;,
+    convergence={&#39;bands&#39;: 24})
+calc_bands.write(f&#39;{seed}-bands-path.gpw&#39;, mode=&#39;all&#39;)
+<br/></pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>bs_dft = calc_bands.band_structure()
+bs_dft.plot(show=True, emin=0,emax=30.0)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_build/.doctrees/nbsphinx/tutorials_8_GPAW_2.Fe_bccFe_10_0.png" src="../../_build/.doctrees/nbsphinx/tutorials_8_GPAW_2.Fe_bccFe_10_0.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: ylabel=&#39;energies [eV]&#39;&gt;
+</pre></div></div>
+</div>
+</section>
+</section>
+<section id="Step-2:-Wannierization">
+<h2>Step 2: Wannierization<a class="headerlink" href="#Step-2:-Wannierization" title="Link to this heading"></a></h2>
+<p>In this case we use sp3d2 and t2g projections on each iron atom. One can also use the conventional s,p,d orbitals.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from irrep.spacegroup import SpaceGroup
+from wannierberri.symmetry.projections import Projection, ProjectionsSet
+from gpaw import GPAW
+# gpaw_calc = calc_nscf #GPAW( &quot;./Fe-nscf-irred-444.gpw&quot;)
+sg = SpaceGroup.from_gpaw(calc_nscf)
+projection_sp3d2 = Projection(position_num=[0, 0, 0], orbital=&#39;sp3d2&#39;, spacegroup=sg)
+projection_t2g = Projection(position_num=[0, 0, 0], orbital=&#39;t2g&#39;, spacegroup=sg)
+proj_set = ProjectionsSet([projection_sp3d2, projection_t2g])
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+typat used for spacegroup detection (accounting magmoms): [26]
+</pre></div></div>
+</div>
+<section id="create-the-%22w90-files%22">
+<h3>create the “w90 files”<a class="headerlink" href="#create-the-%22w90-files%22" title="Link to this heading"></a></h3>
+<p>Here we are NOT using the gpaw-wannier90 interface, and actually not creating the w90 files, but directly access the wavefunctions from the GPAW calculation, use symmetry operations from irrep, and create the necessary data to be used with wannierberri. Those files still retain the same naming convention as the w90 files for consistency, but htey are binary npz files, which are convenient to work with numpy</p>
+<p>After creating those data, it is written to the disk, so that one can later load it. But be careful - if you change anything (e.g. the projections) - do not forget to remove those files, otherwise you will load the old data! For that reason, here we set ‘read_npz_list=[]’ to force the creation of new data.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from wannierberri.w90files.w90data_soc import Wannier90dataSOC
+
+w90data = Wannier90dataSOC.from_gpaw(
+    calculator=calc_nscf,
+    projections=proj_set,
+    mp_grid=(4,4,4),
+    read_npz_list=[],
+    spacegroup=sg,
+)
+
+w90data.select_bands(win_min=-100,
+                        win_max=50)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Using &#39;projections&#39; for both spin up channel.
+No projections_down provided; using projections_up for both spin channels.
+finding num points from 2 projections
+got irreducible=None, mp_grid=(4, 4, 4), seedname=wannier_soc-spin-0, files=[&#39;mmn&#39;, &#39;eig&#39;, &#39;amn&#39;, &#39;symmetrizer&#39;], read_npz_list=[], write_npz_list=None, projections=ProjectionsSet with 9 Wannier functions and 0 free variables
+Projection 0, 0, 0:[&#39;sp3d2&#39;] with 6 Wannier functions on 1 points (6 per site)
+Projection 0, 0, 0:[&#39;t2g&#39;] with 3 Wannier functions on 1 points (3 per site), unk_grid=None, normalize=True
+kpt_latt_grid=[[0.   0.   0.  ]
+ [0.   0.   0.25]
+ [0.   0.   0.5 ]
+ [0.   0.25 0.5 ]
+ [0.25 0.25 0.25]
+ [0.25 0.25 0.5 ]
+ [0.25 0.75 0.25]
+ [0.5  0.5  0.5 ]]
+mpgrid = [4 4 4], 8
+detected grid=(np.int64(4), np.int64(4), np.int64(4)), selected_kpoints=[0 1 2 3 4 5 6 7]
+self.irreducible=True
+mpgrid = [4 4 4], 8
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/home/stepan/github/wannier-berri-work/wannier-berri-soc-nscf/wannierberri/w90files/w90data.py:151: UserWarning: detected grid (np.int64(4), np.int64(4), np.int64(4)) od 64 kpoints, but only 8 kpoints are available.assuming that only irreducible kpoints are needed.
+  warnings.warn(f&#34;detected grid {grid} od {np.prod(grid)} kpoints, &#34;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+orbitals = [&#39;sp3d2&#39;]
+orbitals = [&#39;t2g&#39;]
+calculating Wannier functions for sp3d2 at [[0 0 0]]
+calculating Wannier functions for t2g at [[0 0 0]]
+D.shape [(8, 96, 6, 6), (8, 96, 3, 3)]
+num_wann 9
+D_wann_block_indices [[0 6]
+ [6 9]]
+saving to wannier_soc-spin-0.symmetrizer.npz :
+saving to wannier_soc-spin-0.eig.npz :
+Creating amn. Using projections_set
+ProjectionsSet with 9 Wannier functions and 0 free variables
+Projection 0, 0, 0:[&#39;sp3d2&#39;] with 6 Wannier functions on 1 points (6 per site)
+Projection 0, 0, 0:[&#39;t2g&#39;] with 3 Wannier functions on 1 points (3 per site)
+saving to wannier_soc-spin-0.amn.npz :
+mpgrid = [4 4 4], 64
+NK= 64, selected_kpoints = [0 1 2 3 4 5 6 7], kptirr = [0 1 2 3 4 5 6 7]
+Shells found with weights [0.41728623] and tolerance 1.9302775581455037e-16
+saving to wannier_soc-spin-0.mmn.npz :
+got irreducible=None, mp_grid=(4, 4, 4), seedname=wannier_soc-spin-1, files=[&#39;mmn&#39;, &#39;eig&#39;, &#39;amn&#39;, &#39;symmetrizer&#39;], read_npz_list=[], write_npz_list=None, projections=ProjectionsSet with 9 Wannier functions and 0 free variables
+Projection 0, 0, 0:[&#39;sp3d2&#39;] with 6 Wannier functions on 1 points (6 per site)
+Projection 0, 0, 0:[&#39;t2g&#39;] with 3 Wannier functions on 1 points (3 per site), unk_grid=None, normalize=True
+kpt_latt_grid=[[0.   0.   0.  ]
+ [0.   0.   0.25]
+ [0.   0.   0.5 ]
+ [0.   0.25 0.5 ]
+ [0.25 0.25 0.25]
+ [0.25 0.25 0.5 ]
+ [0.25 0.75 0.25]
+ [0.5  0.5  0.5 ]]
+mpgrid = [4 4 4], 8
+detected grid=(np.int64(4), np.int64(4), np.int64(4)), selected_kpoints=[0 1 2 3 4 5 6 7]
+self.irreducible=True
+mpgrid = [4 4 4], 8
+orbitals = [&#39;sp3d2&#39;]
+orbitals = [&#39;t2g&#39;]
+calculating Wannier functions for sp3d2 at [[0 0 0]]
+calculating Wannier functions for t2g at [[0 0 0]]
+D.shape [(8, 96, 6, 6), (8, 96, 3, 3)]
+num_wann 9
+D_wann_block_indices [[0 6]
+ [6 9]]
+saving to wannier_soc-spin-1.symmetrizer.npz :
+saving to wannier_soc-spin-1.eig.npz :
+Creating amn. Using projections_set
+ProjectionsSet with 9 Wannier functions and 0 free variables
+Projection 0, 0, 0:[&#39;sp3d2&#39;] with 6 Wannier functions on 1 points (6 per site)
+Projection 0, 0, 0:[&#39;t2g&#39;] with 3 Wannier functions on 1 points (3 per site)
+saving to wannier_soc-spin-1.amn.npz :
+mpgrid = [4 4 4], 64
+NK= 64, selected_kpoints = [0 1 2 3 4 5 6 7], kptirr = [0 1 2 3 4 5 6 7]
+Shells found with weights [0.41728623] and tolerance 1.9302775581455037e-16
+saving to wannier_soc-spin-1.mmn.npz :
+number of bands = 30
+saving to wannier_soc.soc.npz :
+selected_bands = [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19]
+selected_bands = [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19]
+</pre></div></div>
+</div>
+</section>
+<section id="Do-the-wannierization">
+<h3>Do the wannierization<a class="headerlink" href="#Do-the-wannierization" title="Link to this heading"></a></h3>
+<p>at this step we also specify the frozen window, number of iterations, and whether to use site symmetry and localization. (when starting from irreducible BZ, site-symmetry is required anyway)</p>
+<p>We also may use the outer window via w90data.select_bands if needed</p>
+<p>In this case, both spin channels will be wannierised separately, starting from the same projections.There is also an option to specify different projections for different spin channels if needed. (See MnTe tutorial)</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span>w90data.wannierise(
+    froz_min=-1000,
+    froz_max=20,
+    num_iter=100,
+    print_progress_every=10,
+    sitesym=True,
+    localise=True,
+)
+<br/><br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Symmetrizer_Uirr initialized for ikirr=0, kpt=0, [0. 0. 0.] with 96 symmetries, max error in included blocks: 1.3056926080711268e-14 ; excluded bands are [] out of 20 total bands (accuracy threshold 1e-06)
+Symmetrizer_Uirr initialized for ikirr=1, kpt=1, [0.   0.   0.25] with 8 symmetries, max error in included blocks: 6.753223014464258e-16 ; excluded bands are [] out of 20 total bands (accuracy threshold 1e-06)
+Symmetrizer_Uirr initialized for ikirr=2, kpt=2, [0.  0.  0.5] with 16 symmetries, max error in included blocks: 8.760422255333325e-16 ; excluded bands are [] out of 20 total bands (accuracy threshold 1e-06)
+Symmetrizer_Uirr initialized for ikirr=3, kpt=3, [0.   0.25 0.5 ] with 4 symmetries, max error in included blocks: 3.37900622702967e-15 ; excluded bands are [] out of 20 total bands (accuracy threshold 1e-06)
+Symmetrizer_Uirr initialized for ikirr=4, kpt=4, [0.25 0.25 0.25] with 16 symmetries, max error in included blocks: 9.352431718031025e-07 ; excluded bands are [] out of 20 total bands (accuracy threshold 1e-06)
+Symmetrizer_Uirr initialized for ikirr=5, kpt=5, [0.25 0.25 0.5 ] with 8 symmetries, max error in included blocks: 1.020560098144454e-15 ; excluded bands are [] out of 20 total bands (accuracy threshold 1e-06)
+Symmetrizer_Uirr initialized for ikirr=6, kpt=6, [0.25 0.75 0.25] with 48 symmetries, max error in included blocks: 3.6293947413027244e-15 ; excluded bands are [] out of 20 total bands (accuracy threshold 1e-06)
+Symmetrizer_Uirr initialized for ikirr=7, kpt=7, [0.5 0.5 0.5] with 96 symmetries, max error in included blocks: 1.9131948672901813e-14 ; excluded bands are [18 19] out of 20 total bands (accuracy threshold 1e-06)
+####################################################################################################
+starting WFs
+----------------------------------------------------------------------------------------------------
+wannier centers and spreads
+----------------------------------------------------------------------------------------------------
+ -0.536654779058   -0.000000000000   -0.000000000000   |     2.285088127825
+  0.536654779058    0.000000000000    0.000000000000   |     2.285088127825
+  0.000000000000   -0.536654779058   -0.000000000000   |     2.285088127825
+ -0.000000000000    0.536654779058    0.000000000000   |     2.285088127825
+  0.000000000000    0.000000000000   -0.536654779058   |     2.285088127825
+ -0.000000000000   -0.000000000000    0.536654779058   |     2.285088127825
+  0.000000000000    0.000000000000    0.000000000000   |     0.394560626690
+  0.000000000000    0.000000000000    0.000000000000   |     0.394560626690
+  0.000000000000    0.000000000000    0.000000000000   |     0.394560626690
+----------------------------------------------------------------------------------------------------
+  0.000000000000    0.000000000000    0.000000000000   |    14.894210647018 &lt;- sum
+                                          maximal spread =   2.285088127825
+####################################################################################################
+####################################################################################################
+Iteration 0 (from wannierizer)
+----------------------------------------------------------------------------------------------------
+wannier centers and spreads
+----------------------------------------------------------------------------------------------------
+ -0.563601811058    0.000000000000    0.000000000000   |     1.744733624215
+  0.563601811058   -0.000000000000   -0.000000000000   |     1.744733624215
+  0.000000000000   -0.563601811058   -0.000000000000   |     1.744733624215
+ -0.000000000000    0.563601811058    0.000000000000   |     1.744733624215
+  0.000000000000    0.000000000000   -0.563601811058   |     1.744733624215
+ -0.000000000000   -0.000000000000    0.563601811058   |     1.744733624215
+  0.000000000000    0.000000000000    0.000000000000   |     0.378190233812
+  0.000000000000    0.000000000000    0.000000000000   |     0.378190233812
+  0.000000000000    0.000000000000    0.000000000000   |     0.378190233812
+----------------------------------------------------------------------------------------------------
+  0.000000000000    0.000000000000    0.000000000000   |    11.602972446724 &lt;- sum
+                                          maximal spread =   1.744733624215
+standard deviation = 0.0
+####################################################################################################
+####################################################################################################
+Iteration 10 (from wannierizer)
+----------------------------------------------------------------------------------------------------
+wannier centers and spreads
+----------------------------------------------------------------------------------------------------
+ -0.630795436182   -0.000000000000   -0.000000000000   |     0.883272793342
+  0.630795436182    0.000000000000    0.000000000000   |     0.883272793342
+  0.000000000000   -0.630795436182   -0.000000000000   |     0.883272793342
+  0.000000000000    0.630795436182   -0.000000000000   |     0.883272793342
+  0.000000000000    0.000000000000   -0.630795436182   |     0.883272793342
+ -0.000000000000   -0.000000000000    0.630795436182   |     0.883272793342
+  0.000000000000    0.000000000000    0.000000000000   |     0.322398749139
+  0.000000000000    0.000000000000    0.000000000000   |     0.322398749139
+  0.000000000000    0.000000000000    0.000000000000   |     0.322398749139
+----------------------------------------------------------------------------------------------------
+  0.000000000000   -0.000000000000   -0.000000000000   |     6.266833007473 &lt;- sum
+                                          maximal spread =   0.883272793342
+standard deviation = 0.01206519751743132
+####################################################################################################
+####################################################################################################
+Iteration 20 (from wannierizer)
+----------------------------------------------------------------------------------------------------
+wannier centers and spreads
+----------------------------------------------------------------------------------------------------
+ -0.654090567192   -0.000000000000   -0.000000000000   |     0.792153469762
+  0.654090567192    0.000000000000    0.000000000000   |     0.792153469762
+ -0.000000000000   -0.654090567192    0.000000000000   |     0.792153469762
+ -0.000000000000    0.654090567192    0.000000000000   |     0.792153469762
+  0.000000000000    0.000000000000   -0.654090567192   |     0.792153469762
+ -0.000000000000   -0.000000000000    0.654090567192   |     0.792153469762
+  0.000000000000    0.000000000000    0.000000000000   |     0.299850291881
+  0.000000000000    0.000000000000    0.000000000000   |     0.299850291881
+  0.000000000000    0.000000000000    0.000000000000   |     0.299850291881
+----------------------------------------------------------------------------------------------------
+ -0.000000000000   -0.000000000000   -0.000000000000   |     5.652471694214 &lt;- sum
+                                          maximal spread =   0.792153469762
+standard deviation = 0.0051407714854781765
+####################################################################################################
+####################################################################################################
+Iteration 30 (from wannierizer)
+----------------------------------------------------------------------------------------------------
+wannier centers and spreads
+----------------------------------------------------------------------------------------------------
+ -0.660967887785    0.000000000000    0.000000000000   |     0.753514897911
+  0.660967887785   -0.000000000000   -0.000000000000   |     0.753514897911
+ -0.000000000000   -0.660967887785    0.000000000000   |     0.753514897911
+  0.000000000000    0.660967887785   -0.000000000000   |     0.753514897911
+ -0.000000000000   -0.000000000000   -0.660967887785   |     0.753514897911
+  0.000000000000    0.000000000000    0.660967887785   |     0.753514897911
+  0.000000000000    0.000000000000    0.000000000000   |     0.288802604146
+  0.000000000000    0.000000000000    0.000000000000   |     0.288802604146
+  0.000000000000    0.000000000000    0.000000000000   |     0.288802604146
+----------------------------------------------------------------------------------------------------
+  0.000000000000   -0.000000000000   -0.000000000000   |     5.387497199905 &lt;- sum
+                                          maximal spread =   0.753514897911
+standard deviation = 0.002178257510513162
+####################################################################################################
+####################################################################################################
+Iteration 40 (from wannierizer)
+----------------------------------------------------------------------------------------------------
+wannier centers and spreads
+----------------------------------------------------------------------------------------------------
+ -0.662205836983   -0.000000000000   -0.000000000000   |     0.736761656150
+  0.662205836983    0.000000000000    0.000000000000   |     0.736761656150
+ -0.000000000000   -0.662205836983    0.000000000000   |     0.736761656150
+  0.000000000000    0.662205836983   -0.000000000000   |     0.736761656150
+ -0.000000000000   -0.000000000000   -0.662205836983   |     0.736761656150
+  0.000000000000    0.000000000000    0.662205836983   |     0.736761656150
+  0.000000000000    0.000000000000    0.000000000000   |     0.282991417678
+  0.000000000000    0.000000000000    0.000000000000   |     0.282991417678
+  0.000000000000    0.000000000000    0.000000000000   |     0.282991417678
+----------------------------------------------------------------------------------------------------
+ -0.000000000000    0.000000000000    0.000000000000   |     5.269544189932 &lt;- sum
+                                          maximal spread =   0.736761656150
+standard deviation = 0.0009702065886269604
+####################################################################################################
+####################################################################################################
+Iteration 50 (from wannierizer)
+----------------------------------------------------------------------------------------------------
+wannier centers and spreads
+----------------------------------------------------------------------------------------------------
+ -0.661804909816   -0.000000000000   -0.000000000000   |     0.729010838532
+  0.661804909816    0.000000000000    0.000000000000   |     0.729010838532
+  0.000000000000   -0.661804909816   -0.000000000000   |     0.729010838532
+ -0.000000000000    0.661804909816    0.000000000000   |     0.729010838532
+ -0.000000000000   -0.000000000000   -0.661804909816   |     0.729010838532
+  0.000000000000    0.000000000000    0.661804909816   |     0.729010838532
+  0.000000000000    0.000000000000    0.000000000000   |     0.279781999535
+  0.000000000000    0.000000000000    0.000000000000   |     0.279781999535
+  0.000000000000    0.000000000000    0.000000000000   |     0.279781999535
+----------------------------------------------------------------------------------------------------
+ -0.000000000000    0.000000000000    0.000000000000   |     5.213411029800 &lt;- sum
+                                          maximal spread =   0.729010838532
+standard deviation = 0.0004640486191471078
+####################################################################################################
+####################################################################################################
+Iteration 60 (from wannierizer)
+----------------------------------------------------------------------------------------------------
+wannier centers and spreads
+----------------------------------------------------------------------------------------------------
+ -0.661102602581    0.000000000000    0.000000000000   |     0.725158292003
+  0.661102602581   -0.000000000000   -0.000000000000   |     0.725158292003
+  0.000000000000   -0.661102602581   -0.000000000000   |     0.725158292003
+ -0.000000000000    0.661102602581    0.000000000000   |     0.725158292003
+  0.000000000000    0.000000000000   -0.661102602581   |     0.725158292003
+ -0.000000000000   -0.000000000000    0.661102602581   |     0.725158292003
+  0.000000000000    0.000000000000    0.000000000000   |     0.277939924705
+  0.000000000000    0.000000000000    0.000000000000   |     0.277939924705
+  0.000000000000    0.000000000000    0.000000000000   |     0.277939924705
+----------------------------------------------------------------------------------------------------
+ -0.000000000000   -0.000000000000    0.000000000000   |     5.184769526133 &lt;- sum
+                                          maximal spread =   0.725158292003
+standard deviation = 0.00023789287289065087
+####################################################################################################
+####################################################################################################
+Iteration 70 (from wannierizer)
+----------------------------------------------------------------------------------------------------
+wannier centers and spreads
+----------------------------------------------------------------------------------------------------
+ -0.660486891637   -0.000000000000   -0.000000000000   |     0.723115973414
+  0.660486891637    0.000000000000    0.000000000000   |     0.723115973414
+ -0.000000000000   -0.660486891637    0.000000000000   |     0.723115973414
+  0.000000000000    0.660486891637   -0.000000000000   |     0.723115973414
+  0.000000000000    0.000000000000   -0.660486891637   |     0.723115973414
+  0.000000000000    0.000000000000    0.660486891637   |     0.723115973414
+  0.000000000000    0.000000000000    0.000000000000   |     0.276850409169
+  0.000000000000    0.000000000000    0.000000000000   |     0.276850409169
+  0.000000000000    0.000000000000    0.000000000000   |     0.276850409169
+----------------------------------------------------------------------------------------------------
+ -0.000000000000    0.000000000000    0.000000000000   |     5.169247067995 &lt;- sum
+                                          maximal spread =   0.723115973414
+standard deviation = 0.00012937199188661473
+####################################################################################################
+####################################################################################################
+Iteration 80 (from wannierizer)
+----------------------------------------------------------------------------------------------------
+wannier centers and spreads
+----------------------------------------------------------------------------------------------------
+ -0.660031200090    0.000000000000    0.000000000000   |     0.721975233092
+  0.660031200090   -0.000000000000   -0.000000000000   |     0.721975233092
+  0.000000000000   -0.660031200090   -0.000000000000   |     0.721975233092
+ -0.000000000000    0.660031200090    0.000000000000   |     0.721975233092
+ -0.000000000000   -0.000000000000   -0.660031200090   |     0.721975233092
+  0.000000000000    0.000000000000    0.660031200090   |     0.721975233092
+  0.000000000000    0.000000000000    0.000000000000   |     0.276191652391
+  0.000000000000    0.000000000000    0.000000000000   |     0.276191652391
+  0.000000000000    0.000000000000    0.000000000000   |     0.276191652391
+----------------------------------------------------------------------------------------------------
+ -0.000000000000    0.000000000000    0.000000000000   |     5.160426355724 &lt;- sum
+                                          maximal spread =   0.721975233092
+standard deviation = 7.368638295468722e-05
+####################################################################################################
+####################################################################################################
+Iteration 90 (from wannierizer)
+----------------------------------------------------------------------------------------------------
+wannier centers and spreads
+----------------------------------------------------------------------------------------------------
+ -0.659717147808   -0.000000000000   -0.000000000000   |     0.721312424697
+  0.659717147808    0.000000000000    0.000000000000   |     0.721312424697
+ -0.000000000000   -0.659717147808    0.000000000000   |     0.721312424697
+  0.000000000000    0.659717147808   -0.000000000000   |     0.721312424697
+  0.000000000000    0.000000000000   -0.659717147808   |     0.721312424697
+ -0.000000000000   -0.000000000000    0.659717147808   |     0.721312424697
+  0.000000000000    0.000000000000    0.000000000000   |     0.275787187047
+  0.000000000000    0.000000000000    0.000000000000   |     0.275787187047
+  0.000000000000    0.000000000000    0.000000000000   |     0.275787187047
+----------------------------------------------------------------------------------------------------
+ -0.000000000000    0.000000000000    0.000000000000   |     5.155236109324 &lt;- sum
+                                          maximal spread =   0.721312424697
+standard deviation = 4.3423267616859893e-05
+####################################################################################################
+####################################################################################################
+Final state (from wannierizer)
+----------------------------------------------------------------------------------------------------
+wannier centers and spreads
+----------------------------------------------------------------------------------------------------
+ -0.659525508906   -0.000000000000   -0.000000000000   |     0.720947576528
+  0.659525508906   -0.000000000000   -0.000000000000   |     0.720947576528
+  0.000000000000   -0.659525508906   -0.000000000000   |     0.720947576528
+ -0.000000000000    0.659525508906    0.000000000000   |     0.720947576528
+  0.000000000000    0.000000000000   -0.659525508906   |     0.720947576528
+ -0.000000000000   -0.000000000000    0.659525508906   |     0.720947576528
+  0.000000000000    0.000000000000    0.000000000000   |     0.275556374419
+  0.000000000000    0.000000000000    0.000000000000   |     0.275556374419
+  0.000000000000    0.000000000000    0.000000000000   |     0.275556374419
+----------------------------------------------------------------------------------------------------
+ -0.000000000000   -0.000000000000   -0.000000000000   |     5.152354582424 &lt;- sum
+                                          maximal spread =   0.720947576528
+standard deviation = 2.7542718591663477e-05
+####################################################################################################
+time for creating wannierizer 0.44744396209716797
+time for iterations 3.2913784980773926
+time for updating 3.059262990951538
+total time for wannierization 4.442086219787598
+saving to wannier_soc-spin-0.chk :
+Symmetrizer_Uirr initialized for ikirr=0, kpt=0, [0. 0. 0.] with 96 symmetries, max error in included blocks: 3.031503561216944e-14 ; excluded bands are [] out of 20 total bands (accuracy threshold 1e-06)
+Symmetrizer_Uirr initialized for ikirr=1, kpt=1, [0.   0.   0.25] with 8 symmetries, max error in included blocks: 6.77599954797753e-16 ; excluded bands are [] out of 20 total bands (accuracy threshold 1e-06)
+Symmetrizer_Uirr initialized for ikirr=2, kpt=2, [0.  0.  0.5] with 16 symmetries, max error in included blocks: 4.518280359883027e-16 ; excluded bands are [] out of 20 total bands (accuracy threshold 1e-06)
+Symmetrizer_Uirr initialized for ikirr=3, kpt=3, [0.   0.25 0.5 ] with 4 symmetries, max error in included blocks: 2.50984693997498e-15 ; excluded bands are [] out of 20 total bands (accuracy threshold 1e-06)
+Symmetrizer_Uirr initialized for ikirr=4, kpt=4, [0.25 0.25 0.25] with 16 symmetries, max error in included blocks: 8.855195300943755e-07 ; excluded bands are [] out of 20 total bands (accuracy threshold 1e-06)
+Symmetrizer_Uirr initialized for ikirr=5, kpt=5, [0.25 0.25 0.5 ] with 8 symmetries, max error in included blocks: 4.742874840267547e-16 ; excluded bands are [] out of 20 total bands (accuracy threshold 1e-06)
+Symmetrizer_Uirr initialized for ikirr=6, kpt=6, [0.25 0.75 0.25] with 48 symmetries, max error in included blocks: 2.65341687215118e-13 ; excluded bands are [] out of 20 total bands (accuracy threshold 1e-06)
+Symmetrizer_Uirr initialized for ikirr=7, kpt=7, [0.5 0.5 0.5] with 96 symmetries, max error in included blocks: 4.6593006270397406e-14 ; excluded bands are [18 19] out of 20 total bands (accuracy threshold 1e-06)
+####################################################################################################
+starting WFs
+----------------------------------------------------------------------------------------------------
+wannier centers and spreads
+----------------------------------------------------------------------------------------------------
+ -0.542003634766   -0.000000000000   -0.000000000000   |     2.497945833807
+  0.542003634766    0.000000000000    0.000000000000   |     2.497945833807
+  0.000000000000   -0.542003634766   -0.000000000000   |     2.497945833807
+ -0.000000000000    0.542003634766    0.000000000000   |     2.497945833807
+  0.000000000000    0.000000000000   -0.542003634766   |     2.497945833807
+  0.000000000000    0.000000000000    0.542003634766   |     2.497945833807
+  0.000000000000    0.000000000000    0.000000000000   |     0.468545794870
+  0.000000000000    0.000000000000    0.000000000000   |     0.468545794870
+  0.000000000000    0.000000000000    0.000000000000   |     0.468545794870
+----------------------------------------------------------------------------------------------------
+  0.000000000000    0.000000000000    0.000000000000   |    16.393312387453 &lt;- sum
+                                          maximal spread =   2.497945833807
+####################################################################################################
+####################################################################################################
+Iteration 0 (from wannierizer)
+----------------------------------------------------------------------------------------------------
+wannier centers and spreads
+----------------------------------------------------------------------------------------------------
+ -0.534924517815    0.000000000000    0.000000000000   |     1.966452017198
+  0.534924517815   -0.000000000000   -0.000000000000   |     1.966452017198
+ -0.000000000000   -0.534924517815    0.000000000000   |     1.966452017198
+ -0.000000000000    0.534924517815    0.000000000000   |     1.966452017198
+ -0.000000000000   -0.000000000000   -0.534924517815   |     1.966452017198
+  0.000000000000    0.000000000000    0.534924517815   |     1.966452017198
+  0.000000000000    0.000000000000    0.000000000000   |     0.445648441375
+  0.000000000000    0.000000000000    0.000000000000   |     0.445648441375
+  0.000000000000    0.000000000000    0.000000000000   |     0.445648441375
+----------------------------------------------------------------------------------------------------
+  0.000000000000   -0.000000000000    0.000000000000   |    13.135657427313 &lt;- sum
+                                          maximal spread =   1.966452017198
+standard deviation = 0.0
+####################################################################################################
+####################################################################################################
+Iteration 10 (from wannierizer)
+----------------------------------------------------------------------------------------------------
+wannier centers and spreads
+----------------------------------------------------------------------------------------------------
+ -0.652147803883    0.000000000000    0.000000000000   |     0.887542685795
+  0.652147803883   -0.000000000000   -0.000000000000   |     0.887542685795
+  0.000000000000   -0.652147803883   -0.000000000000   |     0.887542685795
+ -0.000000000000    0.652147803883    0.000000000000   |     0.887542685795
+  0.000000000000    0.000000000000   -0.652147803883   |     0.887542685795
+ -0.000000000000   -0.000000000000    0.652147803883   |     0.887542685795
+  0.000000000000    0.000000000000    0.000000000000   |     0.369875604058
+  0.000000000000    0.000000000000    0.000000000000   |     0.369875604058
+  0.000000000000    0.000000000000    0.000000000000   |     0.369875604058
+----------------------------------------------------------------------------------------------------
+  0.000000000000   -0.000000000000    0.000000000000   |     6.434882926943 &lt;- sum
+                                          maximal spread =   0.887542685795
+standard deviation = 0.0133376349117917
+####################################################################################################
+####################################################################################################
+Iteration 20 (from wannierizer)
+----------------------------------------------------------------------------------------------------
+wannier centers and spreads
+----------------------------------------------------------------------------------------------------
+ -0.677025258650   -0.000000000000   -0.000000000000   |     0.795176927165
+  0.677025258650    0.000000000000    0.000000000000   |     0.795176927165
+  0.000000000000   -0.677025258650   -0.000000000000   |     0.795176927165
+ -0.000000000000    0.677025258650    0.000000000000   |     0.795176927165
+ -0.000000000000   -0.000000000000   -0.677025258650   |     0.795176927165
+  0.000000000000    0.000000000000    0.677025258650   |     0.795176927165
+  0.000000000000    0.000000000000    0.000000000000   |     0.339102064626
+  0.000000000000    0.000000000000    0.000000000000   |     0.339102064626
+  0.000000000000    0.000000000000    0.000000000000   |     0.339102064626
+----------------------------------------------------------------------------------------------------
+  0.000000000000    0.000000000000    0.000000000000   |     5.788367756868 &lt;- sum
+                                          maximal spread =   0.795176927165
+standard deviation = 0.005029176056763152
+####################################################################################################
+####################################################################################################
+Iteration 30 (from wannierizer)
+----------------------------------------------------------------------------------------------------
+wannier centers and spreads
+----------------------------------------------------------------------------------------------------
+ -0.684916551575    0.000000000000    0.000000000000   |     0.758446433164
+  0.684916551575   -0.000000000000   -0.000000000000   |     0.758446433164
+ -0.000000000000   -0.684916551575    0.000000000000   |     0.758446433164
+  0.000000000000    0.684916551575   -0.000000000000   |     0.758446433164
+  0.000000000000    0.000000000000   -0.684916551575   |     0.758446433164
+ -0.000000000000   -0.000000000000    0.684916551575   |     0.758446433164
+  0.000000000000    0.000000000000    0.000000000000   |     0.324682128727
+  0.000000000000    0.000000000000    0.000000000000   |     0.324682128727
+  0.000000000000    0.000000000000    0.000000000000   |     0.324682128727
+----------------------------------------------------------------------------------------------------
+ -0.000000000000    0.000000000000    0.000000000000   |     5.524724985167 &lt;- sum
+                                          maximal spread =   0.758446433164
+standard deviation = 0.0020209542581305843
+####################################################################################################
+####################################################################################################
+Iteration 40 (from wannierizer)
+----------------------------------------------------------------------------------------------------
+wannier centers and spreads
+----------------------------------------------------------------------------------------------------
+ -0.686921782534   -0.000000000000   -0.000000000000   |     0.743304163279
+  0.686921782534    0.000000000000    0.000000000000   |     0.743304163279
+ -0.000000000000   -0.686921782534    0.000000000000   |     0.743304163279
+  0.000000000000    0.686921782534   -0.000000000000   |     0.743304163279
+  0.000000000000    0.000000000000   -0.686921782534   |     0.743304163279
+  0.000000000000    0.000000000000    0.686921782534   |     0.743304163279
+  0.000000000000    0.000000000000    0.000000000000   |     0.317248959171
+  0.000000000000    0.000000000000    0.000000000000   |     0.317248959171
+  0.000000000000    0.000000000000    0.000000000000   |     0.317248959171
+----------------------------------------------------------------------------------------------------
+ -0.000000000000    0.000000000000    0.000000000000   |     5.411571857186 &lt;- sum
+                                          maximal spread =   0.743304163279
+standard deviation = 0.0008578719017001534
+####################################################################################################
+####################################################################################################
+Iteration 50 (from wannierizer)
+----------------------------------------------------------------------------------------------------
+wannier centers and spreads
+----------------------------------------------------------------------------------------------------
+ -0.687092858156    0.000000000000    0.000000000000   |     0.736611286819
+  0.687092858156   -0.000000000000   -0.000000000000   |     0.736611286819
+ -0.000000000000   -0.687092858156    0.000000000000   |     0.736611286819
+  0.000000000000    0.687092858156   -0.000000000000   |     0.736611286819
+  0.000000000000    0.000000000000   -0.687092858156   |     0.736611286819
+ -0.000000000000   -0.000000000000    0.687092858156   |     0.736611286819
+  0.000000000000    0.000000000000    0.000000000000   |     0.313202607737
+  0.000000000000    0.000000000000    0.000000000000   |     0.313202607737
+  0.000000000000    0.000000000000    0.000000000000   |     0.313202607737
+----------------------------------------------------------------------------------------------------
+ -0.000000000000   -0.000000000000    0.000000000000   |     5.359275544128 &lt;- sum
+                                          maximal spread =   0.736611286819
+standard deviation = 0.000393076490491266
+####################################################################################################
+####################################################################################################
+Iteration 60 (from wannierizer)
+----------------------------------------------------------------------------------------------------
+wannier centers and spreads
+----------------------------------------------------------------------------------------------------
+ -0.686804087028    0.000000000000    0.000000000000   |     0.733415175871
+  0.686804087028   -0.000000000000   -0.000000000000   |     0.733415175871
+  0.000000000000   -0.686804087028   -0.000000000000   |     0.733415175871
+ -0.000000000000    0.686804087028    0.000000000000   |     0.733415175871
+ -0.000000000000   -0.000000000000   -0.686804087028   |     0.733415175871
+  0.000000000000    0.000000000000    0.686804087028   |     0.733415175871
+  0.000000000000    0.000000000000    0.000000000000   |     0.310911822261
+  0.000000000000    0.000000000000    0.000000000000   |     0.310911822261
+  0.000000000000    0.000000000000    0.000000000000   |     0.310911822261
+----------------------------------------------------------------------------------------------------
+ -0.000000000000   -0.000000000000   -0.000000000000   |     5.333226522008 &lt;- sum
+                                          maximal spread =   0.733415175871
+standard deviation = 0.00019415278708392512
+####################################################################################################
+####################################################################################################
+Iteration 70 (from wannierizer)
+----------------------------------------------------------------------------------------------------
+wannier centers and spreads
+----------------------------------------------------------------------------------------------------
+ -0.686479219060    0.000000000000    0.000000000000   |     0.731777966896
+  0.686479219060   -0.000000000000   -0.000000000000   |     0.731777966896
+  0.000000000000   -0.686479219060   -0.000000000000   |     0.731777966896
+  0.000000000000    0.686479219060   -0.000000000000   |     0.731777966896
+  0.000000000000    0.000000000000   -0.686479219060   |     0.731777966896
+ -0.000000000000   -0.000000000000    0.686479219060   |     0.731777966896
+  0.000000000000    0.000000000000    0.000000000000   |     0.309576357138
+  0.000000000000    0.000000000000    0.000000000000   |     0.309576357138
+  0.000000000000    0.000000000000    0.000000000000   |     0.309576357138
+----------------------------------------------------------------------------------------------------
+  0.000000000000    0.000000000000   -0.000000000000   |     5.319396872788 &lt;- sum
+                                          maximal spread =   0.731777966896
+standard deviation = 0.0001022872245135043
+####################################################################################################
+####################################################################################################
+Iteration 80 (from wannierizer)
+----------------------------------------------------------------------------------------------------
+wannier centers and spreads
+----------------------------------------------------------------------------------------------------
+ -0.686223607773    0.000000000000    0.000000000000   |     0.730889899638
+  0.686223607773   -0.000000000000   -0.000000000000   |     0.730889899638
+  0.000000000000   -0.686223607773   -0.000000000000   |     0.730889899638
+ -0.000000000000    0.686223607773    0.000000000000   |     0.730889899638
+  0.000000000000    0.000000000000   -0.686223607773   |     0.730889899638
+ -0.000000000000   -0.000000000000    0.686223607773   |     0.730889899638
+  0.000000000000    0.000000000000    0.000000000000   |     0.308781464286
+  0.000000000000    0.000000000000    0.000000000000   |     0.308781464286
+  0.000000000000    0.000000000000    0.000000000000   |     0.308781464286
+----------------------------------------------------------------------------------------------------
+ -0.000000000000    0.000000000000    0.000000000000   |     5.311683790687 &lt;- sum
+                                          maximal spread =   0.730889899638
+standard deviation = 5.668937488351719e-05
+####################################################################################################
+####################################################################################################
+Iteration 90 (from wannierizer)
+----------------------------------------------------------------------------------------------------
+wannier centers and spreads
+----------------------------------------------------------------------------------------------------
+ -0.686044892132   -0.000000000000   -0.000000000000   |     0.730386933165
+  0.686044892132    0.000000000000    0.000000000000   |     0.730386933165
+ -0.000000000000   -0.686044892132    0.000000000000   |     0.730386933165
+  0.000000000000    0.686044892132   -0.000000000000   |     0.730386933165
+ -0.000000000000   -0.000000000000   -0.686044892132   |     0.730386933165
+  0.000000000000    0.000000000000    0.686044892132   |     0.730386933165
+  0.000000000000    0.000000000000    0.000000000000   |     0.308301633403
+  0.000000000000    0.000000000000    0.000000000000   |     0.308301633403
+  0.000000000000    0.000000000000    0.000000000000   |     0.308301633403
+----------------------------------------------------------------------------------------------------
+  0.000000000000    0.000000000000    0.000000000000   |     5.307226499201 &lt;- sum
+                                          maximal spread =   0.730386933165
+standard deviation = 3.2606194257476315e-05
+####################################################################################################
+####################################################################################################
+Final state (from wannierizer)
+----------------------------------------------------------------------------------------------------
+wannier centers and spreads
+----------------------------------------------------------------------------------------------------
+ -0.685936185903   -0.000000000000   -0.000000000000   |     0.730116163825
+  0.685936185903    0.000000000000    0.000000000000   |     0.730116163825
+ -0.000000000000   -0.685936185903    0.000000000000   |     0.730116163825
+  0.000000000000    0.685936185903   -0.000000000000   |     0.730116163825
+  0.000000000000    0.000000000000   -0.685936185903   |     0.730116163825
+ -0.000000000000   -0.000000000000    0.685936185903   |     0.730116163825
+  0.000000000000    0.000000000000    0.000000000000   |     0.308032514524
+  0.000000000000    0.000000000000    0.000000000000   |     0.308032514524
+  0.000000000000    0.000000000000    0.000000000000   |     0.308032514524
+----------------------------------------------------------------------------------------------------
+ -0.000000000000    0.000000000000    0.000000000000   |     5.304794526524 &lt;- sum
+                                          maximal spread =   0.730116163825
+standard deviation = 2.039792886713793e-05
+####################################################################################################
+time for creating wannierizer 0.34493136405944824
+time for iterations 3.772080898284912
+time for updating 3.5474748611450195
+total time for wannierization 4.835838794708252
+saving to wannier_soc-spin-1.chk :
+</pre></div></div>
+</div>
+</section>
+<section id="Create-the-System-object-to-be-used-in-WannierBerri-calculations">
+<h3>Create the System object to be used in WannierBerri calculations<a class="headerlink" href="#Create-the-System-object-to-be-used-in-WannierBerri-calculations" title="Link to this heading"></a></h3>
+<p>It is called “System_w90” class, although it now does not use the w90 wannierization, but the class is the same.</p>
+<p>Unlike the non-SOC systems, here we also specify the direction of the magnetization. We can later easily chanbge this direction without redoing the wannierization.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from wannierberri.system.system_soc import SystemSOC
+theta = 0
+phi = 0
+
+system_soc = SystemSOC.from_wannier90data_soc(w90data=w90data, berry=True, silent=False)
+system_soc.set_soc_axis(theta=theta, phi=phi, alpha_soc=1.0)
+system_soc.save_npz(&quot;system_soc&quot;)
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+setting Rvec
+setting AA..
+setting AA - OK
+Real-space lattice:
+ [[ 1.435  1.435  1.435]
+ [-1.435  1.435  1.435]
+ [-1.435 -1.435  1.435]]
+Number of wannier functions: 9
+Number of R points: 89
+Recommended size of FFT grid [4 4 4]
+setting Rvec
+setting AA..
+setting AA - OK
+Real-space lattice:
+ [[ 1.435  1.435  1.435]
+ [-1.435  1.435  1.435]
+ [-1.435 -1.435  1.435]]
+Number of wannier functions: 9
+Number of R points: 89
+Recommended size of FFT grid [4 4 4]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/home/stepan/github/wannier-berri-work/wannier-berri-soc-nscf/wannierberri/utility.py:68: UserWarning: usually need to provide either with real or reciprocal lattice.If you only want to generate a random symmetric tensor - that it fine
+  warnings.warn(&#34;usually need to provide either with real or reciprocal lattice.&#34;
+/home/stepan/github/wannier-berri-work/wannier-berri-soc-nscf/wannierberri/symmetry/sym_wann_2.py:258: UserWarning: symmetrization of matrices {&#39;dV_soc_wann_0_0&#39;} is not tested. use on your own risk
+  warnings.warn(f&#34;symmetrization of matrices {unknown} is not tested. use on your own risk&#34;)
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+nspin in SOC: 2
+setting the Rvectors with wannier centers (cart):
+ [[-6.59525509e-01  3.57459156e-17  3.57459156e-17]
+ [-6.85936186e-01  6.04761835e-17  6.04761835e-17]
+ [ 6.59525509e-01  1.73597524e-17  1.73597524e-17]
+ [ 6.85936186e-01 -6.04761835e-17 -6.04761835e-17]
+ [ 1.73597524e-17 -6.59525509e-01 -1.73597524e-17]
+ [-8.13853838e-17 -6.85936186e-01  8.13853838e-17]
+ [-1.73597524e-17  6.59525509e-01  1.73597524e-17]
+ [ 8.13853838e-17  6.85936186e-01 -8.13853838e-17]
+ [-3.82689527e-17 -3.82689527e-17 -6.59525509e-01]
+ [-1.35386848e-17 -1.35386848e-17 -6.85936186e-01]
+ [ 3.82689527e-17  3.82689527e-17  6.59525509e-01]
+ [ 1.35386848e-17  1.35386848e-17  6.85936186e-01]
+ [ 0.00000000e+00  0.00000000e+00  0.00000000e+00]
+ [ 0.00000000e+00  0.00000000e+00  0.00000000e+00]
+ [ 0.00000000e+00  0.00000000e+00  0.00000000e+00]
+ [ 0.00000000e+00  0.00000000e+00  0.00000000e+00]
+ [ 0.00000000e+00  0.00000000e+00  0.00000000e+00]
+ [ 0.00000000e+00  0.00000000e+00  0.00000000e+00]]
+ (red):
+ [[-2.29799829e-01  2.29799829e-01 -3.48545386e-34]
+ [-2.39002155e-01  2.39002155e-01 -1.23022293e-33]
+ [ 2.29799829e-01 -2.29799829e-01 -2.38815969e-35]
+ [ 2.39002155e-01 -2.39002155e-01  1.23022293e-33]
+ [ 2.38815969e-35 -2.29799829e-01  2.29799829e-01]
+ [ 1.61314025e-34 -2.39002155e-01  2.39002155e-01]
+ [-2.38815969e-35  2.29799829e-01 -2.29799829e-01]
+ [-1.61314025e-34  2.39002155e-01 -2.39002155e-01]
+ [-2.29799829e-01  4.76405791e-34 -2.29799829e-01]
+ [-2.39002155e-01  1.31572835e-34 -2.39002155e-01]
+ [ 2.29799829e-01 -4.76405791e-34  2.29799829e-01]
+ [ 2.39002155e-01 -1.31572835e-34  2.39002155e-01]
+ [ 0.00000000e+00  0.00000000e+00  0.00000000e+00]
+ [ 0.00000000e+00  0.00000000e+00  0.00000000e+00]
+ [ 0.00000000e+00  0.00000000e+00  0.00000000e+00]
+ [ 0.00000000e+00  0.00000000e+00  0.00000000e+00]
+ [ 0.00000000e+00  0.00000000e+00  0.00000000e+00]
+ [ 0.00000000e+00  0.00000000e+00  0.00000000e+00]]
+setting Rvec
+using magmoms
+ [[0.         0.         2.21212609]]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/home/stepan/github/wannier-berri-work/wannier-berri-soc-nscf/wannierberri/symmetry/sym_wann_2.py:258: UserWarning: symmetrization of matrices {&#39;dV_soc_wann_1_1&#39;} is not tested. use on your own risk
+  warnings.warn(f&#34;symmetrization of matrices {unknown} is not tested. use on your own risk&#34;)
+/home/stepan/github/wannier-berri-work/wannier-berri-soc-nscf/wannierberri/symmetry/sym_wann_2.py:258: UserWarning: symmetrization of matrices {&#39;overlap_up_down&#39;, &#39;dV_soc_wann_0_1&#39;} is not tested. use on your own risk
+  warnings.warn(f&#34;symmetrization of matrices {unknown} is not tested. use on your own risk&#34;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+using magmoms
+ [[0.         0.         2.21212609]]
+using magmoms
+ [[0.         0.         2.21212609]]
+Saving SystemSOC to system_soc
+saving system of class SystemSOC to system_soc
+ properties: [&#39;num_wann&#39;, &#39;real_lattice&#39;, &#39;iRvec&#39;, &#39;periodic&#39;, &#39;is_phonon&#39;, &#39;wannier_centers_cart&#39;, &#39;pointgroup&#39;, &#39;cell&#39;]
+saving num_wann to system_soc/num_wann.npz
+saving real_lattice to system_soc/real_lattice.npz
+saving iRvec to system_soc/iRvec.npz
+saving periodic to system_soc/periodic.npz
+saving is_phonon to system_soc/is_phonon.npz
+saving wannier_centers_cart to system_soc/wannier_centers_cart.npz
+saving pointgroup to system_soc/pointgroup.npz
+saving cell to system_soc/cell.npz
+saving system of class System_w90 to system_soc/system_up
+ properties: [&#39;num_wann&#39;, &#39;real_lattice&#39;, &#39;iRvec&#39;, &#39;periodic&#39;, &#39;is_phonon&#39;, &#39;wannier_centers_cart&#39;, &#39;pointgroup&#39;]
+saving num_wann
+saving num_wann to system_soc/system_up/num_wann.npz
+ - Ok!
+saving real_lattice
+saving real_lattice to system_soc/system_up/real_lattice.npz
+ - Ok!
+saving iRvec
+saving iRvec to system_soc/system_up/iRvec.npz
+ - Ok!
+saving periodic
+saving periodic to system_soc/system_up/periodic.npz
+ - Ok!
+saving is_phonon
+saving is_phonon to system_soc/system_up/is_phonon.npz
+ - Ok!
+saving wannier_centers_cart
+saving wannier_centers_cart to system_soc/system_up/wannier_centers_cart.npz
+ - Ok!
+saving pointgroup
+saving pointgroup to system_soc/system_up/pointgroup.npz
+ - Ok!
+saving Ham - Ok!
+saving AA - Ok!
+saving system of class System_w90 to system_soc/system_down
+ properties: [&#39;num_wann&#39;, &#39;real_lattice&#39;, &#39;iRvec&#39;, &#39;periodic&#39;, &#39;is_phonon&#39;, &#39;wannier_centers_cart&#39;, &#39;pointgroup&#39;]
+saving num_wann
+saving num_wann to system_soc/system_down/num_wann.npz
+ - Ok!
+saving real_lattice
+saving real_lattice to system_soc/system_down/real_lattice.npz
+ - Ok!
+saving iRvec
+saving iRvec to system_soc/system_down/iRvec.npz
+ - Ok!
+saving periodic
+saving periodic to system_soc/system_down/periodic.npz
+ - Ok!
+saving is_phonon
+saving is_phonon to system_soc/system_down/is_phonon.npz
+ - Ok!
+saving wannier_centers_cart
+saving wannier_centers_cart to system_soc/system_down/wannier_centers_cart.npz
+ - Ok!
+saving pointgroup
+saving pointgroup to system_soc/system_down/pointgroup.npz
+ - Ok!
+saving Ham - Ok!
+saving AA - Ok!
+</pre></div></div>
+</div>
+</section>
+<section id="Compute-the-wannierized-bandstructure-with-SOC-along-the-high-symmetry-path">
+<h3>Compute the wannierized bandstructure with SOC along the high-symmetry path<a class="headerlink" href="#Compute-the-wannierized-bandstructure-with-SOC-along-the-high-symmetry-path" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from wannierberri.grid import Path
+from wannierberri.evaluate_k import evaluate_k_path
+# from wannierberri.system.system_soc import SystemSOC
+# system_soc = SystemSOC.from_npz(&quot;system_soc&quot;)
+
+points = {&quot;G&quot;: [0.0, 0.0, 0.0],
+          &quot;H&quot;: [0.5, -0.5, -0.5],
+          &quot;P&quot;: [0.75, 0.25, -0.25],
+          &quot;N&quot;: [0.5, 0.0, -0.5],
+         }
+
+path_str = &quot;GHPNGP&quot;
+path = Path(system_soc,
+            nodes=[points[p] for p in path_str],
+            labels=[p for p in path_str],
+            length=1000)   # length [ Ang] ~= 2*pi/dk
+
+bands_wannier_soc= evaluate_k_path(system_soc, path=path, quantities=[&quot;spin&quot;], parallel=parallel_env)
+bands_wannier_up = evaluate_k_path(system_soc.system_up, path=path, parallel=parallel_env)
+bands_wannier_dw = evaluate_k_path(system_soc.system_down, path=path, parallel=parallel_env)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-red-intense-fg ansi-bold">Starting run()</span>
+<span class="ansi-cyan-intense-fg ansi-bold">Using the follwing calculators :
+############################################################
+</span>
+<span class="ansi-magenta-intense-fg ansi-bold"> &#39;tabulate&#39; </span> : <span class="ansi-yellow-intense-fg ansi-bold"> &lt;wannierberri.calculators.tabulate.TabulatorAll object at 0x76cbf87079b0&gt; </span> :
+    TabulatorAll - a pack of all k-resolved calculators (Tabulators)
+
+ Includes the following tabulators :
+--------------------------------------------------
+ &#34;spin&#34; : &lt;wannierberri.calculators.tabulate.Spin object at 0x76ce635aa600&gt; :  Spin expectation :math:` \langle u | \mathbf{\sigma} | u \rangle`
+
+ &#34;Energy&#34; : &lt;wannierberri.calculators.tabulate.Energy object at 0x76ce63819250&gt; : calculator not described
+
+--------------------------------------------------
+
+<span class="ansi-cyan-intense-fg ansi-bold">############################################################</span>
+Calculation along a path - checking calculators for compatibility
+tabulate &lt;wannierberri.calculators.tabulate.TabulatorAll object at 0x76cbf87079b0&gt;
+All calculators are compatible
+Symmetrization switched off for Path
+Grid is regular
+The set of k points is a Path() with 1373 points and labels {0: &#39;G&#39;, 348: &#39;H&#39;, 650: &#39;P&#39;, 824: &#39;N&#39;, 1070: &#39;G&#39;, 1372: &#39;P&#39;}
+generating K_list
+Done
+Done, sum of weights:1373.0
+
+############################################################
+Iteration 0 out of 0
+processing 1373 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/home/stepan/github/wannier-berri-work/wannier-berri-soc-nscf/wannierberri/grid/path.py:163: UserWarning: symmetry is not used for a tabulation along path
+  warnings.warn(&#34;symmetry is not used for a tabulation along path&#34;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+time for processing   1373 K-points on  16 processes:     0.9452 ; per K-point          0.0007 ; proc-sec per K-point          0.0110
+time1 =  0.12922000885009766
+Totally processed 1373 K-points
+run() finished
+<span class="ansi-red-intense-fg ansi-bold">Starting run()</span>
+<span class="ansi-cyan-intense-fg ansi-bold">Using the follwing calculators :
+############################################################
+</span>
+<span class="ansi-magenta-intense-fg ansi-bold"> &#39;tabulate&#39; </span> : <span class="ansi-yellow-intense-fg ansi-bold"> &lt;wannierberri.calculators.tabulate.TabulatorAll object at 0x76cbf843a330&gt; </span> :
+    TabulatorAll - a pack of all k-resolved calculators (Tabulators)
+
+ Includes the following tabulators :
+--------------------------------------------------
+ &#34;Energy&#34; : &lt;wannierberri.calculators.tabulate.Energy object at 0x76cbf87465d0&gt; : calculator not described
+
+--------------------------------------------------
+
+<span class="ansi-cyan-intense-fg ansi-bold">############################################################</span>
+Calculation along a path - checking calculators for compatibility
+tabulate &lt;wannierberri.calculators.tabulate.TabulatorAll object at 0x76cbf843a330&gt;
+All calculators are compatible
+Symmetrization switched off for Path
+Grid is regular
+The set of k points is a Path() with 1373 points and labels {0: &#39;G&#39;, 348: &#39;H&#39;, 650: &#39;P&#39;, 824: &#39;N&#39;, 1070: &#39;G&#39;, 1372: &#39;P&#39;}
+generating K_list
+Done
+Done, sum of weights:1373.0
+
+############################################################
+Iteration 0 out of 0
+processing 1373 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing   1373 K-points on  16 processes:     0.6667 ; per K-point          0.0005 ; proc-sec per K-point          0.0078
+time1 =  0.08069348335266113
+Totally processed 1373 K-points
+run() finished
+<span class="ansi-red-intense-fg ansi-bold">Starting run()</span>
+<span class="ansi-cyan-intense-fg ansi-bold">Using the follwing calculators :
+############################################################
+</span>
+<span class="ansi-magenta-intense-fg ansi-bold"> &#39;tabulate&#39; </span> : <span class="ansi-yellow-intense-fg ansi-bold"> &lt;wannierberri.calculators.tabulate.TabulatorAll object at 0x76cbf843a330&gt; </span> :
+    TabulatorAll - a pack of all k-resolved calculators (Tabulators)
+
+ Includes the following tabulators :
+--------------------------------------------------
+ &#34;Energy&#34; : &lt;wannierberri.calculators.tabulate.Energy object at 0x76cc0816a7e0&gt; : calculator not described
+
+--------------------------------------------------
+
+<span class="ansi-cyan-intense-fg ansi-bold">############################################################</span>
+Calculation along a path - checking calculators for compatibility
+tabulate &lt;wannierberri.calculators.tabulate.TabulatorAll object at 0x76cbf843a330&gt;
+All calculators are compatible
+Symmetrization switched off for Path
+Grid is regular
+The set of k points is a Path() with 1373 points and labels {0: &#39;G&#39;, 348: &#39;H&#39;, 650: &#39;P&#39;, 824: &#39;N&#39;, 1070: &#39;G&#39;, 1372: &#39;P&#39;}
+generating K_list
+Done
+Done, sum of weights:1373.0
+
+############################################################
+Iteration 0 out of 0
+processing 1373 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing   1373 K-points on  16 processes:     0.6226 ; per K-point          0.0005 ; proc-sec per K-point          0.0073
+time1 =  0.0809934139251709
+Totally processed 1373 K-points
+run() finished
+</pre></div></div>
+</div>
+</section>
+</section>
+<section id="Plot-the-Bandstructure-with-and-without-SOC">
+<h2>Plot the Bandstructure with and without SOC<a class="headerlink" href="#Plot-the-Bandstructure-with-and-without-SOC" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>EF = 9.53754
+EF=0
+from matplotlib import pyplot as plt
+fig, axes = plt.subplots(2, 1, sharey=True, sharex=True, figsize=(10, 15))
+
+theta = 0
+phi = 0
+
+bs_dft.plot(show=False, emin=0,emax=30.0, ax=axes[0] ,  label=[&quot;DFT_up&quot;, &quot;DFT_dw&quot;])
+
+bands_wannier_soc.plot_path_fat(path=path,
+                       Eshift=EF,
+                       quantity=&quot;spin&quot;,
+                       component=&quot;z&quot;,
+                       mode=&quot;color&quot;,
+                       label=f&quot;soc_nscf, Sz, th={theta}, phi={phi}&quot;,
+                       axes=axes[1],
+                       fatmax=2,
+                        linecolor=&quot;orange&quot;,
+                        close_fig=False,
+                        show_fig=False,
+                        kwargs_line=dict(linestyle=&#39;-&#39;, lw=0.0),
+)
+#
+
+bands_wannier_up.plot_path_fat(
+                            path=path,
+                            Eshift=EF,
+                            axes=axes[0],
+                            label=&quot;spin-up&quot;,
+                            linecolor=&quot;red&quot;,
+                            kwargs_line=dict(linestyle=&#39;--&#39;),
+                            close_fig=False,
+                            show_fig=False)
+
+bands_wannier_dw.plot_path_fat(
+                        path=path,
+                       label=&quot;spin-dw&quot;,
+                       axes=axes[0],
+                       Eshift=EF,
+                       linecolor=&quot;purple&quot;,
+                       kwargs_line=dict(linestyle=&#39;--&#39;),
+                       close_fig=False,
+                       show_fig=False,)
+plt.ylim(7, 13)
+plt.show()
+<br/><br/></pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/home/stepan/github/WannierBerri-tutorial/.conda/lib/python3.12/site-packages/ase/spectrum/band_structure.py:352: UserWarning: No artists with labels found to put in legend.  Note that artists whose label start with an underscore are ignored when legend() is called with no argument.
+  leg = plt.legend(loc=loc)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_build/.doctrees/nbsphinx/tutorials_8_GPAW_2.Fe_bccFe_22_1.png" src="../../_build/.doctrees/nbsphinx/tutorials_8_GPAW_2.Fe_bccFe_22_1.png" />
+</div>
+</div>
+</section>
+<section id="AHC">
+<h2>AHC<a class="headerlink" href="#AHC" title="Link to this heading"></a></h2>
+<section id="magnetization-along-[001]-direction">
+<h3>magnetization along [001] direction<a class="headerlink" href="#magnetization-along-[001]-direction" title="Link to this heading"></a></h3>
+<p>Below we evaluate separately the “internal” (which depend only on the Hamiltonian) and external (which depend on position matrix elements) contributions to the anomalous Hall conductivity (AHC). The motivation for this separation will be clear shortly</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import os
+import numpy as np
+import wannierberri as wb
+from wannierberri.system.system_soc import SystemSOC
+
+
+system_soc_001 = SystemSOC.from_npz(&quot;system_soc&quot;)
+theta=0
+phi=0
+system_soc_001.set_soc_axis(theta=theta, phi=phi, units=&quot;degrees&quot;)
+
+
+grid = wb.grid.Grid(system_soc_001, NK=100)
+
+EF = 9.53754
+tetra = False
+
+Efermi = np.linspace(EF - 0.5, EF + 0.5, 1001)
+
+os.makedirs(&quot;results&quot;, exist_ok=True)
+result_int = wb.run(system_soc_001,
+        grid=grid,
+        parallel=parallel_env,
+        fout_name=f&quot;results/Fe-soc-001&quot;,
+        calculators={&quot;ahc_int&quot;: wb.calculators.static.AHC(Efermi=Efermi, tetra=tetra, kwargs_formula={&quot;external_terms&quot;: False})},
+        adpt_num_iter=50,
+        restart=False,
+        print_progress_step=5,
+        )
+
+
+grid = wb.grid.Grid(system_soc, NK=50)
+result_ext = wb.run(system_soc,
+        grid=grid,
+        parallel=parallel_env,
+        fout_name=f&quot;results/Fe-soc-001&quot;,
+        calculators={&quot;ahc_ext&quot;: wb.calculators.static.AHC(Efermi=Efermi, tetra=tetra, kwargs_formula={&quot;internal_terms&quot;: False})},
+        adpt_num_iter=25,
+        restart=False,
+        print_progress_step=5,
+        )
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+loading real_lattice - Ok!
+loading wannier_centers_cart - Ok!
+loading pointgroup - Ok!
+loading iRvec - Ok!
+loading periodic - Ok!
+loading is_phonon - Ok!
+loading num_wann - Ok!
+loading R_matrix Ham - Ok!
+loading R_matrix AA - Ok!
+loading real_lattice - Ok!
+loading wannier_centers_cart - Ok!
+loading pointgroup - Ok!
+loading iRvec - Ok!
+loading periodic - Ok!
+loading is_phonon - Ok!
+loading num_wann - Ok!
+loading R_matrix Ham - Ok!
+loading R_matrix AA - Ok!
+using magmoms
+ [[0.         0.         2.21212609]]
+Minimal symmetric FFT grid :  [7 7 7]
+<span class="ansi-red-intense-fg ansi-bold">Starting run()</span>
+<span class="ansi-cyan-intense-fg ansi-bold">Using the follwing calculators :
+############################################################
+</span>
+<span class="ansi-magenta-intense-fg ansi-bold"> &#39;ahc_int&#39; </span> : <span class="ansi-yellow-intense-fg ansi-bold"> &lt;wannierberri.calculators.static.AHC object at 0x76cbf3eab890&gt; </span> : Anomalous Hall conductivity (:math:`s^3 \cdot A^2 / (kg \cdot m^3) = S/m`)
+
+        | With Fermi sea integral Eq(11) in `Ref &lt;https://www.nature.com/articles/s41524-021-00498-5&gt;`__
+        | Output: :math:`O = -e^2/\hbar \int [dk] \Omega f`
+        | Instruction: :math:`j_\alpha = \sigma_{\alpha\beta} E_\beta = \epsilon_{\alpha\beta\delta} O_\delta E_\beta`
+<span class="ansi-cyan-intense-fg ansi-bold">############################################################</span>
+Calculation on  grid - checking calculators for compatibility
+ahc_int &lt;wannierberri.calculators.static.AHC object at 0x76cbf3eab890&gt;
+All calculators are compatible
+Grid is regular
+The set of k points is a Grid() with NKdiv=[10 10 10], NKFFT=[10 10 10], NKtot=[100 100 100]
+generating K_list
+Done in 0.0022110939025878906 s
+excluding symmetry-equivalent K-points from initial grid
+Done in 0.0185086727142334 s
+K_list contains 102 Irreducible points(10.2%) out of initial 10x10x10=1000 grid
+Done, sum of weights:1.0000000000000007
+
+############################################################
+Iteration 0 out of 50
+processing 102 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing    102 K-points on  16 processes:     4.6274 ; per K-point          0.0454 ; proc-sec per K-point          0.7259
+time1 =  0.001878976821899414
+time2 =  0.007702827453613281
+sum of weights now :1.0000000000000007
+
+############################################################
+Iteration 1 out of 50
+processing 13 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     13 K-points on  16 processes:     0.9005 ; per K-point          0.0693 ; proc-sec per K-point          1.1083
+time1 =  0.0007953643798828125
+time2 =  0.008181333541870117
+sum of weights now :1.0000000000000007
+
+############################################################
+Iteration 2 out of 50
+processing 12 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     12 K-points on  16 processes:     0.7701 ; per K-point          0.0642 ; proc-sec per K-point          1.0268
+time1 =  0.0004124641418457031
+time2 =  0.0074310302734375
+sum of weights now :1.0000000000000007
+
+############################################################
+Iteration 3 out of 50
+processing 7 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing      7 K-points on  16 processes:     0.5838 ; per K-point          0.0834 ; proc-sec per K-point          1.3345
+time1 =  0.0005726814270019531
+time2 =  0.011391878128051758
+sum of weights now :1.0000000000000009
+
+############################################################
+Iteration 4 out of 50
+processing 7 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing      7 K-points on  16 processes:     0.5215 ; per K-point          0.0745 ; proc-sec per K-point          1.1921
+time1 =  0.0002257823944091797
+time2 =  0.005857706069946289
+sum of weights now :1.0000000000000009
+
+############################################################
+Iteration 5 out of 50
+processing 12 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     12 K-points on  16 processes:     0.7288 ; per K-point          0.0607 ; proc-sec per K-point          0.9718
+time1 =  0.0003638267517089844
+time2 =  0.006953716278076172
+sum of weights now :1.0000000000000004
+
+############################################################
+Iteration 6 out of 50
+processing 20 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     20 K-points on  16 processes:     1.0621 ; per K-point          0.0531 ; proc-sec per K-point          0.8497
+time1 =  0.0004956722259521484
+time2 =  0.0066835880279541016
+sum of weights now :1.0000000000000004
+
+############################################################
+Iteration 7 out of 50
+processing 7 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing      7 K-points on  16 processes:     0.5372 ; per K-point          0.0767 ; proc-sec per K-point          1.2279
+time1 =  0.00024127960205078125
+time2 =  0.0066149234771728516
+sum of weights now :1.0000000000000004
+
+############################################################
+Iteration 8 out of 50
+processing 6 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing      6 K-points on  16 processes:     0.4656 ; per K-point          0.0776 ; proc-sec per K-point          1.2416
+time1 =  0.0002644062042236328
+time2 =  0.007863044738769531
+sum of weights now :1.0000000000000007
+
+############################################################
+Iteration 9 out of 50
+processing 12 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     12 K-points on  16 processes:     0.7483 ; per K-point          0.0624 ; proc-sec per K-point          0.9977
+time1 =  0.00030684471130371094
+time2 =  0.005937814712524414
+sum of weights now :1.0000000000000004
+
+############################################################
+Iteration 10 out of 50
+processing 7 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing      7 K-points on  16 processes:     0.5309 ; per K-point          0.0758 ; proc-sec per K-point          1.2135
+time1 =  0.00020194053649902344
+time2 =  0.005774259567260742
+sum of weights now :1.0000000000000004
+
+############################################################
+Iteration 11 out of 50
+processing 12 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     12 K-points on  16 processes:     0.7702 ; per K-point          0.0642 ; proc-sec per K-point          1.0269
+time1 =  0.00039696693420410156
+time2 =  0.008262872695922852
+sum of weights now :1.0000000000000004
+
+############################################################
+Iteration 12 out of 50
+processing 9 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing      9 K-points on  16 processes:     0.6741 ; per K-point          0.0749 ; proc-sec per K-point          1.1984
+time1 =  0.0002918243408203125
+time2 =  0.006740093231201172
+sum of weights now :1.0000000000000004
+
+############################################################
+Iteration 13 out of 50
+processing 12 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     12 K-points on  16 processes:     0.7890 ; per K-point          0.0658 ; proc-sec per K-point          1.0521
+time1 =  0.000392913818359375
+time2 =  0.007868051528930664
+sum of weights now :1.0000000000000007
+
+############################################################
+Iteration 14 out of 50
+processing 13 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     13 K-points on  16 processes:     0.8062 ; per K-point          0.0620 ; proc-sec per K-point          0.9922
+time1 =  0.00033974647521972656
+time2 =  0.006372690200805664
+sum of weights now :1.0000000000000009
+
+############################################################
+Iteration 15 out of 50
+processing 12 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     12 K-points on  16 processes:     0.7701 ; per K-point          0.0642 ; proc-sec per K-point          1.0268
+time1 =  0.0004107952117919922
+time2 =  0.007712602615356445
+sum of weights now :1.0000000000000013
+
+############################################################
+Iteration 16 out of 50
+processing 20 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     20 K-points on  16 processes:     1.1512 ; per K-point          0.0576 ; proc-sec per K-point          0.9210
+time1 =  0.0007264614105224609
+time2 =  0.010617971420288086
+sum of weights now :1.000000000000001
+
+############################################################
+Iteration 17 out of 50
+processing 19 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     19 K-points on  16 processes:     1.0135 ; per K-point          0.0533 ; proc-sec per K-point          0.8535
+time1 =  0.0005431175231933594
+time2 =  0.00824284553527832
+sum of weights now :1.0000000000000013
+
+############################################################
+Iteration 18 out of 50
+processing 22 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     22 K-points on  16 processes:     1.1177 ; per K-point          0.0508 ; proc-sec per K-point          0.8128
+time1 =  0.0006074905395507812
+time2 =  0.006329536437988281
+sum of weights now :1.0000000000000013
+
+############################################################
+Iteration 19 out of 50
+processing 14 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     14 K-points on  16 processes:     0.8770 ; per K-point          0.0626 ; proc-sec per K-point          1.0023
+time1 =  0.0003681182861328125
+time2 =  0.006533622741699219
+sum of weights now :1.0000000000000013
+
+############################################################
+Iteration 20 out of 50
+processing 23 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     23 K-points on  16 processes:     1.2501 ; per K-point          0.0544 ; proc-sec per K-point          0.8697
+time1 =  0.0005617141723632812
+time2 =  0.007447719573974609
+sum of weights now :1.0000000000000016
+
+############################################################
+Iteration 21 out of 50
+processing 14 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     14 K-points on  16 processes:     0.8193 ; per K-point          0.0585 ; proc-sec per K-point          0.9363
+time1 =  0.00036978721618652344
+time2 =  0.008879423141479492
+sum of weights now :1.0000000000000016
+
+############################################################
+Iteration 22 out of 50
+processing 16 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     16 K-points on  16 processes:     0.9406 ; per K-point          0.0588 ; proc-sec per K-point          0.9406
+time1 =  0.000492095947265625
+time2 =  0.008811235427856445
+sum of weights now :1.0000000000000013
+
+############################################################
+Iteration 23 out of 50
+processing 21 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     21 K-points on  16 processes:     1.0987 ; per K-point          0.0523 ; proc-sec per K-point          0.8371
+time1 =  0.0004394054412841797
+time2 =  0.0059359073638916016
+sum of weights now :1.0000000000000016
+
+############################################################
+Iteration 24 out of 50
+processing 15 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     15 K-points on  16 processes:     0.8558 ; per K-point          0.0571 ; proc-sec per K-point          0.9128
+time1 =  0.0003352165222167969
+time2 =  0.008708000183105469
+sum of weights now :1.0000000000000013
+
+############################################################
+Iteration 25 out of 50
+processing 15 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     15 K-points on  16 processes:     0.9136 ; per K-point          0.0609 ; proc-sec per K-point          0.9745
+time1 =  0.0003402233123779297
+time2 =  0.006499290466308594
+sum of weights now :1.000000000000001
+
+############################################################
+Iteration 26 out of 50
+processing 15 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     15 K-points on  16 processes:     0.8638 ; per K-point          0.0576 ; proc-sec per K-point          0.9213
+time1 =  0.0008499622344970703
+time2 =  0.00757145881652832
+sum of weights now :1.000000000000001
+
+############################################################
+Iteration 27 out of 50
+processing 16 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     16 K-points on  16 processes:     0.8766 ; per K-point          0.0548 ; proc-sec per K-point          0.8766
+time1 =  0.0005102157592773438
+time2 =  0.007470607757568359
+sum of weights now :1.000000000000001
+
+############################################################
+Iteration 28 out of 50
+processing 13 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     13 K-points on  16 processes:     0.7820 ; per K-point          0.0602 ; proc-sec per K-point          0.9624
+time1 =  0.0005137920379638672
+time2 =  0.008615970611572266
+sum of weights now :1.0000000000000009
+
+############################################################
+Iteration 29 out of 50
+processing 21 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     21 K-points on  16 processes:     1.0882 ; per K-point          0.0518 ; proc-sec per K-point          0.8291
+time1 =  0.0010712146759033203
+time2 =  0.01464080810546875
+sum of weights now :1.0000000000000009
+
+############################################################
+Iteration 30 out of 50
+processing 19 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     19 K-points on  16 processes:     1.0647 ; per K-point          0.0560 ; proc-sec per K-point          0.8966
+time1 =  0.00038242340087890625
+time2 =  0.006251811981201172
+sum of weights now :1.000000000000001
+
+############################################################
+Iteration 31 out of 50
+processing 6 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing      6 K-points on  16 processes:     0.4383 ; per K-point          0.0731 ; proc-sec per K-point          1.1689
+time1 =  0.00019121170043945312
+time2 =  0.007339954376220703
+sum of weights now :1.0000000000000009
+
+############################################################
+Iteration 32 out of 50
+processing 23 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     23 K-points on  16 processes:     1.2365 ; per K-point          0.0538 ; proc-sec per K-point          0.8602
+time1 =  0.00046515464782714844
+time2 =  0.005999326705932617
+sum of weights now :1.0000000000000009
+
+############################################################
+Iteration 33 out of 50
+processing 11 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     11 K-points on  16 processes:     0.7468 ; per K-point          0.0679 ; proc-sec per K-point          1.0863
+time1 =  0.0003590583801269531
+time2 =  0.00866079330444336
+sum of weights now :1.000000000000001
+
+############################################################
+Iteration 34 out of 50
+processing 6 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing      6 K-points on  16 processes:     0.5260 ; per K-point          0.0877 ; proc-sec per K-point          1.4026
+time1 =  0.00022792816162109375
+time2 =  0.00874948501586914
+sum of weights now :1.0000000000000009
+
+############################################################
+Iteration 35 out of 50
+processing 15 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     15 K-points on  16 processes:     0.8989 ; per K-point          0.0599 ; proc-sec per K-point          0.9588
+time1 =  0.0004596710205078125
+time2 =  0.007776498794555664
+sum of weights now :1.0000000000000009
+
+############################################################
+Iteration 36 out of 50
+processing 21 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     21 K-points on  16 processes:     1.0865 ; per K-point          0.0517 ; proc-sec per K-point          0.8278
+time1 =  0.001737356185913086
+time2 =  0.0180814266204834
+sum of weights now :1.0000000000000007
+
+############################################################
+Iteration 37 out of 50
+processing 16 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     16 K-points on  16 processes:     0.9203 ; per K-point          0.0575 ; proc-sec per K-point          0.9203
+time1 =  0.00037741661071777344
+time2 =  0.006784677505493164
+sum of weights now :1.0000000000000004
+
+############################################################
+Iteration 38 out of 50
+processing 21 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     21 K-points on  16 processes:     1.1891 ; per K-point          0.0566 ; proc-sec per K-point          0.9060
+time1 =  0.00048279762268066406
+time2 =  0.00739741325378418
+sum of weights now :1.0000000000000002
+
+############################################################
+Iteration 39 out of 50
+processing 20 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     20 K-points on  16 processes:     1.2506 ; per K-point          0.0625 ; proc-sec per K-point          1.0004
+time1 =  0.0004999637603759766
+time2 =  0.008546113967895508
+sum of weights now :1.0000000000000004
+
+############################################################
+Iteration 40 out of 50
+processing 7 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing      7 K-points on  16 processes:     0.5171 ; per K-point          0.0739 ; proc-sec per K-point          1.1820
+time1 =  0.00024247169494628906
+time2 =  0.007050037384033203
+sum of weights now :1.0000000000000002
+
+############################################################
+Iteration 41 out of 50
+processing 21 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     21 K-points on  16 processes:     1.0748 ; per K-point          0.0512 ; proc-sec per K-point          0.8189
+time1 =  0.0007936954498291016
+time2 =  0.007865428924560547
+sum of weights now :1.0
+
+############################################################
+Iteration 42 out of 50
+processing 17 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     17 K-points on  16 processes:     1.0058 ; per K-point          0.0592 ; proc-sec per K-point          0.9467
+time1 =  0.0006487369537353516
+time2 =  0.007550954818725586
+sum of weights now :1.0000000000000002
+
+############################################################
+Iteration 43 out of 50
+processing 21 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     21 K-points on  16 processes:     1.0855 ; per K-point          0.0517 ; proc-sec per K-point          0.8271
+time1 =  0.0005221366882324219
+time2 =  0.0071163177490234375
+sum of weights now :0.9999999999999993
+
+############################################################
+Iteration 44 out of 50
+processing 15 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     15 K-points on  16 processes:     0.9098 ; per K-point          0.0607 ; proc-sec per K-point          0.9704
+time1 =  0.000308990478515625
+time2 =  0.00583648681640625
+sum of weights now :0.9999999999999991
+
+############################################################
+Iteration 45 out of 50
+processing 18 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     18 K-points on  16 processes:     1.0941 ; per K-point          0.0608 ; proc-sec per K-point          0.9725
+time1 =  0.0005409717559814453
+time2 =  0.008434057235717773
+sum of weights now :0.9999999999999989
+
+############################################################
+Iteration 46 out of 50
+processing 14 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     14 K-points on  16 processes:     0.8404 ; per K-point          0.0600 ; proc-sec per K-point          0.9604
+time1 =  0.0004355907440185547
+time2 =  0.00698089599609375
+sum of weights now :0.9999999999999991
+
+############################################################
+Iteration 47 out of 50
+processing 13 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     13 K-points on  16 processes:     0.8342 ; per K-point          0.0642 ; proc-sec per K-point          1.0266
+time1 =  0.00033092498779296875
+time2 =  0.0069196224212646484
+sum of weights now :0.9999999999999989
+
+############################################################
+Iteration 48 out of 50
+processing 7 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing      7 K-points on  16 processes:     0.5590 ; per K-point          0.0799 ; proc-sec per K-point          1.2777
+time1 =  0.00024819374084472656
+time2 =  0.00750422477722168
+sum of weights now :0.9999999999999988
+
+############################################################
+Iteration 49 out of 50
+processing 14 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     14 K-points on  16 processes:     0.8835 ; per K-point          0.0631 ; proc-sec per K-point          1.0098
+time1 =  0.0004811286926269531
+time2 =  0.008814334869384766
+sum of weights now :0.9999999999999981
+
+############################################################
+Iteration 50 out of 50
+processing 22 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     22 K-points on  16 processes:     1.1349 ; per K-point          0.0516 ; proc-sec per K-point          0.8254
+time1 =  0.0004978179931640625
+Totally processed 834 K-points
+run() finished
+Minimal symmetric FFT grid :  [4 4 4]
+<span class="ansi-red-intense-fg ansi-bold">Starting run()</span>
+<span class="ansi-cyan-intense-fg ansi-bold">Using the follwing calculators :
+############################################################
+</span>
+<span class="ansi-magenta-intense-fg ansi-bold"> &#39;ahc_ext&#39; </span> : <span class="ansi-yellow-intense-fg ansi-bold"> &lt;wannierberri.calculators.static.AHC object at 0x76cc082370e0&gt; </span> : Anomalous Hall conductivity (:math:`s^3 \cdot A^2 / (kg \cdot m^3) = S/m`)
+
+        | With Fermi sea integral Eq(11) in `Ref &lt;https://www.nature.com/articles/s41524-021-00498-5&gt;`__
+        | Output: :math:`O = -e^2/\hbar \int [dk] \Omega f`
+        | Instruction: :math:`j_\alpha = \sigma_{\alpha\beta} E_\beta = \epsilon_{\alpha\beta\delta} O_\delta E_\beta`
+<span class="ansi-cyan-intense-fg ansi-bold">############################################################</span>
+Calculation on  grid - checking calculators for compatibility
+ahc_ext &lt;wannierberri.calculators.static.AHC object at 0x76cc082370e0&gt;
+All calculators are compatible
+Grid is regular
+The set of k points is a Grid() with NKdiv=[10 10 10], NKFFT=[5 5 5], NKtot=[50 50 50]
+generating K_list
+Done in 0.00618433952331543 s
+excluding symmetry-equivalent K-points from initial grid
+Done in 0.02452993392944336 s
+K_list contains 102 Irreducible points(10.2%) out of initial 10x10x10=1000 grid
+Done, sum of weights:1.0000000000000007
+
+############################################################
+Iteration 0 out of 25
+processing 102 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing    102 K-points on  16 processes:     1.0227 ; per K-point          0.0100 ; proc-sec per K-point          0.1604
+time1 =  0.0019321441650390625
+time2 =  0.006858110427856445
+sum of weights now :1.0000000000000007
+
+############################################################
+Iteration 1 out of 25
+processing 12 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     12 K-points on  16 processes:     0.1891 ; per K-point          0.0158 ; proc-sec per K-point          0.2521
+time1 =  0.0003228187561035156
+time2 =  0.011844396591186523
+sum of weights now :1.0000000000000007
+
+############################################################
+Iteration 2 out of 25
+processing 13 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     13 K-points on  16 processes:     0.1792 ; per K-point          0.0138 ; proc-sec per K-point          0.2205
+time1 =  0.0003447532653808594
+time2 =  0.007437944412231445
+sum of weights now :1.0000000000000007
+
+############################################################
+Iteration 3 out of 25
+processing 7 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing      7 K-points on  16 processes:     0.1416 ; per K-point          0.0202 ; proc-sec per K-point          0.3237
+time1 =  0.0003037452697753906
+time2 =  0.007941246032714844
+sum of weights now :1.0000000000000009
+
+############################################################
+Iteration 4 out of 25
+processing 21 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     21 K-points on  16 processes:     0.2310 ; per K-point          0.0110 ; proc-sec per K-point          0.1760
+time1 =  0.0013484954833984375
+time2 =  0.009971141815185547
+sum of weights now :1.0000000000000007
+
+############################################################
+Iteration 5 out of 25
+processing 16 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     16 K-points on  16 processes:     0.2058 ; per K-point          0.0129 ; proc-sec per K-point          0.2058
+time1 =  0.0006289482116699219
+time2 =  0.008198738098144531
+sum of weights now :1.0000000000000004
+
+############################################################
+Iteration 6 out of 25
+processing 13 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     13 K-points on  16 processes:     0.1842 ; per K-point          0.0142 ; proc-sec per K-point          0.2268
+time1 =  0.00044798851013183594
+time2 =  0.009694099426269531
+sum of weights now :1.0000000000000004
+
+############################################################
+Iteration 7 out of 25
+processing 15 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     15 K-points on  16 processes:     0.1829 ; per K-point          0.0122 ; proc-sec per K-point          0.1951
+time1 =  0.0004856586456298828
+time2 =  0.00830388069152832
+sum of weights now :1.0000000000000007
+
+############################################################
+Iteration 8 out of 25
+processing 21 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     21 K-points on  16 processes:     0.2156 ; per K-point          0.0103 ; proc-sec per K-point          0.1643
+time1 =  0.0005338191986083984
+time2 =  0.007507801055908203
+sum of weights now :1.0000000000000009
+
+############################################################
+Iteration 9 out of 25
+processing 23 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     23 K-points on  16 processes:     0.2758 ; per K-point          0.0120 ; proc-sec per K-point          0.1919
+time1 =  0.0005025863647460938
+time2 =  0.006864070892333984
+sum of weights now :1.0000000000000009
+
+############################################################
+Iteration 10 out of 25
+processing 15 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     15 K-points on  16 processes:     0.2194 ; per K-point          0.0146 ; proc-sec per K-point          0.2340
+time1 =  0.0003006458282470703
+time2 =  0.0053441524505615234
+sum of weights now :1.000000000000001
+
+############################################################
+Iteration 11 out of 25
+processing 22 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     22 K-points on  16 processes:     0.2396 ; per K-point          0.0109 ; proc-sec per K-point          0.1743
+time1 =  0.0007827281951904297
+time2 =  0.0082550048828125
+sum of weights now :1.000000000000001
+
+############################################################
+Iteration 12 out of 25
+processing 21 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     21 K-points on  16 processes:     0.2762 ; per K-point          0.0132 ; proc-sec per K-point          0.2104
+time1 =  0.0008561611175537109
+time2 =  0.009559392929077148
+sum of weights now :1.000000000000001
+
+############################################################
+Iteration 13 out of 25
+processing 22 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     22 K-points on  16 processes:     0.2360 ; per K-point          0.0107 ; proc-sec per K-point          0.1716
+time1 =  0.0006020069122314453
+time2 =  0.005931854248046875
+sum of weights now :1.000000000000001
+
+############################################################
+Iteration 14 out of 25
+processing 13 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     13 K-points on  16 processes:     0.1936 ; per K-point          0.0149 ; proc-sec per K-point          0.2382
+time1 =  0.0004413127899169922
+time2 =  0.007688760757446289
+sum of weights now :1.000000000000001
+
+############################################################
+Iteration 15 out of 25
+processing 15 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     15 K-points on  16 processes:     0.1857 ; per K-point          0.0124 ; proc-sec per K-point          0.1981
+time1 =  0.0005307197570800781
+time2 =  0.007665395736694336
+sum of weights now :1.0000000000000013
+
+############################################################
+Iteration 16 out of 25
+processing 15 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     15 K-points on  16 processes:     0.2009 ; per K-point          0.0134 ; proc-sec per K-point          0.2142
+time1 =  0.0005877017974853516
+time2 =  0.008923053741455078
+sum of weights now :1.000000000000001
+
+############################################################
+Iteration 17 out of 25
+processing 24 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     24 K-points on  16 processes:     0.2818 ; per K-point          0.0117 ; proc-sec per K-point          0.1878
+time1 =  0.0004417896270751953
+time2 =  0.00702667236328125
+sum of weights now :1.000000000000001
+
+############################################################
+Iteration 18 out of 25
+processing 21 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     21 K-points on  16 processes:     0.2125 ; per K-point          0.0101 ; proc-sec per K-point          0.1619
+time1 =  0.0007064342498779297
+time2 =  0.009695768356323242
+sum of weights now :1.000000000000001
+
+############################################################
+Iteration 19 out of 25
+processing 14 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     14 K-points on  16 processes:     0.1727 ; per K-point          0.0123 ; proc-sec per K-point          0.1973
+time1 =  0.0005691051483154297
+time2 =  0.010138750076293945
+sum of weights now :1.000000000000001
+
+############################################################
+Iteration 20 out of 25
+processing 21 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     21 K-points on  16 processes:     0.2320 ; per K-point          0.0110 ; proc-sec per K-point          0.1768
+time1 =  0.0004973411560058594
+time2 =  0.007140159606933594
+sum of weights now :1.000000000000001
+
+############################################################
+Iteration 21 out of 25
+processing 21 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     21 K-points on  16 processes:     0.2306 ; per K-point          0.0110 ; proc-sec per K-point          0.1757
+time1 =  0.0005290508270263672
+time2 =  0.007555246353149414
+sum of weights now :1.000000000000001
+
+############################################################
+Iteration 22 out of 25
+processing 15 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     15 K-points on  16 processes:     0.1774 ; per K-point          0.0118 ; proc-sec per K-point          0.1893
+time1 =  0.0004494190216064453
+time2 =  0.007658481597900391
+sum of weights now :1.0000000000000009
+
+############################################################
+Iteration 23 out of 25
+processing 23 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     23 K-points on  16 processes:     0.2908 ; per K-point          0.0126 ; proc-sec per K-point          0.2023
+time1 =  0.0007078647613525391
+time2 =  0.006676673889160156
+sum of weights now :1.000000000000001
+
+############################################################
+Iteration 24 out of 25
+processing 14 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     14 K-points on  16 processes:     0.2004 ; per K-point          0.0143 ; proc-sec per K-point          0.2290
+time1 =  0.00048065185546875
+time2 =  0.007725715637207031
+sum of weights now :1.000000000000001
+
+############################################################
+Iteration 25 out of 25
+processing 14 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     14 K-points on  16 processes:     0.2054 ; per K-point          0.0147 ; proc-sec per K-point          0.2347
+time1 =  0.00048089027404785156
+Totally processed 533 K-points
+run() finished
+</pre></div></div>
+</div>
+</section>
+<section id="plot-AHC-vs-energy">
+<h3>plot AHC vs energy<a class="headerlink" href="#plot-AHC-vs-energy" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from matplotlib import pyplot as plt
+import numpy as np
+theta=0
+phi=0
+EF=9.22085
+
+fig, axes = plt.subplots(2, 1, sharey=False, sharex=True, figsize=(10, 8))
+for i in range(0,51,5):
+    color = (0, 1-i/50, i/50)
+    res =  np.load(f&quot;results/Fe-soc-001-ahc_int_iter-{i:04d}.npz&quot;)
+    Efermi = res[&#39;Energies_0&#39;]
+    ahc = res[&quot;data&quot;]
+    axes[0].plot(Efermi - EF, ahc[:,2]/100, label=f&quot;iter={i}&quot;, color=color)
+axes[0].set_title(&quot;AHC internal terms convergence&quot;)
+axes[0].set_ylim(-1000, 0)
+axes[0].set_xlabel(&quot;E-EF (eV)&quot;)
+axes[0].set_ylabel(&quot;AHC (S/cm)&quot;)
+axes[0].legend()
+for i in range(0,26,5):
+    color = (0, 1-i/25, i/25)
+    res =  np.load(f&quot;results/Fe-soc-001-ahc_ext_iter-{i:04d}.npz&quot;)
+    Efermi = res[&#39;Energies_0&#39;]
+    ahc = res[&quot;data&quot;]
+    axes[1].plot(Efermi - EF, ahc[:,2]/100, label=f&quot;iter={i}&quot;, color=color)
+axes[1].set_title(&quot;AHC external terms convergence&quot;)
+axes[1].set_xlabel(&quot;E-EF (eV)&quot;)
+axes[1].set_ylabel(&quot;AHC (S/cm)&quot;)
+axes[1].legend()
+plt.tight_layout()
+plt.savefig(&quot;ahc_convergence.png&quot;, dpi=300)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_build/.doctrees/nbsphinx/tutorials_8_GPAW_2.Fe_bccFe_26_0.png" src="../../_build/.doctrees/nbsphinx/tutorials_8_GPAW_2.Fe_bccFe_26_0.png" />
+</div>
+</div>
+<p>We can observe 3 things, which are generally true, not only for AHC, but for most other effects:</p>
+<ol class="arabic simple">
+<li><p>The internal terms converge slower than the external ones.</p></li>
+<li><p>The external terms usually give a smaller contribution. Often (but not always) it is negligible. However, check it for a particular material and effect.</p></li>
+<li><p>The external terms take more time to evaluate per k-point.</p></li>
+</ol>
+<p>Thus, it makes sense to evaluate them separately, using different k-point grids and number of iterations for the adaptive integration.</p>
+</section>
+</section>
+<section id="compare-directions-of-magnetization">
+<h2>compare directions of magnetization<a class="headerlink" href="#compare-directions-of-magnetization" title="Link to this heading"></a></h2>
+<p>Now let us align the magnetization along [111] direction and compute the AHC again. (this time internal terms only)</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import os
+import numpy as np
+import wannierberri as wb
+from wannierberri.system.system_soc import SystemSOC
+
+
+system_soc_111 = SystemSOC.from_npz(&quot;system_soc&quot;)
+theta=np.arccos(1/np.sqrt(3))
+phi=np.pi/4
+system_soc_111.set_soc_axis(theta=theta, phi=phi, units=&quot;radians&quot;)
+
+
+grid = wb.grid.Grid(system_soc_111, NK=100)
+
+EF = 9.53754
+tetra = False
+
+Efermi = np.linspace(EF - 0.5, EF + 0.5, 1001)
+
+os.makedirs(&quot;results&quot;, exist_ok=True)
+result_int = wb.run(system_soc_111,
+        grid=grid,
+        parallel=parallel_env,
+        fout_name=f&quot;results/Fe-soc-111&quot;,
+        calculators={&quot;ahc_int&quot;: wb.calculators.static.AHC(Efermi=Efermi, tetra=tetra, kwargs_formula={&quot;external_terms&quot;: False})},
+        adpt_num_iter=50,
+        restart=False,
+        print_progress_step=5,
+        )
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+loading real_lattice - Ok!
+loading wannier_centers_cart - Ok!
+loading pointgroup - Ok!
+loading iRvec - Ok!
+loading periodic - Ok!
+loading is_phonon - Ok!
+loading num_wann - Ok!
+loading R_matrix Ham - Ok!
+loading R_matrix AA - Ok!
+loading real_lattice - Ok!
+loading wannier_centers_cart - Ok!
+loading pointgroup - Ok!
+loading iRvec - Ok!
+loading periodic - Ok!
+loading is_phonon - Ok!
+loading num_wann - Ok!
+loading R_matrix Ham - Ok!
+loading R_matrix AA - Ok!
+using magmoms
+ [[1.27717159 1.27717159 1.27717159]]
+Minimal symmetric FFT grid :  [7 7 7]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/home/stepan/github/wannier-berri-work/wannier-berri-soc-nscf/wannierberri/utility.py:68: UserWarning: usually need to provide either with real or reciprocal lattice.If you only want to generate a random symmetric tensor - that it fine
+  warnings.warn(&#34;usually need to provide either with real or reciprocal lattice.&#34;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-red-intense-fg ansi-bold">Starting run()</span>
+<span class="ansi-cyan-intense-fg ansi-bold">Using the follwing calculators :
+############################################################
+</span>
+<span class="ansi-magenta-intense-fg ansi-bold"> &#39;ahc_int&#39; </span> : <span class="ansi-yellow-intense-fg ansi-bold"> &lt;wannierberri.calculators.static.AHC object at 0x76cbf28e7c80&gt; </span> : Anomalous Hall conductivity (:math:`s^3 \cdot A^2 / (kg \cdot m^3) = S/m`)
+
+        | With Fermi sea integral Eq(11) in `Ref &lt;https://www.nature.com/articles/s41524-021-00498-5&gt;`__
+        | Output: :math:`O = -e^2/\hbar \int [dk] \Omega f`
+        | Instruction: :math:`j_\alpha = \sigma_{\alpha\beta} E_\beta = \epsilon_{\alpha\beta\delta} O_\delta E_\beta`
+<span class="ansi-cyan-intense-fg ansi-bold">############################################################</span>
+Calculation on  grid - checking calculators for compatibility
+ahc_int &lt;wannierberri.calculators.static.AHC object at 0x76cbf28e7c80&gt;
+All calculators are compatible
+Grid is regular
+The set of k points is a Grid() with NKdiv=[10 10 10], NKFFT=[10 10 10], NKtot=[100 100 100]
+generating K_list
+Done in 0.0029926300048828125 s
+excluding symmetry-equivalent K-points from initial grid
+Done in 0.026805639266967773 s
+K_list contains 116 Irreducible points(11.6%) out of initial 10x10x10=1000 grid
+Done, sum of weights:1.0000000000000007
+
+############################################################
+Iteration 0 out of 50
+processing 116 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+                 112              5.3                   0.2                   5.5
+time for processing    116 K-points on  16 processes:     5.3918 ; per K-point          0.0465 ; proc-sec per K-point          0.7437
+time1 =  0.001786947250366211
+time2 =  0.0064432621002197266
+sum of weights now :1.0000000000000009
+
+############################################################
+Iteration 1 out of 50
+processing 4 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing      4 K-points on  16 processes:     0.4038 ; per K-point          0.1009 ; proc-sec per K-point          1.6150
+time1 =  0.0002446174621582031
+time2 =  0.006775379180908203
+sum of weights now :1.0000000000000007
+
+############################################################
+Iteration 2 out of 50
+processing 6 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing      6 K-points on  16 processes:     0.4802 ; per K-point          0.0800 ; proc-sec per K-point          1.2805
+time1 =  0.0002262592315673828
+time2 =  0.008021831512451172
+sum of weights now :1.0000000000000004
+
+############################################################
+Iteration 3 out of 50
+processing 8 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing      8 K-points on  16 processes:     0.5773 ; per K-point          0.0722 ; proc-sec per K-point          1.1545
+time1 =  0.0003972053527832031
+time2 =  0.007220268249511719
+sum of weights now :1.0000000000000002
+
+############################################################
+Iteration 4 out of 50
+processing 12 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     12 K-points on  16 processes:     0.8307 ; per K-point          0.0692 ; proc-sec per K-point          1.1076
+time1 =  0.0004572868347167969
+time2 =  0.01074075698852539
+sum of weights now :1.0000000000000002
+
+############################################################
+Iteration 5 out of 50
+processing 10 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     10 K-points on  16 processes:     0.7450 ; per K-point          0.0745 ; proc-sec per K-point          1.1921
+time1 =  0.0003848075866699219
+time2 =  0.0075550079345703125
+sum of weights now :0.9999999999999997
+
+############################################################
+Iteration 6 out of 50
+processing 8 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing      8 K-points on  16 processes:     0.5881 ; per K-point          0.0735 ; proc-sec per K-point          1.1761
+time1 =  0.0002598762512207031
+time2 =  0.006685018539428711
+sum of weights now :0.9999999999999993
+
+############################################################
+Iteration 7 out of 50
+processing 15 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     15 K-points on  16 processes:     0.8987 ; per K-point          0.0599 ; proc-sec per K-point          0.9587
+time1 =  0.0003325939178466797
+time2 =  0.006419181823730469
+sum of weights now :0.9999999999999989
+
+############################################################
+Iteration 8 out of 50
+processing 8 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing      8 K-points on  16 processes:     0.5898 ; per K-point          0.0737 ; proc-sec per K-point          1.1795
+time1 =  0.00018978118896484375
+time2 =  0.009046316146850586
+sum of weights now :0.9999999999999984
+
+############################################################
+Iteration 9 out of 50
+processing 8 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing      8 K-points on  16 processes:     0.7224 ; per K-point          0.0903 ; proc-sec per K-point          1.4449
+time1 =  0.0005583763122558594
+time2 =  0.008491039276123047
+sum of weights now :0.9999999999999981
+
+############################################################
+Iteration 10 out of 50
+processing 16 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     16 K-points on  16 processes:     0.9625 ; per K-point          0.0602 ; proc-sec per K-point          0.9625
+time1 =  0.00039315223693847656
+time2 =  0.006268978118896484
+sum of weights now :0.9999999999999977
+
+############################################################
+Iteration 11 out of 50
+processing 16 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     16 K-points on  16 processes:     0.9419 ; per K-point          0.0589 ; proc-sec per K-point          0.9419
+time1 =  0.0004322528839111328
+time2 =  0.006994724273681641
+sum of weights now :0.9999999999999978
+
+############################################################
+Iteration 12 out of 50
+processing 14 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     14 K-points on  16 processes:     0.9395 ; per K-point          0.0671 ; proc-sec per K-point          1.0737
+time1 =  0.000507354736328125
+time2 =  0.00858449935913086
+sum of weights now :0.9999999999999977
+
+############################################################
+Iteration 13 out of 50
+processing 18 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     18 K-points on  16 processes:     1.0052 ; per K-point          0.0558 ; proc-sec per K-point          0.8935
+time1 =  0.0005495548248291016
+time2 =  0.008119583129882812
+sum of weights now :0.9999999999999973
+
+############################################################
+Iteration 14 out of 50
+processing 16 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     16 K-points on  16 processes:     0.9744 ; per K-point          0.0609 ; proc-sec per K-point          0.9744
+time1 =  0.0004210472106933594
+time2 =  0.007331132888793945
+sum of weights now :0.9999999999999969
+
+############################################################
+Iteration 15 out of 50
+processing 18 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     18 K-points on  16 processes:     1.0759 ; per K-point          0.0598 ; proc-sec per K-point          0.9564
+time1 =  0.0005838871002197266
+time2 =  0.006432771682739258
+sum of weights now :0.9999999999999966
+
+############################################################
+Iteration 16 out of 50
+processing 16 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     16 K-points on  16 processes:     0.9187 ; per K-point          0.0574 ; proc-sec per K-point          0.9187
+time1 =  0.0004184246063232422
+time2 =  0.007504701614379883
+sum of weights now :0.9999999999999961
+
+############################################################
+Iteration 17 out of 50
+processing 21 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     21 K-points on  16 processes:     1.1463 ; per K-point          0.0546 ; proc-sec per K-point          0.8733
+time1 =  0.0007946491241455078
+time2 =  0.00751495361328125
+sum of weights now :0.9999999999999958
+
+############################################################
+Iteration 18 out of 50
+processing 15 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     15 K-points on  16 processes:     0.9011 ; per K-point          0.0601 ; proc-sec per K-point          0.9612
+time1 =  0.0004413127899169922
+time2 =  0.007570505142211914
+sum of weights now :0.9999999999999953
+
+############################################################
+Iteration 19 out of 50
+processing 16 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     16 K-points on  16 processes:     1.0363 ; per K-point          0.0648 ; proc-sec per K-point          1.0363
+time1 =  0.0004367828369140625
+time2 =  0.00718998908996582
+sum of weights now :0.999999999999995
+
+############################################################
+Iteration 20 out of 50
+processing 16 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     16 K-points on  16 processes:     1.0358 ; per K-point          0.0647 ; proc-sec per K-point          1.0358
+time1 =  0.000614166259765625
+time2 =  0.010774850845336914
+sum of weights now :0.9999999999999951
+
+############################################################
+Iteration 21 out of 50
+processing 21 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     21 K-points on  16 processes:     1.1435 ; per K-point          0.0545 ; proc-sec per K-point          0.8712
+time1 =  0.00045990943908691406
+time2 =  0.0064296722412109375
+sum of weights now :0.9999999999999947
+
+############################################################
+Iteration 22 out of 50
+processing 9 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing      9 K-points on  16 processes:     0.6841 ; per K-point          0.0760 ; proc-sec per K-point          1.2161
+time1 =  0.00025534629821777344
+time2 =  0.006756305694580078
+sum of weights now :0.9999999999999948
+
+############################################################
+Iteration 23 out of 50
+processing 21 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     21 K-points on  16 processes:     1.1007 ; per K-point          0.0524 ; proc-sec per K-point          0.8387
+time1 =  0.0003743171691894531
+time2 =  0.024453163146972656
+sum of weights now :0.9999999999999944
+
+############################################################
+Iteration 24 out of 50
+processing 22 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     22 K-points on  16 processes:     1.1451 ; per K-point          0.0520 ; proc-sec per K-point          0.8328
+time1 =  0.0004999637603759766
+time2 =  0.006907939910888672
+sum of weights now :0.9999999999999931
+
+############################################################
+Iteration 25 out of 50
+processing 24 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     24 K-points on  16 processes:     1.3307 ; per K-point          0.0554 ; proc-sec per K-point          0.8871
+time1 =  0.00051116943359375
+time2 =  0.0069239139556884766
+sum of weights now :0.9999999999999928
+
+############################################################
+Iteration 26 out of 50
+processing 22 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     22 K-points on  16 processes:     1.1750 ; per K-point          0.0534 ; proc-sec per K-point          0.8545
+time1 =  0.0005748271942138672
+time2 =  0.007570981979370117
+sum of weights now :0.9999999999999925
+
+############################################################
+Iteration 27 out of 50
+processing 13 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     13 K-points on  16 processes:     0.8390 ; per K-point          0.0645 ; proc-sec per K-point          1.0326
+time1 =  0.0002613067626953125
+time2 =  0.005731105804443359
+sum of weights now :0.9999999999999917
+
+############################################################
+Iteration 28 out of 50
+processing 23 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     23 K-points on  16 processes:     1.2902 ; per K-point          0.0561 ; proc-sec per K-point          0.8975
+time1 =  0.0006036758422851562
+time2 =  0.008376359939575195
+sum of weights now :0.9999999999999912
+
+############################################################
+Iteration 29 out of 50
+processing 16 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     16 K-points on  16 processes:     0.9654 ; per K-point          0.0603 ; proc-sec per K-point          0.9654
+time1 =  0.0003821849822998047
+time2 =  0.0075571537017822266
+sum of weights now :0.9999999999999912
+
+############################################################
+Iteration 30 out of 50
+processing 17 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     17 K-points on  16 processes:     1.0531 ; per K-point          0.0619 ; proc-sec per K-point          0.9911
+time1 =  0.00035834312438964844
+time2 =  0.006093025207519531
+sum of weights now :0.9999999999999909
+
+############################################################
+Iteration 31 out of 50
+processing 16 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     16 K-points on  16 processes:     0.8999 ; per K-point          0.0562 ; proc-sec per K-point          0.8999
+time1 =  0.00042366981506347656
+time2 =  0.013153553009033203
+sum of weights now :0.9999999999999906
+
+############################################################
+Iteration 32 out of 50
+processing 16 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     16 K-points on  16 processes:     0.9552 ; per K-point          0.0597 ; proc-sec per K-point          0.9552
+time1 =  0.0005445480346679688
+time2 =  0.008482694625854492
+sum of weights now :0.9999999999999903
+
+############################################################
+Iteration 33 out of 50
+processing 23 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     23 K-points on  16 processes:     1.2732 ; per K-point          0.0554 ; proc-sec per K-point          0.8857
+time1 =  0.0005092620849609375
+time2 =  0.00766444206237793
+sum of weights now :0.9999999999999899
+
+############################################################
+Iteration 34 out of 50
+processing 13 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     13 K-points on  16 processes:     0.8623 ; per K-point          0.0663 ; proc-sec per K-point          1.0613
+time1 =  0.0004050731658935547
+time2 =  0.008821487426757812
+sum of weights now :0.999999999999989
+
+############################################################
+Iteration 35 out of 50
+processing 21 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     21 K-points on  16 processes:     1.1386 ; per K-point          0.0542 ; proc-sec per K-point          0.8675
+time1 =  0.0010080337524414062
+time2 =  0.008414506912231445
+sum of weights now :0.9999999999999881
+
+############################################################
+Iteration 36 out of 50
+processing 20 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     20 K-points on  16 processes:     1.2171 ; per K-point          0.0609 ; proc-sec per K-point          0.9737
+time1 =  0.0004181861877441406
+time2 =  0.006475687026977539
+sum of weights now :0.9999999999999879
+
+############################################################
+Iteration 37 out of 50
+processing 23 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     23 K-points on  16 processes:     1.2432 ; per K-point          0.0541 ; proc-sec per K-point          0.8649
+time1 =  0.0004534721374511719
+time2 =  0.005987644195556641
+sum of weights now :0.9999999999999877
+
+############################################################
+Iteration 38 out of 50
+processing 16 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     16 K-points on  16 processes:     1.0241 ; per K-point          0.0640 ; proc-sec per K-point          1.0241
+time1 =  0.0017774105072021484
+time2 =  0.008902549743652344
+sum of weights now :0.999999999999987
+
+############################################################
+Iteration 39 out of 50
+processing 19 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     19 K-points on  16 processes:     1.0403 ; per K-point          0.0548 ; proc-sec per K-point          0.8760
+time1 =  0.0005784034729003906
+time2 =  0.008667469024658203
+sum of weights now :0.9999999999999868
+
+############################################################
+Iteration 40 out of 50
+processing 16 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     16 K-points on  16 processes:     0.9629 ; per K-point          0.0602 ; proc-sec per K-point          0.9629
+time1 =  0.0005514621734619141
+time2 =  0.0064373016357421875
+sum of weights now :0.9999999999999867
+
+############################################################
+Iteration 41 out of 50
+processing 22 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     22 K-points on  16 processes:     1.1672 ; per K-point          0.0531 ; proc-sec per K-point          0.8489
+time1 =  0.0005512237548828125
+time2 =  0.006586551666259766
+sum of weights now :0.9999999999999866
+
+############################################################
+Iteration 42 out of 50
+processing 16 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     16 K-points on  16 processes:     0.9174 ; per K-point          0.0573 ; proc-sec per K-point          0.9174
+time1 =  0.0005207061767578125
+time2 =  0.009336233139038086
+sum of weights now :0.9999999999999869
+
+############################################################
+Iteration 43 out of 50
+processing 22 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     22 K-points on  16 processes:     1.1425 ; per K-point          0.0519 ; proc-sec per K-point          0.8309
+time1 =  0.0003917217254638672
+time2 =  0.005223989486694336
+sum of weights now :0.9999999999999867
+
+############################################################
+Iteration 44 out of 50
+processing 24 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     24 K-points on  16 processes:     1.2278 ; per K-point          0.0512 ; proc-sec per K-point          0.8186
+time1 =  0.0005261898040771484
+time2 =  0.0066165924072265625
+sum of weights now :0.9999999999999867
+
+############################################################
+Iteration 45 out of 50
+processing 14 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     14 K-points on  16 processes:     0.8532 ; per K-point          0.0609 ; proc-sec per K-point          0.9751
+time1 =  0.00037670135498046875
+time2 =  0.007611513137817383
+sum of weights now :0.9999999999999867
+
+############################################################
+Iteration 46 out of 50
+processing 24 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     24 K-points on  16 processes:     1.2224 ; per K-point          0.0509 ; proc-sec per K-point          0.8149
+time1 =  0.0005724430084228516
+time2 =  0.0076825618743896484
+sum of weights now :0.9999999999999863
+
+############################################################
+Iteration 47 out of 50
+processing 22 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     22 K-points on  16 processes:     1.2220 ; per K-point          0.0555 ; proc-sec per K-point          0.8888
+time1 =  0.00044608116149902344
+time2 =  0.0063169002532958984
+sum of weights now :0.9999999999999866
+
+############################################################
+Iteration 48 out of 50
+processing 22 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     22 K-points on  16 processes:     1.2145 ; per K-point          0.0552 ; proc-sec per K-point          0.8832
+time1 =  0.0005602836608886719
+time2 =  0.007936716079711914
+sum of weights now :0.9999999999999866
+
+############################################################
+Iteration 49 out of 50
+processing 24 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     24 K-points on  16 processes:     1.4315 ; per K-point          0.0596 ; proc-sec per K-point          0.9543
+time1 =  0.0005948543548583984
+time2 =  0.007570981979370117
+sum of weights now :0.9999999999999865
+
+############################################################
+Iteration 50 out of 50
+processing 16 K points : using  16 processes.
+# K-points calculated  Wall time (sec)  Est. remaining (sec)   Est. total (sec)
+time for processing     16 K-points on  16 processes:     0.9495 ; per K-point          0.0593 ; proc-sec per K-point          0.9495
+time1 =  0.0004119873046875
+Totally processed 954 K-points
+run() finished
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from matplotlib import pyplot as plt
+import numpy as np
+
+fig, axes = plt.subplots(1, 1, sharey=False, sharex=True, figsize=(10, 8))
+res =  np.load(f&quot;results/Fe-soc-001-ahc_int_iter-{i:04d}.npz&quot;)
+Efermi = res[&#39;Energies_0&#39;]
+ahc001 = res[&quot;data&quot;]
+axes.plot(Efermi - EF, ahc001[:,2]/100, label=&quot;001&quot;, color=&quot;green&quot;)
+res =  np.load(f&quot;results/Fe-soc-111-ahc_int_iter-{i:04d}.npz&quot;)
+Efermi = res[&#39;Energies_0&#39;]
+ahc111 = res[&quot;data&quot;].sum(axis=1)/np.sqrt(3) # all three components are equal by symmetry
+axes.plot(Efermi - EF, ahc111/100, label=&quot;111&quot;, color=&quot;blue&quot;)
+axes.set_title(&quot;AHC internal terms convergence&quot;)
+axes.set_ylim(-1000, 0)
+axes.set_xlabel(&quot;E-EF (eV)&quot;)
+axes.set_ylabel(&quot;AHC (S/cm)&quot;)
+axes.legend()
+<br/><br/></pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;matplotlib.legend.Legend at 0x76cbf0201610&gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_build/.doctrees/nbsphinx/tutorials_8_GPAW_2.Fe_bccFe_29_1.png" src="../../_build/.doctrees/nbsphinx/tutorials_8_GPAW_2.Fe_bccFe_29_1.png" />
+</div>
+</div>
+<p>We see that there is some difference, although it is not big. Moreover, we did not do a good convergence, so cannot draw any strong conclusions from this data. One needs to start from a denser k-point grid and more iterations to get converged results. Also, the starting DFT nscf grid should be denser.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../1.diamond/diamond.html" class="btn btn-neutral float-left" title="GPAW + WannierBerri: spinless bandstructure (diamond)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../3.MnTe/mnte.html" class="btn btn-neutral float-right" title="GPAW + WannierBerri: Altermagnet MnTe" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Stepan Tsirkin.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

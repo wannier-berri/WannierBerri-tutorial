@@ -1,0 +1,308 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wannier Berri Tutorial &mdash; Wannier Berri 1.8.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/style.css?v=88c5e859" />
+
+  
+    <link rel="shortcut icon" href="_static/WB-logo.ico"/>
+    <link rel="canonical" href="https://tutorial.wannier-berri.org/index.html" />
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=b51e6972"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within Wannier Berri 1.8.0 documentation"
+          href="_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Basic tutorial: Interpolating bands, Berry curvatures, and integrating them" href="tutorials/1_basic/tutorial-wb-basic-solution.html" />
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #009C46" >
+
+          
+          
+          <a href="#">
+            
+              <img src="_static/tutorial.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+    
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/1_basic/tutorial-wb-basic-solution.html">Basic tutorial: Interpolating bands, Berry curvatures, and integrating them</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/2_fermi_sea_vs_fermi_surface/solution/tutorial_sea_vs_surface_solution.html">WannierBerri advanced tutorial - Fermi surface and Fermi sea calculation of the Berry curvature dipole</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/3_spin_hall/solution/tutorial_spin_hall.html">Spin Hall conductivity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/4_DIY/tutorial-wb-DIY-solution.html">DIY tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/5_symmetrization/tutorial_symmetrization-solution.html">Symmetrization of Wannier Hamiltonian and matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/6_wannierisation/wannierise.html">Wannierisation (including SAWF)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/7_find_projections/find_projections.html">Finding initial projections based on symmetry indicators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/8_GPAW/1.diamond/diamond.html">GPAW + WannierBerri: spinless bandstructure (diamond)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/8_GPAW/2.Fe/bccFe.html">GPAW + WannierBerri: Magnetism and spin-orbit coupling (bcc Fe)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/8_GPAW/3.MnTe/mnte.html">GPAW + WannierBerri: Altermagnet MnTe</a></li>
+</ul>
+
+    <a href="genindex.html">Index</a>
+    <a href="http://wannier-berri.org">Back to Wannier-Berri.org</a>
+  
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #009C46" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">Wannier Berri</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Wannier Berri Tutorial</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <p>This page shows the tutorials for demonstration purposes. To run the tutorials yourself, please download them from <a class="reference external" href="https://github.com/wannier-berri/WannierBerri-tutorial">GitHub</a></p>
+<p>Note that the tutroials were tested with version <cite>1.3.0</cite> later versions may have changes that are not compatible with the tutorials, please report any issues you may encounter, we do our best to keep the tutorials up to date with the latest version of WannierBerri.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/1_basic/tutorial-wb-basic-solution.html">Basic tutorial: Interpolating bands, Berry curvatures, and integrating them</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/1_basic/tutorial-wb-basic-solution.html#Preparation-of-a-calculation:">Preparation of a calculation:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/1_basic/tutorial-wb-basic-solution.html#Reading-the-system">Reading the system</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/1_basic/tutorial-wb-basic-solution.html#Interpolation-on-a-path">Interpolation on a path</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/1_basic/tutorial-wb-basic-solution.html#Running-a-calculation:-calculators-and-results">Running a calculation: calculators and results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/1_basic/tutorial-wb-basic-solution.html#Tabulating-Berry-curvature-and-spin">Tabulating Berry curvature and spin</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/1_basic/tutorial-wb-basic-solution.html#Running-a-calculation">Running a calculation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/1_basic/tutorial-wb-basic-solution.html#Alternative-shortcut:">Alternative shortcut:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/1_basic/tutorial-wb-basic-solution.html#Plotting-the-results">Plotting the results</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/1_basic/tutorial-wb-basic-solution.html#Problem-1:">Problem 1:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/1_basic/tutorial-wb-basic-solution.html#Get-the-data-and-do-whatever-you-want">Get the data and do whatever you want</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/1_basic/tutorial-wb-basic-solution.html#Calaculation-on-a-3D-grid">Calaculation on a 3D grid</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/1_basic/tutorial-wb-basic-solution.html#We-can-use-the-same-tabulators,-but-now-we-pack-them-into-TabulatorAll-in-%22grid%22-mode">We can use the same tabulators, but now we pack them into TabulatorAll in “grid” mode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/1_basic/tutorial-wb-basic-solution.html#And-we-run-the-calculation-in-the-same-way">And we run the calculation in the same way</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/1_basic/tutorial-wb-basic-solution.html#Writing-the-FermiSurfer-files">Writing the FermiSurfer files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/1_basic/tutorial-wb-basic-solution.html#Analyze-the-tabulated-data">Analyze the tabulated data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/1_basic/tutorial-wb-basic-solution.html#Problem-2-:">Problem 2 :</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/1_basic/tutorial-wb-basic-solution.html#fill-the-missing-parts-and-evaluate-the-Berry-curvature-summed-over-all-states-below-EF-=-12.6-eV.-Plot-in-on-a-plane-k3=const-(in-reduced-coordinates)">fill the missing parts and evaluate the Berry curvature summed over all states below EF = 12.6 eV. Plot in on a plane k3=const (in reduced coordinates)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/1_basic/tutorial-wb-basic-solution.html#Integration-on-a-grid:-anomalous-Hall-conductivity">Integration on a grid: anomalous Hall conductivity</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/1_basic/tutorial-wb-basic-solution.html#Problem-3-:">Problem 3 :</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/1_basic/tutorial-wb-basic-solution.html#Tetrahedron-method">Tetrahedron method</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/1_basic/tutorial-wb-basic-solution.html#Optical-conductivity">Optical conductivity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/1_basic/tutorial-wb-basic-solution.html#All-in-one">All in one</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/2_fermi_sea_vs_fermi_surface/solution/tutorial_sea_vs_surface_solution.html">WannierBerri advanced tutorial - Fermi surface and Fermi sea calculation of the Berry curvature dipole</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/2_fermi_sea_vs_fermi_surface/solution/tutorial_sea_vs_surface_solution.html#Model-1:-Chiral-tight-binding-model">Model 1: Chiral tight-binding model</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/2_fermi_sea_vs_fermi_surface/solution/tutorial_sea_vs_surface_solution.html#Model,-band-structure">Model, band structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/2_fermi_sea_vs_fermi_surface/solution/tutorial_sea_vs_surface_solution.html#Berry-curvature-dipole">Berry curvature dipole</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/2_fermi_sea_vs_fermi_surface/solution/tutorial_sea_vs_surface_solution.html#Model-2:-Ferroelectric-germanium-telluride-(α-GeTe)">Model 2: Ferroelectric germanium telluride (α-GeTe)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/2_fermi_sea_vs_fermi_surface/solution/tutorial_sea_vs_surface_solution.html#Further-questions">Further questions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/3_spin_hall/solution/tutorial_spin_hall.html">Spin Hall conductivity</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/3_spin_hall/solution/tutorial_spin_hall.html#Model,-band-structure">Model, band structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/3_spin_hall/solution/tutorial_spin_hall.html#Static-spin-Hall-conductivity">Static spin Hall conductivity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/3_spin_hall/solution/tutorial_spin_hall.html#Dynamic-spin-Hall-conductivity">Dynamic spin Hall conductivity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/3_spin_hall/solution/tutorial_spin_hall.html#Spin-Berry-curvature">Spin Berry curvature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/3_spin_hall/solution/tutorial_spin_hall.html#Generating-.sHu-and-.sIu-from-.mmn-and-.spn:-mmn2uHu">Generating .sHu and .sIu from .mmn and .spn: mmn2uHu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/3_spin_hall/solution/tutorial_spin_hall.html#Further-questions">Further questions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/4_DIY/tutorial-wb-DIY-solution.html">DIY tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/4_DIY/tutorial-wb-DIY-solution.html#anomalous-Hall-conductivity">anomalous Hall conductivity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/4_DIY/tutorial-wb-DIY-solution.html#Look-into-documentation">Look into documentation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/4_DIY/tutorial-wb-DIY-solution.html#Evaluate-ANE-using-the-new-calculator-and-plot-the-result">Evaluate ANE using the new calculator and plot the result</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/4_DIY/tutorial-wb-DIY-solution.html#Questions:">Questions:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/4_DIY/tutorial-wb-DIY-solution.html#FormulaProduct">FormulaProduct</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/4_DIY/tutorial-wb-DIY-solution.html#Problem-:">Problem :</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/5_symmetrization/tutorial_symmetrization-solution.html">Symmetrization of Wannier Hamiltonian and matrices</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/5_symmetrization/tutorial_symmetrization-solution.html#Nonmagnetic-system-(trigonal-Te)">Nonmagnetic system (trigonal Te)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/5_symmetrization/tutorial_symmetrization-solution.html#Magnetic-system-with-SOC-(bcc-Fe)">Magnetic system with SOC (bcc Fe)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/6_wannierisation/wannierise.html">Wannierisation (including SAWF)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/6_wannierisation/wannierise.html#0.-Compute-QuantumEspresso-files">0. Compute QuantumEspresso files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/6_wannierisation/wannierise.html#1.-Setup">1. Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/6_wannierisation/wannierise.html#2.-Read-the-bandstructure-from-Quantum-ESPRESSO">2. Read the bandstructure from Quantum ESPRESSO</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/6_wannierisation/wannierise.html#3.-Create-the-%22w90files%22">3. Create the “w90files”</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/6_wannierisation/wannierise.html#3.1-Read-the-mmn-file-from-pw2wannier90-(if-needed)">3.1 Read the mmn file from pw2wannier90 (if needed)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/6_wannierisation/wannierise.html#3.2-Save-the-w90files-with-to-npz-for-later-use-(optional)">3.2 Save the w90files with to npz for later use (optional)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/6_wannierisation/wannierise.html#4-Choose-projections">4 Choose projections</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/6_wannierisation/wannierise.html#4.1-set-the-amn-and-symmetry-of-future-Wannier-functions">4.1 set the amn and symmetry of future Wannier functions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/6_wannierisation/wannierise.html#5.-Wannierise">5. Wannierise</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/6_wannierisation/wannierise.html#6.-Create-System_w90-object">6. Create System_w90 object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/6_wannierisation/wannierise.html#7.-Bands-along-path">7. Bands along path</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/6_wannierisation/wannierise.html#7.1-calculate-bands">7.1 calculate bands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/6_wannierisation/wannierise.html#7.2-plot-bands">7.2 plot bands</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/6_wannierisation/wannierise.html#8.-AHC-and-Ohmic-conductivity">8. AHC and Ohmic conductivity</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/6_wannierisation/wannierise.html#8.1-calculate">8.1 calculate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/6_wannierisation/wannierise.html#8.2-Plot">8.2 Plot</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/7_find_projections/find_projections.html">Finding initial projections based on symmetry indicators</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/7_find_projections/find_projections.html#Theory-and-background">Theory and background</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/7_find_projections/find_projections.html#Import-some-modules-and-classes">Import some modules and classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/7_find_projections/find_projections.html#generate-the-symmetrizer">generate the symmetrizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/7_find_projections/find_projections.html#Define-the-trial-projections">Define the trial projections</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/7_find_projections/find_projections.html#Create-the-EBRsearcher-object">Create the EBRsearcher object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/7_find_projections/find_projections.html#Find-combinations-of-EBRs">Find combinations of EBRs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/8_GPAW/1.diamond/diamond.html">GPAW + WannierBerri: spinless bandstructure (diamond)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/8_GPAW/1.diamond/diamond.html#Prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/8_GPAW/1.diamond/diamond.html#Step-1:-Gpaw-calculation">Step 1: Gpaw calculation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/8_GPAW/1.diamond/diamond.html#self-consistent-calculation">self-consistent calculation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/8_GPAW/1.diamond/diamond.html#Non-self-consistent-calculation-in-the-irreducible-Brillouin-zone">Non-self-consistent calculation in the irreducible Brillouin zone</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/8_GPAW/1.diamond/diamond.html#Compute-the-dft-bandstructure-along-a-high-symmetry-path">Compute the dft bandstructure along a high-symmetry path</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/8_GPAW/1.diamond/diamond.html#Step-2:-Wannierization">Step 2: Wannierization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/8_GPAW/1.diamond/diamond.html#create-the-%22w90-files%22">create the “w90 files”</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/8_GPAW/1.diamond/diamond.html#Create-the-System-object-to-be-used-in-WannierBerri-calculations">Create the System object to be used in WannierBerri calculations</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/8_GPAW/1.diamond/diamond.html#Step-3:-Compute-the-wannierized-bandstructure-along-the-high-symmetry-path">Step 3: Compute the wannierized bandstructure along the high-symmetry path</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/8_GPAW/1.diamond/diamond.html#create-the-k-path-for-wannierberri">create the k path for wannierberri</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/8_GPAW/1.diamond/diamond.html#Plot-the-bandstructures">Plot the bandstructures</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/8_GPAW/1.diamond/diamond.html#Bonding-and-antibonding-states">Bonding and antibonding states</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/8_GPAW/1.diamond/diamond.html#Save-the-system-objects-for-later-use">Save the system objects for later use</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/8_GPAW/2.Fe/bccFe.html">GPAW + WannierBerri: Magnetism and spin-orbit coupling (bcc Fe)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/8_GPAW/2.Fe/bccFe.html#Prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/8_GPAW/2.Fe/bccFe.html#Setup-the-parallelization">Setup the parallelization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/8_GPAW/2.Fe/bccFe.html#Step-1:-Gpaw-calculation">Step 1: Gpaw calculation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/8_GPAW/2.Fe/bccFe.html#loading-the-GPAW-calculators">loading the GPAW calculators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/8_GPAW/2.Fe/bccFe.html#self-consistent-calculation">self-consistent calculation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/8_GPAW/2.Fe/bccFe.html#Non-self-consistent-calculation-in-the-irreducible-Brillouin-zone">Non-self-consistent calculation in the irreducible Brillouin zone</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/8_GPAW/2.Fe/bccFe.html#Compute-the-dft-bandstructure-along-a-high-symmetry-path">Compute the dft bandstructure along a high-symmetry path</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/8_GPAW/2.Fe/bccFe.html#Step-2:-Wannierization">Step 2: Wannierization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/8_GPAW/2.Fe/bccFe.html#create-the-%22w90-files%22">create the “w90 files”</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/8_GPAW/2.Fe/bccFe.html#Do-the-wannierization">Do the wannierization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/8_GPAW/2.Fe/bccFe.html#Create-the-System-object-to-be-used-in-WannierBerri-calculations">Create the System object to be used in WannierBerri calculations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/8_GPAW/2.Fe/bccFe.html#Compute-the-wannierized-bandstructure-with-SOC-along-the-high-symmetry-path">Compute the wannierized bandstructure with SOC along the high-symmetry path</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/8_GPAW/2.Fe/bccFe.html#Plot-the-Bandstructure-with-and-without-SOC">Plot the Bandstructure with and without SOC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/8_GPAW/2.Fe/bccFe.html#AHC">AHC</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/8_GPAW/2.Fe/bccFe.html#magnetization-along-[001]-direction">magnetization along [001] direction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/8_GPAW/2.Fe/bccFe.html#plot-AHC-vs-energy">plot AHC vs energy</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/8_GPAW/2.Fe/bccFe.html#compare-directions-of-magnetization">compare directions of magnetization</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/8_GPAW/3.MnTe/mnte.html">GPAW + WannierBerri: Altermagnet MnTe</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/8_GPAW/3.MnTe/mnte.html#Step-1:-Gpaw-calculation">Step 1: Gpaw calculation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/8_GPAW/3.MnTe/mnte.html#loading-the-GPAW-calculators">loading the GPAW calculators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/8_GPAW/3.MnTe/mnte.html#self-consistent-calculation">self-consistent calculation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/8_GPAW/3.MnTe/mnte.html#Non-self-consistent-calculation-in-the-irreducible-Brillouin-zone">Non-self-consistent calculation in the irreducible Brillouin zone</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/8_GPAW/3.MnTe/mnte.html#Compute-the-dft-bandstructure-along-a-high-symmetry-path">Compute the dft bandstructure along a high-symmetry path</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/8_GPAW/3.MnTe/mnte.html#Step-2:-Wannierization">Step 2: Wannierization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/8_GPAW/3.MnTe/mnte.html#create-the-%22w90-files%22">create the “w90 files”</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/8_GPAW/3.MnTe/mnte.html#Do-the-wannierization">Do the wannierization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/8_GPAW/3.MnTe/mnte.html#Create-the-System-object-to-be-used-in-WannierBerri-calculations">Create the System object to be used in WannierBerri calculations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/8_GPAW/3.MnTe/mnte.html#Compute-the-wannierized-bandstructure-with-SOC-along-the-high-symmetry-path">Compute the wannierized bandstructure with SOC along the high-symmetry path</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/8_GPAW/3.MnTe/mnte.html#Plot-the-Bandstructure-with-and-without-SOC">Plot the Bandstructure with and without SOC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/8_GPAW/3.MnTe/mnte.html#AHC">AHC</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/8_GPAW/3.MnTe/mnte.html#magnetic-moments-along-%22y%22-direction">magnetic moments along “y” direction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/8_GPAW/3.MnTe/mnte.html#plot-AHC-vs-energy">plot AHC vs energy</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/8_GPAW/3.MnTe/mnte.html#Other-directions-of-magnetic-moments">Other directions of magnetic moments</a></li>
+</ul>
+</li>
+</ul>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="tutorials/1_basic/tutorial-wb-basic-solution.html" class="btn btn-neutral float-right" title="Basic tutorial: Interpolating bands, Berry curvatures, and integrating them" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Stepan Tsirkin.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
