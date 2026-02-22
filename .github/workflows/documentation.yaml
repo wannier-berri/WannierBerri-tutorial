@@ -19,6 +19,7 @@ jobs:
         run: |
           sphinx-build doc  _build
           echo "tutorial.wannier-berri.org" > _build/CNAME
+          touch _build/.nojekyll
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v4
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
