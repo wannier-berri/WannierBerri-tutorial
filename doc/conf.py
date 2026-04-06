@@ -123,7 +123,10 @@ nbsphinx_allow_errors = True
 nbsphinx_execute = 'never'
 
 #  THIS is the important fix
-nbsphinx_requirejs_path = ''
+# nbsphinx_requirejs_path = ''
+# nbsphinx_execute_arguments = [
+#     "--InlineBackend.figure_formats={'png'}"
+# ]
 
 # True Basque colors
 bred='#D62618' 
