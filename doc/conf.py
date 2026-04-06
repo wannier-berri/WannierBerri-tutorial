@@ -14,7 +14,7 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('../'))
 
-import wannierberri
+# import wannierberri
 
 # -- Project information -----------------------------------------------------
 
@@ -24,7 +24,7 @@ author = 'Stepan Tsirkin'
 numfig = True
 
 # The full version, including alpha/beta/rc tags
-release = wannierberri.__version__
+# release = wannierberri.__version__
 
 # -- General configuration ---------------------------------------------------
 
@@ -140,7 +140,7 @@ html_theme_options = {
     'canonical_url': '',
 #    'analytics_id': 'UA-XXXXXXX-1',  #  Provided by Google in your dashboard
     'logo_only': True,
-    'display_version': True,
+    # 'display_version': True,
     'prev_next_buttons_location': 'bottom',
     'style_external_links': True,
 #    'vcs_pageview_mode': '',
