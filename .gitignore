@@ -7,6 +7,25 @@ __pycache__/
 # C extensions
 *.so
 
+# data and npz files
+*.dat
+*.npz
+*.gpw
+*.txt
+*.pdf
+*.pickle
+*.frmsf
+*.png
+
+# Wannier90 files
+*.win
+*.amn
+*.mmn
+*.eig
+*.w90
+*.spn
+*.nnkp
+
 # Distribution / packaging
 .Python
 build/

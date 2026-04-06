@@ -122,6 +122,9 @@ html_show_sourcelink = False
 nbsphinx_allow_errors = True
 nbsphinx_execute = 'never'
 
+#  THIS is the important fix
+nbsphinx_requirejs_path = ''
+
 # True Basque colors
 bred='#D62618' 
 bgreen= '#009C46'
